@@ -1,0 +1,6 @@
+{
+  "name": "FTW",
+  "description": "A ftw clone",
+  "repository": "https://github.com/gamester543/ftw",
+  "image": "heroku/nodejs"
+}

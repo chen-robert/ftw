@@ -1,0 +1,25 @@
+{
+  "name": "ftw",
+  "version": "0.0.0",
+  "description": "A ftw clone",
+  "main": "server/main.js",
+  "scripts": {
+    "test": "node test/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gamester543/ftw.git"
+  },
+  "keywords": [
+    "Nodejs"
+  ],
+  "author": "Robert Chen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gamester543/ftw/issues"
+  },
+  "homepage": "https://github.com/gamester543/ftw#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
