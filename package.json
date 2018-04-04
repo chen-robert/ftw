@@ -2,9 +2,9 @@
   "name": "ftw",
   "version": "0.0.0",
   "description": "A ftw clone",
-  "main": "server/main.js",
+  "main": "server/app.js",
   "scripts": {
-    "test": "node test/main.js"
+    "test": "node test/app.js"
   },
   "repository": {
     "type": "git",

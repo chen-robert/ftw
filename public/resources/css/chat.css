@@ -1,0 +1,41 @@
+.chat-box{
+}
+
+.pfp{
+    width: 50px;
+    height: 50px;
+    
+    margin: 10px;
+}
+.chat-item {
+    margin: 10px;
+    width: 100%;
+}
+
+.chat-message {
+    margin: 3px;
+    word-wrap: : break-word;
+}
+
+.chat-message-timestamp {
+    color: #707070;
+    font-size: 12px;
+}
+
+.chat-message-sender {
+    color: black;
+    font-weight: bold;
+    
+}
+
+.chat-header {
+    margin: 3px;
+}
+
+.chat-message-gutter {
+    display: inline-block;
+}
+
+.chat-message-body {
+    display: inline-block;
+}
