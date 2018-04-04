@@ -1,14 +1,11 @@
-.chat-box{
+.pfp {
+    width: 100%;
+    height: 100%;
+    
+    vertical-align: bottom;
 }
 
-.pfp{
-    width: 50px;
-    height: 50px;
-    
-    margin: 10px;
-}
 .chat-item {
-    margin: 10px;
     width: 100%;
 }
 
@@ -20,12 +17,13 @@
 .chat-message-timestamp {
     color: #707070;
     font-size: 12px;
+    margin-left: 5px;
 }
 
 .chat-message-sender {
     color: black;
     font-weight: bold;
-    
+
 }
 
 .chat-header {
@@ -34,8 +32,20 @@
 
 .chat-message-gutter {
     display: inline-block;
+    width: 50px;
+    margin-right: 10px;
 }
 
 .chat-message-body {
     display: inline-block;
+}
+
+#chat-display {
+    height: 400px;
+    overflow-y: scroll;
+}
+
+.image-container {
+    width: 100%;
+    height: 50px;
 }

@@ -1,45 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>FTW</title>
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="resources/css/chat.css">
-    </head>
-    <body>
-        <nav class="navbar navbar-light bg-light">
-            <a class="navbar-brand">FTW</a>
-        </nav>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-3">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Rating</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>    
-                                <td>Joe</td>
-                                <td>1200</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
 
-                <!-- Game content -->
-                <main class="col-9">
-                    <h1>FTW</h1>
-                    <section style="height: 400px">
+<head>
+    <title>FTW</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="resources/css/chat.css">
+</head>
 
-                    </section>
-                    <section class="chat-box" style="height: 400px;"> 
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand">FTW</a>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-3">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Joe</td>
+                            <td>1200</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Game content -->
+            <main class="col-9">
+                <h1>FTW</h1>
+                <section style="height: 400px">
+
+                </section>
+                <section>
+                    <div id="chat-display">
                         <div class="chat-item">
                             <div class="chat-message-gutter">
-                                <img src="resources/images/default.png" class="rounded-circle pfp" alt="Default profile picture">
+                                <div class="image-container">
+                                    <img src="resources/images/default.png" class="rounded-circle pfp" alt="Default profile picture">
+                                </div>
                             </div>
                             <div class="chat-message-body">
                                 <div class="chat-header">
@@ -47,18 +52,26 @@
                                     <span class="chat-message-timestamp">12:00</span>
                                 </div>
                                 <div class="chat-message">
-                                    <p>asdfasdfasdfasdfasdfasdfasdf</p>
+                                    <span>asdfasdfasdfasdfasdfasdfasdf</span>
                                 </div>
                             </div>
                         </div>
-                    </section>
-                </main>
-            </div>
+                    </div>
+                    <input type="text" class="form-control" id="chat-box" placeholder="Message">
+                </section>
 
+            </main>
         </div>
-        <!-- jQuery, Popper.js, and Bootstrap -->
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>      
-    </body>
+
+    </div>
+    <!-- jQuery, Popper.js, and Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!-- Custom JS -->
+    <script src="resources/js/base.js"></script>
+    <script src="resources/js/chat.js"></script>
+</body>
+
 </html>
