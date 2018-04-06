@@ -1,9 +1,9 @@
 "use strict";
 
 const mongoose = require("mongoose");
+mongoose.connect(process.env.MONGO_URI);
 const bcrypt = require("bcrypt");
 const user = require("./user.js");
-mongoose.connect(process.env.MONGO_URI);
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error: "));
