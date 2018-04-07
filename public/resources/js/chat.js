@@ -82,7 +82,12 @@ $(document).ready(function () {
             chat.previousSender = user;
         };
 
-
+        $("#chat-box").keypress(function (e) {
+            if (e.which == 13) {
+                window.FTW.socket.emit("public message", $("#chat-box").val());
+                $("#chat-box").val("");
+            }
+        });
 
 
         window.FTW.chat = chat;

@@ -4,8 +4,11 @@ const mongoose = require("mongoose");
 
 const userData = require("./userData.js");
 
+const chatUtils = require("./chat/chatUtils.js");
+
 class UserManager {
-    constructor() {
+    constructor(io) {
+        this.io = io;
         this.users = new Map();
     }
 
@@ -24,6 +27,16 @@ class UserManager {
     }
     removeSession(id) {
         this.users.delete(id);
+    }
+    addSocket(id, socket) {
+        if (id) {
+            if (!this.users.has(id)) return false;
+
+            const data = this.users.get(id);
+            chatUtils.addUser(data.username, socket);
+            return true;
+        }
+        return false;
     }
 
 
@@ -50,4 +63,4 @@ class UserManager {
 
 }
 
-module.exports = new UserManager();
+module.exports = UserManager;

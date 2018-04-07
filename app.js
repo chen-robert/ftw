@@ -3,7 +3,10 @@
 
 const PORT = process.env.PORT || 3000
 
+const SESS_ID_COOKIE = "sessId";
+
 const crypto = require("crypto");
+const cookie = require("cookie");
 
 const express = require("express");
 const app = express();
@@ -15,7 +18,8 @@ const cookieParser = require("cookie-parser");
 const auth = require("./server/auth/login.js");
 const io = require("socket.io")(http);
 
-const userManager = require("./server/game/userManager.js");
+const UserManager = require("./server/game/userManager.js");
+const userManager = new UserManager(io);
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -28,7 +32,7 @@ http.listen(PORT, () => console.log("Listening on port " + PORT));
 
 app.get("/", (req, res) => res.redirect("/index.html"));
 app.get("/index.html", function (req, res, next) {
-    if (req.cookies.sessId) {
+    if (req.cookies[SESS_ID_COOKIE]) {
         next();
     } else {
         res.redirect("/login.html");
@@ -44,7 +48,7 @@ app.post("/login", function (req, res) {
             if (err) return res.send("TODO: Error page");
 
             const sessId = crypto.randomBytes(64).toString("hex");
-            res.cookie("sessId", sessId, {
+            res.cookie(SESS_ID_COOKIE, sessId, {
                 maxAge: 999999,
                 httpOnly: true
             });
@@ -68,14 +72,16 @@ app.post("/create-account", function (req, res) {
 });
 
 app.get("/logout", function (req, res) {
-    if (req.cookies.sessId) {
-        res.clearCookie("sessId");
-        userManager.removeSession(req.cookies.sessId);
+    if (req.cookies[SESS_ID_COOKIE]) {
+        res.clearCookie(SESS_ID_COOKIE);
+        userManager.removeSession(req.cookies[SESS_ID_COOKIE]);
     }
     res.redirect("/login.html")
 });
 
-
 io.on("connection", function (socket) {
-    console.log("HI");
+    var cookies = cookie.parse(socket.handshake.headers.cookie);
+    if (!userManager.addSocket(cookies[SESS_ID_COOKIE], socket)) {
+        socket.emit("redirect", "/logout");
+    }
 });
