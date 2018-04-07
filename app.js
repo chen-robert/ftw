@@ -1,7 +1,7 @@
 /*eslint no-console: "warn"*/
 "use strict";
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 3000
 
 const crypto = require("crypto");
 
@@ -15,6 +15,8 @@ const cookieParser = require("cookie-parser");
 const auth = require("./server/auth/login.js");
 const io = require("socket.io")(http);
 
+const userManager = require("./server/game/userManager.js");
+
 app.use(bodyParser.urlencoded({
     extended: false
 }));
@@ -22,7 +24,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use("/resources", express.static("public/resources"));
 
-http.listen(PORT, () => console.log("Hello! Listening on port 3000!"));
+http.listen(PORT, () => console.log("Listening on port " + PORT));
 
 app.get("/", (req, res) => res.redirect("/index.html"));
 app.get("/index.html", function (req, res, next) {
@@ -40,11 +42,14 @@ app.post("/login", function (req, res) {
     if (req.body.username && req.body.password) {
         auth.login(req.body.username, req.body.password, function (err, user) {
             if (err) return res.send("TODO: Error page");
-            res.cookie("sessId", crypto.randomBytes(64).toString("hex"), {
+
+            const sessId = crypto.randomBytes(64).toString("hex");
+            res.cookie("sessId", sessId, {
                 maxAge: 999999,
                 httpOnly: true
             });
-            console.log(user);
+
+            userManager.addSession(sessId, user.username);
             return res.redirect("/index.html");
         });
     }
@@ -54,7 +59,10 @@ app.post("/create-account", function (req, res) {
     if (req.body.username && req.body.password) {
         auth.register(req.body.username, req.body.password, function (err, user) {
             if (err) return "TODO: Error page";
-            return res.sendFile(__dirname + "/public/login.html");
+
+            userManager.createData(user.username, function () {
+                res.redirect("/login.html");
+            });
         });
     }
 });
@@ -62,8 +70,9 @@ app.post("/create-account", function (req, res) {
 app.get("/logout", function (req, res) {
     if (req.cookies.sessId) {
         res.clearCookie("sessId");
+        userManager.removeSession(req.cookies.sessId);
     }
-    res.redirect("/login.html");
+    res.redirect("/login.html")
 });
 
 
