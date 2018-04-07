@@ -4,7 +4,7 @@
   "description": "A ftw clone",
   "main": "server/app.js",
   "scripts": {
-    "start": "node server/app.js",
+    "start": "node app.js",
     "test": "node test/app.js"
   },
   "repository": {
@@ -23,6 +23,7 @@
   "dependencies": {
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
     "eslint": "^4.19.1",
     "express": "^4.16.3",
     "mongodb": "^3.0.5",

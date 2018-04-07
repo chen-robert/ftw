@@ -33,11 +33,11 @@ module.exports.login = function (username, password, callback) {
 module.exports.register = function (username, password, callback) {
     user.findOne({
         username: username
-    }).exec(function (err, user) {
+    }).exec(function (err, obj) {
         if (err) {
             return callback(err);
         }
-        if (user) {
+        if (obj) {
             var err = new Error("Username already exists");
             err.status = 401;
             return callback(err);
@@ -45,11 +45,11 @@ module.exports.register = function (username, password, callback) {
         user.create({
             username: username,
             password: password
-        }, function (err, user) {
+        }, function (err, obj) {
             if (err) {
                 return callback(err);
             }
-            return callback(user);
+            return callback(null, obj);
         });
     });
 }
