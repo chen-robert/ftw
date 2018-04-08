@@ -1,0 +1,27 @@
+
+.game-box {
+    margin: 10px;
+    width: 150px;
+    height: 150px;
+    
+    display: inline-block;
+    text-align: center;
+}
+.game-box p{
+    margin: 0;
+}
+
+.game-header {
+    width: 100%;
+    background-color: #ccff99;
+}
+
+.game-body {
+    background-color: #99ccff;
+    padding: 15px;
+}
+
+.game-footer {
+    width: 100%;
+    background-color: #ff99cc;
+}

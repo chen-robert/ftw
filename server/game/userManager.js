@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const userData = require("./userData.js");
 
 const chatUtils = require("./chat/chatUtils.js");
+const gameManager = require("./gameManager.js");
 
 class UserManager {
     constructor(io) {
@@ -12,7 +13,7 @@ class UserManager {
         this.users = new Map();
     }
 
-    addSession(id, username) {
+    addSession(id, username, callback) {
         const _self = this;
 
         userData.findOne({
@@ -23,6 +24,8 @@ class UserManager {
                 throw new Error(username + " doesn't have data attached for some reason");
             }
             _self.users.set(id, obj);
+
+            callback();
         });
     }
     removeSession(id) {
@@ -58,7 +61,7 @@ class UserManager {
         }).exec(function (err, data) {
             if (err) throw err;
             if (data) {
-                //Data already exists. We just silently eat up the error.
+                //Data already exists. No need to create new.
             } else {
                 userData.create({
                     username: username,

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="resources/css/chat.css">
+    <link rel="stylesheet" href="resources/css/game.css">
 </head>
 
 <body>
@@ -15,15 +16,15 @@
     </nav>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-3">
+            <div class="col-2">
                 <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>User</th>
-                            <th>Rating</th>
+                            <th class="text-right">Rating</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="userData">
                         <tr>
                             <td>Joe</td>
                             <td>1200</td>
@@ -33,9 +34,20 @@
             </div>
 
             <!-- Game content -->
-            <main class="col-9">
-                <section style="height: 350px">
-
+            <main class="col-10">
+                <section style="height: 400px">
+                    <div class="game-box">
+                        <div class="game-header">
+                            <p>FTW</p>
+                        </div>
+                        <div class="game-body">
+                            <strong>Players: 3</strong>
+                            <p>Problem 2</p>
+                        </div>
+                        <div class="game-footer">
+                            <p>Bobert</p>
+                        </div>
+                    </div>
                 </section>
                 <section>
                     <div id="chat-display">
@@ -50,14 +62,14 @@
                             <div class="chat-message-body">
                                 <div class="chat-header">
                                     <span class="chat-message-sender">Roberto</span>
-                                    <span class="chat-message-timestamp">12:00</span>
-                                </div>
-                                <div class="chat-message">
-                                    <span>asdfasdfasdfasdfasdfasdfasdf</span>
-                                </div>
-                            </div>
-                        </div>
-                        -->
+                    <span class="chat-message-timestamp">12:00</span>
+        </div>
+        <div class="chat-message">
+            <span>asdfasdfasdfasdfasdfasdfasdf</span>
+        </div>
+    </div>
+    </div>
+    -->
                     </div>
                     <input type="text" class="form-control" id="chat-box" placeholder="Message">
                 </section>

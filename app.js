@@ -53,8 +53,7 @@ app.post("/login", function (req, res) {
                 httpOnly: true
             });
 
-            userManager.addSession(sessId, user.username);
-            return res.redirect("/index.html");
+            userManager.addSession(sessId, user.username, () => res.redirect("/index.html"));
         });
     } else {
         //Empty field handling should 've be done client-side
@@ -88,6 +87,7 @@ app.get("/logout", function (req, res) {
 io.on("connection", function (socket) {
     var cookies = cookie.parse(socket.handshake.headers.cookie);
     if (!userManager.addSocket(cookies[SESS_ID_COOKIE], socket)) {
+        console.log("HI");
         socket.emit("redirect", "/logout");
     }
 });
