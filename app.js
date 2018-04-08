@@ -56,6 +56,9 @@ app.post("/login", function (req, res) {
             userManager.addSession(sessId, user.username);
             return res.redirect("/index.html");
         });
+    } else {
+        //Empty field handling should 've be done client-side
+        res.redirect("/login.html");
     }
 });
 
@@ -68,6 +71,9 @@ app.post("/create-account", function (req, res) {
                 res.redirect("/login.html");
             });
         });
+    } else {
+        //Empty field handling should've be done client-side
+        res.redirect("/login.html");
     }
 });
 

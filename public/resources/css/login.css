@@ -1,4 +1,4 @@
-.login-form {
+.login-div {
     margin: auto;
     width: 100%;
     max-width: 300px;
@@ -28,22 +28,35 @@ body {
     margin: 15px;
 }
 
-.login-form input[type="text"] {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-}
 
-.login-form input[type="password"] {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-}
 
 .signin-button {
     width: 100%;
-    margin-top: 15px;
+    margin-top: 5px;
 }
 
 .login-content {
     padding: 20px;
     border: 1px solid #dee2e6;
+}
+
+.loading-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+}
+
+.loading-display {
+    width: 0%;
+    height: 100%;
+    background-color: #0000ff;
+}
+
+.error-text {
+    margin: 4px;
+    color: #dd4b39;
+    font-size: 14px;
+    display: none;
 }

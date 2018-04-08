@@ -4,11 +4,19 @@ class ChatManager {
     constructor() {
         this.users = new Map();
     }
-    addUser(name, socket) {
+    addUser(data, socket) {
+        const name = data.username;
         const users = this.users;
 
-        users.set(name, socket);
-        socket.on("disconnect", () => this.users.delete(name));
+        if (users.has(name)) {
+            users.get(name).socket.emit("redirect", "/logout");
+            users.get(name).socket.disconnect();
+        }
+
+        users.set(name, {
+            socket: socket,
+            data: data
+        });
         socket.on("public message", function (message) {
             users.forEach((soc) => soc.emit("message", {
                 type: "public",
@@ -17,6 +25,13 @@ class ChatManager {
             }));
         });
     }
+    get onlineUsers() {
+
+        const pool = [];
+        this.users.forEach(data => pool.push(data.data));
+        return pool;
+    }
+
 }
 
 module.exports = new ChatManager();

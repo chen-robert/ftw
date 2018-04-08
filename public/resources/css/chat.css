@@ -68,3 +68,8 @@
 ::-webkit-scrollbar-hover {
     background: #555;
 }
+
+.form-item {
+    margin-bottom: 15px;
+    text-align: left;
+}

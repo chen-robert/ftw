@@ -30,13 +30,23 @@ class UserManager {
     }
     addSocket(id, socket) {
         if (id) {
-            if (!this.users.has(id)) return false;
+            if (!this.users.has(id)) {
+                return false;
+            }
 
             const data = this.users.get(id);
-            chatUtils.addUser(data.username, socket);
+            socket.on("disconnect", () => {
+                chatUtils.users.delete(data.username);
+                this.updateAllUsers();
+            });
+            chatUtils.addUser(data, socket);
+            this.updateAllUsers();
             return true;
         }
         return false;
+    }
+    updateAllUsers() {
+        this.io.emit("online users", chatUtils.onlineUsers);
     }
 
 

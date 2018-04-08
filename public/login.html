@@ -11,8 +11,10 @@
 </head>
 
 <body class="text-center">
-
-    <div class="login-form">
+    <div class="loading-bar">
+        <div class="loading-display"></div>
+    </div>
+    <div class="login-div">
         <ul class="nav nav-tabs nav-justified">
             <li class="nav-item"><a class="nav-link active" href="#" id="sign-in">Sign In</a></li>
             <li class="nav-item"><a class="nav-link" href="#" id="create">Create Account</a></li>
@@ -22,17 +24,22 @@
                 <img src="resources/images/default.png" class="rounded-circle pfp">
             </div>
             <form id="login-form" class="form-group" action="/login" method="post">
-                <input type="text" class="form-control" id="username" name="username" placeholder="Username">
-                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                <div class="form-item">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+                    <div class="error-text" for="username">You can't leave this empty!</div>
+                </div>
+                <div class="form-item">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    <div class="error-text" for="password">You can't leave this empty!</div>
+                </div>
                 <button class="btn btn-primary signin-button" type="submit" id="login-button">Sign In</button>
             </form>
         </div>
     </div>
     <!-- jQuery, Popper.js, and Bootstrap -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
+    <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <!-- Custom JS -->
     <script src="resources/js/login.js"></script>
 </body>
