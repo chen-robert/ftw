@@ -18,7 +18,7 @@ class ChatManager {
             data: data
         });
         socket.on("public message", function (message) {
-            users.forEach((soc) => soc.emit("message", {
+            users.forEach((data) => data.socket.emit("message", {
                 type: "public",
                 from: name,
                 message: message
