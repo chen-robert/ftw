@@ -2,16 +2,11 @@ $(document).ready(function () {
     "use strict";
 
     function formatDate(date) {
-        var monthNames = [
-            "January", "February", "March",
-            "April", "May", "June", "July",
-            "August", "September", "October",
-            "November", "December"];
 
-        var day = date.getDate();
-        var monthIndex = date.getMonth();
+        let day = date.getHours();
+        let min = date.getMinutes();
 
-        return day + " " + monthNames[monthIndex];
+        return day + ":" + min;
     }
 
     if (!window.FTW) {
