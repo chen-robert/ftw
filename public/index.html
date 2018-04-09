@@ -13,7 +13,31 @@
 <body>
     <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand">FTW</a>
+        <button id="create-game-button" class="btn btn-info" style="float: left;">Create Game</button>
     </nav>
+    <div id="create-game-model" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content text-center">
+                <ul class="nav nav-tabs nav-justified">
+                    <li class="nav-item"><a class="nav-link active" href="#" id="create-ftw">FTW</a></li>
+                    <li class="nav-item"><a class="nav-link disabled" href="#" id="create-countdown">Countdown</a></li>
+                </ul>
+                <div style="padding: 15px;">
+                    <div class="modal-row">
+                        <span>Time Per Problem</span>
+                        <input id="create-time" type="number" class="create-game-input" placeholder="45" min="5" max="60">
+                    </div>
+                    <div class="modal-row">
+                        <span>Number of Problems</span>
+                        <input id="create-problem-count" type="number" class="create-game-input" placeholder="10" min="4" max="20">
+                    </div>
+                    <div>
+                        <button id="create-game" class="btn btn-info">Create Game</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-2">
@@ -24,29 +48,20 @@
                             <th class="text-right">Rating</th>
                         </tr>
                     </thead>
-                    <tbody id="userData">
-                        <tr>
-                            <td>Joe</td>
-                            <td>1200</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="userData"></tbody>
                 </table>
             </div>
 
             <!-- Game content -->
             <main class="col-10">
-                <section style="height: 400px">
+                <section id="game-display">
                     <div class="game-box">
-                        <div class="game-header">
-                            <p>FTW</p>
-                        </div>
+                        <div class="game-header">FTW</div>
                         <div class="game-body">
                             <strong>Players: 3</strong>
                             <p>Problem 2</p>
                         </div>
-                        <div class="game-footer">
-                            <p>Bobert</p>
-                        </div>
+                        <div class="game-footer">Bobert</div>
                     </div>
                 </section>
                 <section>
@@ -87,6 +102,7 @@
     <!-- Custom JS -->
     <script src="resources/js/base.js"></script>
     <script src="resources/js/chat.js"></script>
+    <script src="resources/js/game.js"></script>
     <script src="resources/js/userDisplay.js"></script>
 </body>
 

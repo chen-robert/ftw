@@ -23,6 +23,7 @@ class Game {
         }
         this.users.splice(this.users.indexOf(data), 1);
 
+        console.log("Removed " + data);
         //If the room would be empty, we'll delete it
         if (this.users.length == 0) return true;
         if (this.host === data) {
@@ -49,7 +50,7 @@ class GameManager {
             if (currGame) {
                 //Clean up the game if we return false
                 if (currGame.remove(userData)) {
-                    this.games.delete(currGame.id);
+                    games.delete(currGame.id);
                 }
                 currGame = null;
             }
@@ -83,8 +84,7 @@ class GameManager {
     updateData() {
         const ret = {};
         this.games.forEach((val, key) => ret[key] = val);
-        this.io.emit("game data", JSON.stringify(ret));
-        console.log(JSON.stringify(ret));
+        this.io.emit("game data", ret);
     }
 }
 

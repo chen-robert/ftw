@@ -25,3 +25,22 @@
     width: 100%;
     background-color: #ff99cc;
 }
+
+#game-display {
+    height: 400px;
+}
+
+.create-game-input {
+    float: right;
+}
+
+.modal-row {
+    text-align: left;
+    margin: 20px;
+}
+
+
+
+
+
+
