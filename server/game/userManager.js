@@ -11,6 +11,8 @@ class UserManager {
     constructor(io) {
         this.io = io;
         this.users = new Map();
+
+        this.gameManager = gameManager(io);
     }
 
     addSession(id, username, callback) {
@@ -43,6 +45,7 @@ class UserManager {
                 this.updateAllUsers();
             });
             chatUtils.addUser(data, socket);
+            this.gameManager.addSocket(data, socket);
             this.updateAllUsers();
             return true;
         }

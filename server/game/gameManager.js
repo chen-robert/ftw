@@ -19,15 +19,16 @@ class Game {
     remove(data) {
         if (this.users.indexOf(data) == -1) {
             console.error("Tried to delete somebody that didn't exist in game.");
-            return false;
+            return true;
         }
         this.users.splice(this.users.indexOf(data), 1);
 
-        if (this.users.length == 0) return false;
+        //If the room would be empty, we'll delete it
+        if (this.users.length == 0) return true;
         if (this.host === data) {
             this.host = this.users[0];
         }
-        return true;
+        return false;
     }
 
 }
@@ -39,24 +40,31 @@ class GameManager {
     addSocket(data, socket) {
         //Locally scoped because it won't need to be accessed anywhere else
         const userData = data;
+        let currGame = null;
 
         const games = this.games;
+        const _self = this;
 
         const removeUser = function () {
-            if (userData.game) {
+            if (currGame) {
                 //Clean up the game if we return false
-                if (userData.game.remove(socket)) {
-                    this.games.delete(userData.game.id);
+                if (currGame.remove(userData)) {
+                    this.games.delete(currGame.id);
                 }
-                userData.game = null;
+                currGame = null;
             }
+            _self.updateData();
         }
         const joinGame = function (id) {
             if (games.has(id)) {
-                userData.game = games.get(id);
+                if (currGame !== null) {
+                    removeUser();
+                }
+                currGame = games.get(id);
 
-                games.get(id).add(socket);
+                games.get(id).add(userData);
             }
+            _self.updateData();
         }
 
         socket.on("disconnect", removeUser);
@@ -73,8 +81,13 @@ class GameManager {
     //Serializing the entire class is probably less error prone for now. This could 
     //pose problems later however.
     updateData() {
-        io.emit("game data", this);
+        const ret = {};
+        this.games.forEach((val, key) => ret[key] = val);
+        this.io.emit("game data", JSON.stringify(ret));
+        console.log(JSON.stringify(ret));
     }
 }
 
-module.exports = new GameManager();
+module.exports = function (io) {
+    return new GameManager(io);
+}

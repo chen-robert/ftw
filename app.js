@@ -87,7 +87,6 @@ app.get("/logout", function (req, res) {
 io.on("connection", function (socket) {
     var cookies = cookie.parse(socket.handshake.headers.cookie);
     if (!userManager.addSocket(cookies[SESS_ID_COOKIE], socket)) {
-        console.log("HI");
         socket.emit("redirect", "/logout");
     }
 });
