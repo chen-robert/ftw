@@ -21,14 +21,12 @@ const io = require("socket.io")(http);
 const UserManager = require("./server/game/userManager.js");
 const userManager = new UserManager(io);
 
-app.configure("production", () => {
-    app.use((req, res, next) => {
-        if (req.header("x-forwarded-proto") !== "https") {
-            res.redirect("https://" + req.header("host") + req.url);
-        } else {
-            next();
-        }
-    });
+app.use((req, res, next) => {
+    if (!req.secure && req.header("x-forwarded-proto") !== "https") {
+        res.redirect("https://" + req.header("host") + req.url);
+    } else {
+        next();
+    }
 });
 app.use(bodyParser.urlencoded({
     extended: false
