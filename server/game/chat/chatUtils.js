@@ -1,5 +1,8 @@
 "use strict";
 
+const emoji = require("emoji-parser");
+emoji.init().update();
+
 class ChatManager {
     constructor() {
         this.users = new Map();
@@ -17,7 +20,10 @@ class ChatManager {
             socket: socket,
             data: data
         });
+        const _self = this;
         socket.on("public message", function (message) {
+            message = _self.clean(message);
+            message = emoji.parse(message, "/emoji");
             users.forEach((data) => data.socket.emit("message", {
                 type: "public",
                 from: name,
@@ -30,6 +36,9 @@ class ChatManager {
         const pool = [];
         this.users.forEach(data => pool.push(data.data));
         return pool;
+    }
+    clean(str) {
+        return str.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
 }

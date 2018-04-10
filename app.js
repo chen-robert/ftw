@@ -50,6 +50,11 @@ app.get("/index.html", function (req, res, next) {
 });
 app.get("/login.html", (req, res) => res.sendFile(__dirname + "/public/login.html"));
 
+//For emojis. See chatUtils.js
+app.get("/emoji/*", function (req, res) {
+    res.sendFile(__dirname + "/node_modules/emoji-parser" + req.url);
+});
+
 app.post("/login", function (req, res) {
     if (req.body.username && req.body.password) {
         auth.login(req.body.username, req.body.password, function (err, user) {

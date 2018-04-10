@@ -22,10 +22,9 @@ $(document).ready(function () {
             var message = document.createElement("div");
             $(message).addClass("chat-message");
 
-            var text = document.createElement("span");
-            $(text).text(str);
+            message.innerHTML = str;
 
-            message.appendChild(text);
+
             return message;
         }
 
@@ -52,7 +51,7 @@ $(document).ready(function () {
             $(message).addClass("chat-item");
 
 
-            let gutter = document.createElement("div");
+            let gutter = document.createElement("span");
             $(gutter).addClass("chat-message-gutter");
             if (isNewSender) {
                 let pfp = document.createElement("img");
@@ -63,7 +62,7 @@ $(document).ready(function () {
             }
             message.appendChild(gutter);
 
-            let body = document.createElement("div");
+            let body = document.createElement("span");
             $(body).addClass("chat-message-body");
             if (isNewSender) {
                 body.appendChild(createHeader(user, new Date()));

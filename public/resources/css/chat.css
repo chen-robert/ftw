@@ -11,7 +11,9 @@
 
 .chat-message {
     margin: 3px;
-    word-wrap: : break-word;
+    word-wrap: break-word;
+
+    width: 100%;
 }
 
 .chat-message-timestamp {
@@ -38,10 +40,12 @@
 
 .chat-message-body {
     display: inline-block;
+    width: calc(100% - 60px);
 }
 
 #chat-display {
     height: 350px;
+    overflow-x: hidden;
     overflow-y: scroll;
 
     margin-bottom: 10px;
@@ -72,4 +76,8 @@
 .form-item {
     margin-bottom: 15px;
     text-align: left;
+}
+
+.emoji {
+    max-height: 24px;
 }

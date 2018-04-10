@@ -11,9 +11,10 @@ This JS file should be loaded first.
 
         window.FTW.socket.on("message", (msg) => {
             window.FTW.chat.appendMessage(msg.from, msg.message);
+            $("#chat-display").stop(true, true);
             $("#chat-display").animate({
                 scrollTop: $('#chat-display').prop("scrollHeight")
-            }, 1000);;
+            }, 1000);
         });
         window.FTW.socket.on("redirect", (url) => window.location.replace(url));
 
