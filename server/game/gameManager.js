@@ -27,6 +27,9 @@ class Game {
             this.users.push(data);
             this.dataToSocket.set(data, socket);
         }
+        data.score = 0;
+
+        this.sendScores();
     }
 
     remove(data) {
@@ -37,6 +40,7 @@ class Game {
         this.dataToSocket.delete(data);
         this.users.splice(this.users.indexOf(data), 1);
 
+        this.sendScores();
         //If the room would be empty, we'll delete it
         if (this.users.length == 0) return true;
         if (this.host === data) {
@@ -50,7 +54,10 @@ class Game {
 
         this.started = true;
 
-        this.users.forEach((user) => user.canAnswer = false);
+        this.users.forEach((user) => {
+            user.canAnswer = false;
+            user.score = 0;
+        });
         this.dataToSocket.forEach((socket) => socket.emit("timer", {
             type: "Starting",
             time: 5
@@ -96,6 +103,7 @@ class Game {
                         type: "Intermission",
                         time: 5
                     }));
+                    _self.sendScores();
                     setTimeout(() => _self.safeProgress(2 * i + 2), 5 * 1000);
                 });
             }
@@ -105,17 +113,27 @@ class Game {
                 text: "It's over! Finally!",
                 answer: "0x536865727279"
             }));
+
+            _self.dataToSocket.forEach((socket) => socket.emit("timer", {
+                type: "Round Over",
+                time: 0
+            }));
         });
 
 
     }
-    //Safely progress to the next function.
+    //Safely progress to the next part of the game.
     safeProgress(expected) {
         if (this.arrIndex + 1 !== expected) return;
         this.arrIndex++;
         const nextFunc = this.functionArr[this.arrIndex];
         nextFunc();
+    }
 
+    //Send scores to everybody
+    sendScores() {
+        //Lazy implementation, but we can afford sending extra data
+        this.dataToSocket.forEach((socket) => socket.emit("scores", this.users));
     }
 
     answer(user, answer) {
@@ -123,7 +141,7 @@ class Game {
             user.canAnswer = false;
 
             if (answer === this.currProblem.answer) {
-                console.log("Yay");
+                user.score++;
             }
             if (this.users.filter((user) => user.canAnswer).length == 0) {
                 this.safeProgress(this.arrIndex + 1);
@@ -141,7 +159,10 @@ class GameManager {
     }
     addSocket(data, socket) {
         //Locally scoped because it won't need to be accessed anywhere else
-        const userData = data;
+        const userData = {
+            username: data.username,
+            rating: data.rating
+        };
         let currGame = null;
 
         const games = this.games;

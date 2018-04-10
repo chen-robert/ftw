@@ -25,5 +25,6 @@ This JS file should be loaded first.
         window.FTW.socket.on("leave game", (data) => window.FTW.game.leaveGame(data));
         window.FTW.socket.on("timer", (data) => window.FTW.game.setTimer(data));
         window.FTW.socket.on("problem", (data) => window.FTW.game.setProblem(data));
+        window.FTW.socket.on("scores", (data) => window.FTW.game.setScores(data));
     }
 })();

@@ -32,21 +32,24 @@
             $("#problem-box").hide();
             $("#start-game-button").hide();
             $("#leave-game-button").hide();
+            $("#table-scores").hide();
 
             $("#game-display").show();
             $("#create-game-button").show();
+            $("#table-ratings").show();
 
             $("#problem-header").text("Waiting to start...");
             $("#problem-text").text("");
-
         }
         game.joinGame = function () {
             $("#problem-box").show();
             $("#start-game-button").show();
             $("#leave-game-button").show();
+            $("#table-scores").show();
 
             $("#game-display").hide();
             $("#create-game-button").hide();
+            $("#table-ratings").hide();
 
             $("#answer-box").hide();
         }
@@ -67,6 +70,13 @@
             $("#problem-text").text(problem.text);
 
             $("#answer-box").show();
+        }
+        game.setScores = function (scores) {
+            scores.sort((a, b) => b.score - a.score);
+            $("#userScores").empty();
+            for (var i = 0; i < scores.length; i++) {
+                $("#userScores").append("<tr><td>" + scores[i].username + "</td><td class='text-right'>" + scores[i].score + "</td></tr");
+            }
         }
 
         game.loadGames = function (dataObj) {
