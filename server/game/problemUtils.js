@@ -1,9 +1,11 @@
 const utils = {};
 
 utils.getProblem = function () {
+    let a = Math.floor(100 * Math.random());
+    let b = Math.floor(100 * Math.random());
     return {
-        text: "1 + 1 = wot",
-        answer: "2"
+        text: "wot is " + a + " + " + b + "?",
+        answer: "" + (a + b)
     };
 }
 
