@@ -32,7 +32,6 @@ class ChatManager {
         });
     }
     get onlineUsers() {
-
         const pool = [];
         this.users.forEach(data => pool.push(data.data));
         return pool;

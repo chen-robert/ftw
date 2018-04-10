@@ -1,14 +1,17 @@
 "use strict";
 
 const uuidv1 = require('uuid/v1');
-const problemUtils = require("./problemUtils");
+const elo = require("./elo.js");
+const problemUtils = require("./problemUtils.js");
 
 class Game {
 
     constructor(timePerProblem, problems) {
         this.users = [];
+        this.usersLeftIngame = [];
         //This won't be transfered because map's can't be serialized.
         this.dataToSocket = new Map();
+        this.dataToMongoose = new Map();
 
         this.id = uuidv1();
         this.host = null;
@@ -19,13 +22,16 @@ class Game {
 
         this.currProblem = {};
     }
-    add(data, socket) {
+
+    //We need access to mongooseObj to update user ratings later.
+    add(data, socket, mongooseObj) {
         if (this.host === null) {
             this.host = data;
         }
         if (this.users.indexOf(data) == -1) {
             this.users.push(data);
             this.dataToSocket.set(data, socket);
+            this.dataToMongoose.set(data, mongooseObj);
         }
         data.score = 0;
 
@@ -40,6 +46,8 @@ class Game {
         this.dataToSocket.delete(data);
         this.users.splice(this.users.indexOf(data), 1);
 
+        this.usersLeftIngame.push(data);
+
         this.sendScores();
         //If the room would be empty, we'll delete it
         if (this.users.length == 0) return true;
@@ -49,7 +57,7 @@ class Game {
         return false;
     }
 
-    start() {
+    start(callback) {
         if (this.started) return;
 
         this.started = true;
@@ -116,11 +124,34 @@ class Game {
 
             _self.dataToSocket.forEach((socket) => socket.emit("timer", {
                 type: "Round Over",
-                time: 0
+                time: 1
             }));
+            _self.updateElo();
+
+            callback();
         });
 
 
+    }
+    updateElo() {
+        const allUsers = this.users.concat(this.usersLeftIngame);
+        const newRatings = [];
+        for (let i = 0; i < allUsers.length; i++) {
+            let ratingChange = 0;
+            for (let z = 0; z < allUsers.length; z++) {
+                if (i == z) continue;
+                ratingChange += elo.ratingChange(allUsers[i].rating, allUsers[z].rating, allUsers[i].score, allUsers[z].score);
+            }
+            newRatings.push(allUsers[i].rating + ratingChange);
+        }
+        const _self = this;
+        allUsers.forEach((data, i) => {
+            data.rating = newRatings[i];
+            _self.dataToMongoose.get(data).rating = newRatings[i];
+            _self.dataToMongoose.get(data).save(function (err) {
+                if (err) console.error(err);
+            });
+        });
     }
     //Safely progress to the next part of the game.
     safeProgress(expected) {
@@ -157,7 +188,8 @@ class GameManager {
         this.games = new Map();
         this.io = io;
     }
-    addSocket(data, socket) {
+    //Passing updateAllUsers around seems like spaghetti code
+    addSocket(data, socket, updateAllUsers) {
         //Locally scoped because it won't need to be accessed anywhere else
         const userData = {
             username: data.username,
@@ -191,14 +223,14 @@ class GameManager {
                 }
                 currGame = games.get(id);
 
-                games.get(id).add(userData, socket);
+                games.get(id).add(userData, socket, data);
                 socket.emit("join game");
             }
             updateData();
         }
         const startGame = function () {
             if (currGame) {
-                currGame.start();
+                currGame.start(() => updateAllUsers());
             }
         }
         const answerProblem = function (answer) {
@@ -220,7 +252,6 @@ class GameManager {
         });
         socket.on("answer", answerProblem);
         socket.on("start game", startGame);
-
     }
     //Serializing the entire class is probably less error prone for now. This could 
     //pose problems later however.

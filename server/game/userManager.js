@@ -45,16 +45,12 @@ class UserManager {
                 this.updateAllUsers();
             });
             chatUtils.addUser(data, socket);
-            this.gameManager.addSocket(data, socket);
+            this.gameManager.addSocket(data, socket, () => this.updateAllUsers());
             this.updateAllUsers();
             return true;
         }
         return false;
     }
-    updateAllUsers() {
-        this.io.emit("online users", chatUtils.onlineUsers);
-    }
-
 
     createData(username, callback) {
         userData.findOne({
@@ -75,6 +71,9 @@ class UserManager {
 
         });
 
+    }
+    updateAllUsers() {
+        this.io.emit("online users", chatUtils.onlineUsers);
     }
 
 }
