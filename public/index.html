@@ -8,12 +8,19 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="resources/css/chat.css">
     <link rel="stylesheet" href="resources/css/game.css">
+    <link rel="stylesheet" href="resources/css/main.css">
 </head>
 
 <body>
     <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand">FTW</a>
-        <button id="create-game-button" class="btn btn-info" style="float: left;">Create Game</button>
+        <ul class="navbar-nav">
+            <button id="create-game-button" class="btn btn-info navbar-btn">Create Game</button>
+            <div>
+                <button id="start-game-button" class="btn btn-info" style="display: none;">Start Game</button>
+                <button id="leave-game-button" class="btn btn-info" style="display: none;">Leave Game</button>
+            </div>
+        </ul>
     </nav>
     <div id="create-game-model" class="modal fade">
         <div class="modal-dialog">
@@ -25,11 +32,11 @@
                 <div style="padding: 15px;">
                     <div class="modal-row">
                         <span>Time Per Problem</span>
-                        <input id="create-time" type="number" class="create-game-input" placeholder="45" min="5" max="60">
+                        <input id="create-time" name="create-time" type="number" class="create-game-input" value="45" min="5" max="60">
                     </div>
                     <div class="modal-row">
                         <span>Number of Problems</span>
-                        <input id="create-problem-count" type="number" class="create-game-input" placeholder="10" min="4" max="20">
+                        <input id="create-problem-count" name="create-problem-count" type="number" class="create-game-input" value="10" min="4" max="20">
                     </div>
                     <div>
                         <button id="create-game" class="btn btn-info">Create Game</button>
@@ -54,14 +61,15 @@
 
             <!-- Game content -->
             <main class="col-10">
-                <section id="game-display">
-                    <div class="game-box">
-                        <div class="game-header">FTW</div>
-                        <div class="game-body">
-                            <strong>Players: 3</strong>
-                            <p>Problem 2</p>
+                <section class="game-content">
+                    <div id="problem-box" style="display: none;">
+                        <div class="problem-header">
+                            <p id="problem-header">Waiting to start...</p>
                         </div>
-                        <div class="game-footer">Bobert</div>
+                        <div id="timer"></div>
+
+                        <div id="problem-text"></div>
+                        <input type="text" class="form-control" id="answer-box" placeholder="Answer">
                     </div>
                 </section>
                 <section>
@@ -77,12 +85,12 @@
                             <div class="chat-message-body">
                                 <div class="chat-header">
                                     <span class="chat-message-sender">Roberto</span>
-                    <span class="chat-message-timestamp">12:00</span>
+                        <span class="chat-message-timestamp">12:00</span>
+                    </div>
+                    <div class="chat-message">
+                        <span>asdfasdfasdfasdfasdfasdfasdf</span>
+                    </div>
         </div>
-        <div class="chat-message">
-            <span>asdfasdfasdfasdfasdfasdfasdf</span>
-        </div>
-    </div>
     </div>
     -->
                     </div>
