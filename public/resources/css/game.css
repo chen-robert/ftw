@@ -46,11 +46,9 @@
     margin: 20px;
 }
 
-
-
-
-
-
+.game-started {
+    background-color: #6699ff;
+}
 
 .game-content {
     height: 400px;
@@ -60,7 +58,7 @@
     background-color: #4fb0b0;
     width: 100%;
     height: 40px;
-    
+
     vertical-align: middle;
     line-height: 40px;
     padding-left: 20px;
@@ -75,7 +73,7 @@
 #problem-text {
     padding: 10px;
     word-wrap: break-word;
-    
+
     width: 100%;
     height: calc(100% - 100px)
 }
@@ -94,7 +92,7 @@
     left: 0;
     top: 0;
     height: 40px;
-    
+
     margin-left: 20px;
     background-color: darkblue;
 }
@@ -102,6 +100,6 @@
 #timer {
     height: 3px;
     width: 0%;
-    
+
     background-color: darkblue;
 }

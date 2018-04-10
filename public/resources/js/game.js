@@ -38,6 +38,9 @@
             $("#create-game-button").show();
             $("#table-ratings").show();
 
+            $("#timer").stop(true, true);
+            $("#timer").css("width", "");
+
             $("#problem-header").text("Waiting to start...");
             $("#problem-text").text("");
         }
@@ -85,6 +88,7 @@
             //Regenerate all games. This sacrifices efficiency for simplicity.
             for (var uuid in dataObj) {
                 const data = dataObj[uuid];
+                console.log(data);
                 //This means data is still in process of being finalized.
                 if (data.host === null) {
                     continue;
@@ -108,9 +112,13 @@
                 box.appendChild(body);
                 box.appendChild(footer);
 
-                $(box).click(function () {
-                    window.FTW.socket.emit("join game", uuid);
-                });
+                if (data.started) {
+                    $(body).addClass("game-started");
+                } else {
+                    $(box).click(function () {
+                        window.FTW.socket.emit("join game", uuid);
+                    });
+                }
 
                 $("#game-display").append(box);
 

@@ -231,6 +231,7 @@ class GameManager {
         const startGame = function () {
             if (currGame) {
                 currGame.start(() => updateAllUsers());
+                updateData();
             }
         }
         const answerProblem = function (answer) {
@@ -252,6 +253,8 @@ class GameManager {
         });
         socket.on("answer", answerProblem);
         socket.on("start game", startGame);
+
+        updateData();
     }
     //Serializing the entire class is probably less error prone for now. This could 
     //pose problems later however.

@@ -79,7 +79,13 @@ app.post("/login", function (req, res) {
 });
 
 app.post("/create-account", function (req, res) {
-    if (req.body.username !== undefined && req.body.password !== undefined) {
+    if (req.body.username !== undefined && req.body.password !== undefined && typeof req.body.username === "string" && typeof req.body.password == "string") {
+        if (req.body.username.length < 3 || req.body.username.length > 16) {
+            return res.send("Please make sure username lengths are between 3 and 16 characters!")
+        }
+        if (!/^[a-zA-Z0-9_-]+$/.test(req.body.username)) {
+            return res.send("Please make sure the username only includes numbers, letters, dashes, and/or underscores.");
+        }
         auth.register(req.body.username, req.body.password, function (err, user) {
             if (err) return res.send("Username already exists.");
 
