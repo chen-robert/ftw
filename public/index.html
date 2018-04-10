@@ -2,90 +2,104 @@
 <html lang="en">
 
 <head>
-    <title>FTW</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="resources/css/chat.css">
-    <link rel="stylesheet" href="resources/css/game.css">
-    <link rel="stylesheet" href="resources/css/main.css">
+  <title>FTW</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="resources/css/chat.css">
+  <link rel="stylesheet" href="resources/css/game.css">
+  <link rel="stylesheet" href="resources/css/main.css">
 </head>
 
 <body>
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand">FTW-Clone</a>
-        <ul class="navbar-nav">
-            <button id="create-game-button" class="btn btn-info navbar-btn">Create Game</button>
-            <div>
-                <button id="start-game-button" class="btn btn-info" style="display: none;">Start Game</button>
-                <button id="leave-game-button" class="btn btn-info" style="display: none;">Leave Game</button>
-            </div>
-        </ul>
-    </nav>
-    <div id="create-game-model" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content text-center">
-                <ul class="nav nav-tabs nav-justified">
-                    <li class="nav-item"><a class="nav-link active" href="#" id="create-ftw">FTW</a></li>
-                    <li class="nav-item"><a class="nav-link disabled" href="#" id="create-countdown">Countdown</a></li>
-                </ul>
-                <div style="padding: 15px; ">
-                    <div class="modal-row">
-                        <span>Time Per Problem</span>
-                        <input id="create-time" name="create-time" type="number" class="create-game-input" value="45" min="5" max="60">
-                    </div>
-                    <div class="modal-row">
-                        <span>Number of Problems</span>
-                        <input id="create-problem-count" name="create-problem-count" type="number" class="create-game-input" value="10" min="4" max="20">
-                    </div>
-                    <div>
-                        <button id="create-game" class="btn btn-info">Create Game</button>
-                    </div>
-                </div>
-            </div>
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand">FTW-Clone</a>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#"><span class="navbar-toggler-icon"></span></a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="/logout">Logout</a>
         </div>
+      </li>
+
+
+    </ul>
+  </nav>
+  <div id="create-game-model" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content text-center">
+        <ul class="nav nav-tabs nav-justified">
+          <li class="nav-item"><a class="nav-link active" href="#" id="create-ftw">FTW</a></li>
+          <li class="nav-item"><a class="nav-link disabled" href="#" id="create-countdown">Countdown</a></li>
+        </ul>
+        <div style="padding: 15px; ">
+          <div class="modal-row">
+            <span>Time Per Problem</span>
+            <input id="create-time" name="create-time" type="number" class="create-game-input" value="45" min="5" max="60">
+          </div>
+          <div class="modal-row">
+            <span>Number of Problems</span>
+            <input id="create-problem-count" name="create-problem-count" type="number" class="create-game-input" value="10" min="4" max="20">
+          </div>
+          <div>
+            <button id="create-game" class="btn btn-info">Create Game</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-2">
-                <table id="table-ratings" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>User</th>
-                            <th class="text-right">Rating</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userData"></tbody>
-                </table>
-                <table id="table-scores" class="table table-striped" style="display: none;">
-                    <thead>
-                        <tr>
-                            <th>User</th>
-                            <th class="text-right">Score</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userScores"></tbody>
-                </table>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-2">
+        <table id="table-ratings" class="table table-striped">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th class="text-right">Rating</th>
+            </tr>
+          </thead>
+          <tbody id="userData"></tbody>
+        </table>
+        <table id="table-scores" class="table table-striped" style="display: none;">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th class="text-right">Score</th>
+            </tr>
+          </thead>
+          <tbody id="userScores"></tbody>
+        </table>
+      </div>
+
+      <!-- Game content -->
+      <main class="col-10">
+        <nav class="navbar navbar-expand navbar-light">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item"><button id="start-game-button" class="btn btn-info" style="display: none;">Start Game</button></li>
+          </ul>
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><button id="create-game-button" class="btn btn-info navbar-btn">Create Game</button></li>
+
+            <li><button id="leave-game-button" class="btn btn-info" style="display: none;">Leave Game</button>
+            </li>
+          </ul>
+        </nav>
+        <section class="game-content">
+          <div id="game-display"></div>
+          <div id="problem-box" style="display: none;">
+            <div class="problem-header">
+              <p id="problem-header">Waiting to start...</p>
             </div>
+            <div id="timer"></div>
 
-            <!-- Game content -->
-            <main class="col-10">
-                <section class="game-content">
-                    <div id="game-display"></div>
-                    <div id="problem-box" style="display: none;">
-                        <div class="problem-header">
-                            <p id="problem-header">Waiting to start...</p>
-                        </div>
-                        <div id="timer"></div>
-
-                        <div id="problem-text"></div>
-                        <input type="text" class="form-control" id="answer-box" placeholder="Answer">
-                    </div>
-                </section>
-                <section>
-                    <div id="chat-display">
-                        <!-- Sample Chat Message -->
-                        <!--
+            <div id="problem-text"></div>
+            <input type="text" class="form-control" id="answer-box" placeholder="Answer">
+          </div>
+        </section>
+        <section>
+          <div id="chat-display">
+            <!-- Sample Chat Message -->
+            <!--
                         <div class="chat-item">
                             <div class="chat-message-gutter">
                                 <div class="image-container">
@@ -103,25 +117,25 @@
         </div>
     </div>
     -->
-                    </div>
-                    <input type="text" class="form-control" id="chat-box" placeholder="Message">
-                </section>
+          </div>
+          <input type="text" class="form-control" id="chat-box" placeholder="Message">
+        </section>
 
-            </main>
-        </div>
-
+      </main>
     </div>
-    <!-- jQuery, Popper.js, and Bootstrap -->
-    <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <!-- Node JS -->
-    <script src="/socket.io/socket.io.js"></script>
-    <!-- Custom JS -->
-    <script src="resources/js/base.js"></script>
-    <script src="resources/js/chat.js"></script>
-    <script src="resources/js/game.js"></script>
-    <script src="resources/js/userDisplay.js"></script>
+
+  </div>
+  <!-- jQuery, Popper.js, and Bootstrap -->
+  <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <!-- Node JS -->
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- Custom JS -->
+  <script src="resources/js/base.js"></script>
+  <script src="resources/js/chat.js"></script>
+  <script src="resources/js/game.js"></script>
+  <script src="resources/js/userDisplay.js"></script>
 </body>
 
 </html>
