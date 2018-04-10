@@ -7,8 +7,9 @@ const problemUtils = require("./problemUtils.js");
 class Game {
 
     constructor(timePerProblem, problems) {
+        //Active users in game
         this.users = [];
-        this.usersLeftIngame = [];
+        this.usersThatLeft = [];
         //This won't be transfered because map's can't be serialized.
         this.dataToSocket = new Map();
         this.dataToMongoose = new Map();
@@ -21,6 +22,7 @@ class Game {
         this.problems = +problems;
 
         this.currProblem = {};
+        this.answerValue = NaN;
     }
 
     //We need access to mongooseObj to update user ratings later.
@@ -46,7 +48,7 @@ class Game {
         this.dataToSocket.delete(data);
         this.users.splice(this.users.indexOf(data), 1);
 
-        this.usersLeftIngame.push(data);
+        this.usersThatLeft.push(data);
 
         this.sendScores();
         //If the room would be empty, we'll delete it
@@ -59,6 +61,7 @@ class Game {
 
     start(callback) {
         if (this.started) return;
+        const problemWorth = this.users.length;
 
         this.started = true;
 
@@ -79,6 +82,7 @@ class Game {
 
         for (let i = 0; i < this.problems; i++) {
             this.functionArr.push(function () {
+                _self.answerValue = problemWorth;
                 _self.users.forEach((user) => user.canAnswer = true);
 
                 const problem = problemUtils.getProblem();
@@ -134,7 +138,7 @@ class Game {
 
     }
     updateElo() {
-        const allUsers = this.users.concat(this.usersLeftIngame);
+        const allUsers = this.users.concat(this.usersThatLeft);
         const newRatings = [];
         for (let i = 0; i < allUsers.length; i++) {
             let ratingChange = 0;
@@ -172,7 +176,8 @@ class Game {
             user.canAnswer = false;
 
             if (answer === this.currProblem.answer) {
-                user.score++;
+                user.score += this.answerValue;
+                this.answerValue--;
             }
             if (this.users.filter((user) => user.canAnswer).length == 0) {
                 this.safeProgress(this.arrIndex + 1);
