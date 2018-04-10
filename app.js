@@ -22,7 +22,8 @@ const UserManager = require("./server/game/userManager.js");
 const userManager = new UserManager(io);
 
 app.use((req, res, next) => {
-    if (!req.secure && req.header("x-forwarded-proto") !== "https") {
+    //Don't redirect in development
+    if (process.env.PRODUCTION === "true" && req.header("x-forwarded-proto") !== "https") {
         res.redirect("https://" + req.header("host") + req.url);
     } else {
         next();
