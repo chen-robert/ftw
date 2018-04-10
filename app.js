@@ -56,9 +56,9 @@ app.get("/emoji/*", function (req, res) {
 });
 
 app.post("/login", function (req, res) {
-    if (req.body.username && req.body.password) {
+    if (req.body.username !== undefined && req.body.password !== undefined) {
         auth.login(req.body.username, req.body.password, function (err, user) {
-            if (err) return res.send("TODO: Error page");
+            if (err) return res.send("Username + password not found");
 
             const sessId = crypto.randomBytes(64).toString("hex");
             res.cookie(SESS_ID_COOKIE, sessId, {
@@ -66,26 +66,34 @@ app.post("/login", function (req, res) {
                 httpOnly: true
             });
 
-            userManager.addSession(sessId, user.username, () => res.redirect("/index.html"));
+            userManager.addSession(sessId, user.username, () => res.send({
+                redirect: "/index.html"
+            }));
         });
     } else {
         //Empty field handling should 've be done client-side
-        res.redirect("/login.html");
+        res.send({
+            redirect: "/login.html"
+        });
     }
 });
 
 app.post("/create-account", function (req, res) {
-    if (req.body.username && req.body.password) {
+    if (req.body.username !== undefined && req.body.password !== undefined) {
         auth.register(req.body.username, req.body.password, function (err, user) {
-            if (err) return "TODO: Error page";
+            if (err) return res.send("Username already exists.");
 
             userManager.createData(user.username, function () {
-                res.redirect("/login.html");
+                res.send({
+                    redirect: "/login.html"
+                });
             });
         });
     } else {
         //Empty field handling should've be done client-side
-        res.redirect("/login.html");
+        res.send({
+            redirect: "/login.html"
+        });
     }
 });
 
