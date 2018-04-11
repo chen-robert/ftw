@@ -2,6 +2,8 @@
 
 const emoji = require("emoji-parser");
 emoji.init().update();
+const Filter = require("bad-words");
+const filter = new Filter();
 
 class ChatManager {
     constructor() {
@@ -23,6 +25,7 @@ class ChatManager {
         const _self = this;
         socket.on("public message", function (message) {
             message = _self.clean(message);
+            message = filter.clean(message);
             message = emoji.parse(message, "/emoji");
             users.forEach((data) => data.socket.emit("message", {
                 type: "public",
