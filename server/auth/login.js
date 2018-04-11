@@ -1,7 +1,7 @@
 "use strict";
 
 const mongoose = require("mongoose");
-mongoose.connect(process.env.MONGO_URI);
+
 const bcrypt = require("bcrypt");
 const user = require("./user.js");
 

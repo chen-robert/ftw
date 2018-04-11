@@ -8,6 +8,9 @@ const SESS_ID_COOKIE = "sessId";
 const crypto = require("crypto");
 const cookie = require("cookie");
 
+const mongoose = require("mongoose");
+mongoose.connect(process.env.MONGO_URI);
+
 const express = require("express");
 const app = express();
 const http = require("http").Server(app);
@@ -20,6 +23,7 @@ const io = require("socket.io")(http);
 
 const UserManager = require("./server/game/userManager.js");
 const userManager = new UserManager(io);
+const reportManager = require("./server/reportManager.js");
 
 app.use((req, res, next) => {
     //Don't redirect in development
@@ -48,6 +52,7 @@ app.get("/index.html", function (req, res, next) {
 }, function (req, res) {
     res.sendFile(__dirname + "/public/index.html");
 });
+app.get("/report.html", (req, res) => res.sendFile(__dirname + "/public/report.html"));
 app.get("/login.html", (req, res) => res.sendFile(__dirname + "/public/login.html"));
 
 //For emojis. See chatUtils.js
@@ -99,6 +104,28 @@ app.post("/create-account", function (req, res) {
         //Empty field handling should've be done client-side
         res.send({
             redirect: "/login.html"
+        });
+    }
+});
+app.post("/report", function (req, res) {
+    if (req.body.username !== undefined && req.body.comment !== undefined && typeof req.body.username === "string" && typeof req.body.comment == "string") {
+        var ip = req.headers["x-forwarded-for"];
+        if (ip) {
+            ip = ip.split(",").pop();
+        } else {
+            ip = req.connection.remoteAddress
+        }
+        reportManager.addReport(req.body.username, req.body.comment, ip, (err) => {
+            if (err) {
+                return res.send({
+                    success: true,
+                    text: "Something went wrong when processing your report"
+                });
+            }
+            return res.send({
+                success: true,
+                text: "Thank you for your report"
+            });
         });
     }
 });
