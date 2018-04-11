@@ -78,9 +78,11 @@ $(document).ready(function () {
 
         $("#chat-box").keypress(function (e) {
             if (e.which == 13) {
-                if ($("#chat-box").val() === "") return;
-
-                window.FTW.socket.emit("public message", $("#chat-box").val());
+                let message = $("#chat-box").val();
+                message = message.trim();
+                if (message !== "") {
+                    window.FTW.socket.emit("public message", message);
+                }
                 $("#chat-box").val("");
             }
         });

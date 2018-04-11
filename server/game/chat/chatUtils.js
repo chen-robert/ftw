@@ -24,6 +24,7 @@ class ChatManager {
         });
         const _self = this;
         socket.on("public message", function (message) {
+            message = message.trim();
             if (typeof message !== "string" || message.length == 0) return;
 
             message = _self.clean(message);
