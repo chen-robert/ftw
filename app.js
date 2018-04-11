@@ -84,7 +84,7 @@ app.post("/login", function (req, res) {
 });
 
 app.post("/create-account", function (req, res) {
-    if (req.body.username !== undefined && req.body.password !== undefined && typeof req.body.username === "string" && typeof req.body.password == "string") {
+    if (typeof req.body.username === "string" && typeof req.body.password == "string") {
         if (req.body.username.length < 3 || req.body.username.length > 16) {
             return res.send("Please make sure username lengths are between 3 and 16 characters!")
         }
