@@ -4,14 +4,31 @@
         //This is the button that appears on the nav
         $("#create-game-button").click(function () {
             $("#create-game-model").modal("toggle");
+            window.FTW.game.currMode = "FTW";
         });
         //This is the button that appears in the modal box.
         $("#create-game").click(function () {
             window.FTW.socket.emit("create game", {
                 time: $("#create-time").val(),
-                problems: $("#create-problem-count").val()
+                problems: $("#create-problem-count").val(),
+                type: window.FTW.game.currMode
             });
             $("#create-game-model").modal("toggle");
+        });
+
+        $("#create-ftw").click(function () {
+            $(this).addClass("active");
+            $("#create-countdown").removeClass("active");
+
+            window.FTW.game.currMode = "FTW";
+        });
+
+
+        $("#create-countdown").click(function () {
+            $(this).addClass("active");
+            $("#create-ftw").removeClass("active");
+
+            window.FTW.game.currMode = "CD";
         });
 
         $("#leave-game-button").click(() => window.FTW.socket.emit("leave game"));
