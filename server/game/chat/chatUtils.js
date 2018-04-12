@@ -2,7 +2,6 @@
 
 const emoji = require("emoji-parser");
 emoji.init().update();
-const Filter = require("bad-words");
 const filter = new Filter();
 
 class ChatManager {

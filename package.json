@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/gamester543/ftw#readme",
   "dependencies": {
-    "bad-words": "^1.6.1",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",

@@ -1,5 +1,6 @@
 const uuidv1 = require('uuid/v1');
 const problemUtils = require("./problemUtils.js");
+const elo = require("./elo.js");
 
 module.exports = class Game {
 
@@ -129,6 +130,7 @@ module.exports = class Game {
                 type: "Round Over",
                 time: 1
             }));
+            _self.sendScores();
             _self.updateElo();
 
             callback();

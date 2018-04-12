@@ -1,6 +1,5 @@
 "use strict";
 
-const elo = require("./elo.js");
 const Game = require("./game.js");
 
 class GameManager {
