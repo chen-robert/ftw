@@ -89,6 +89,8 @@
 
             $("#problem-text").text(problem.text);
 
+            $("#start-game-button").hide();
+
             $("#answer-box").show();
         }
         game.setScores = function (scores) {

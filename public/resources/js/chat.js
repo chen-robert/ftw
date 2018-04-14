@@ -6,6 +6,7 @@ $(document).ready(function () {
         let day = date.getHours();
         let min = date.getMinutes();
 
+        if (min < 10) min = "0" + mi  n;
         return day + ":" + min;
     }
 
