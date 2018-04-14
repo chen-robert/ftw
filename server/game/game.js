@@ -84,7 +84,10 @@ module.exports = class Game {
             this.functionArr.push(function () {
                 _self.answerValue = problemWorth;
                 _self.users.forEach((user) => user.canAnswer = true);
+
+                //Reset CD scoreboard
                 _self.users.forEach((user) => user.answer = undefined);
+                _self.sendScores();
 
                 const problem = problemUtils.getProblem();
                 _self.currProblem = problem;
