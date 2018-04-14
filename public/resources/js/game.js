@@ -4,7 +4,8 @@
         //This is the button that appears on the nav
         $("#create-game-button").click(function () {
             $("#create-game-model").modal("toggle");
-            window.FTW.game.currMode = "FTW";
+
+            $("#create-ftw").trigger("click");
         });
         //This is the button that appears in the modal box.
         $("#create-game").click(function () {
@@ -20,6 +21,10 @@
             $(this).addClass("active");
             $("#create-countdown").removeClass("active");
 
+
+            $("#create-time").prop("disabled", false);
+            $("#create-problem-count").prop("disabled", false);
+
             window.FTW.game.currMode = "FTW";
         });
 
@@ -27,6 +32,9 @@
         $("#create-countdown").click(function () {
             $(this).addClass("active");
             $("#create-ftw").removeClass("active");
+
+            $("#create-time").prop("disabled", true);
+            $("#create-problem-count").prop("disabled", true);
 
             window.FTW.game.currMode = "CD";
         });

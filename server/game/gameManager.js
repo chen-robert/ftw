@@ -70,6 +70,11 @@ class GameManager {
 
             if (time > 0 && problems > 0) {
                 if (data.type === "FTW" || data.type === "CD") {
+                    //CD defaults
+                    if (data.type === "CD") {
+                        data.problems = 100;
+                        data.time = 45;
+                    }
                     const game = new Game(data.time, data.problems, data.type);
                     games.set(game.id, game);
 

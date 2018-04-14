@@ -199,6 +199,12 @@ module.exports = class Game {
 
             if (shouldProgress) {
                 this.safeProgress(this.arrIndex + 1);
+                if (this.type == "CD" && user.score === 4) {
+                    //Skip to the end
+                    for (let i = this.arrIndex + 1; i < this.functionArr.length; i++) {
+                        this.safeProgress(i);
+                    }
+                }
             }
             if (this.type == "CD") {
                 //Update incorrect answers for CD
