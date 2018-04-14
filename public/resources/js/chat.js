@@ -56,13 +56,19 @@ $(document).ready(function () {
             $(gutter).addClass("chat-message-gutter");
             if (isNewSender) {
                 let pfp = document.createElement("canvas");
-                pfp.src = "resources/images/default.png";
+                $(pfp).addClass("pfp");
                 $(pfp).attr("data-jdenticon-value", user);
                 $(pfp).attr("width", "50");
                 $(pfp).attr("height", "50");
-                gutter.appendChild(pfp);
-
                 jdenticon.update(pfp);
+
+                let container = document.createElement("div");
+                $(container).addClass("image-container");
+
+
+                container.appendChild(pfp);
+                gutter.appendChild(container);
+
             }
             message.appendChild(gutter);
 
