@@ -100,6 +100,7 @@
             $("#start-game-button").hide();
 
             $("#answer-box").show();
+            $("#answer-box").val("");
             $("#answer-box").focus();
         }
         game.setScores = function (scores) {

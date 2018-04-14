@@ -2,6 +2,8 @@ const uuidv1 = require('uuid/v1');
 const problemUtils = require("./problemUtils.js");
 const elo = require("./elo.js");
 
+const chatUtils = require("./chat/chatUtils.js");
+
 module.exports = class Game {
 
     constructor(timePerProblem, problems, type) {
@@ -177,6 +179,7 @@ module.exports = class Game {
     }
 
     answer(user, answer) {
+        let cleanAnswer = chatUtils.clean(answer);
         if (user.canAnswer) {
             user.canAnswer = false;
 
@@ -188,7 +191,7 @@ module.exports = class Game {
                 if (this.type === "CD") {
                     shouldProgress = true;
                     user.answer = {
-                        text: answer,
+                        text: cleanAnswer,
                         correct: true
                     };
                 }
@@ -196,7 +199,7 @@ module.exports = class Game {
             } else if (this.type === "CD") {
                 //If we're in CD, pass on incorrect answers
                 user.answer = {
-                    text: answer,
+                    text: cleanAnswer,
                     correct: false
                 };
             }
