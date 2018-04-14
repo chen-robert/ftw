@@ -105,6 +105,7 @@ module.exports = class Game {
             if (i != this.problems - 1) {
                 this.functionArr.push(function () {
                     _self.users.forEach((user) => user.canAnswer = false);
+                    _self.users.forEach((user) => user.answer = undefined);
                     //Reason why these are reversed from above is because game hides / shows the answer
                     //box based on order of these emits.
                     _self.dataToSocket.forEach((socket) => socket.emit("problem", {
@@ -121,6 +122,8 @@ module.exports = class Game {
             }
         }
         this.functionArr.push(function () {
+            _self.users.forEach((user) => user.answer = undefined);
+
             _self.dataToSocket.forEach((socket) => socket.emit("problem", {
                 text: "It's over! Finally!",
                 answer: "0x536865727279"
@@ -181,14 +184,25 @@ module.exports = class Game {
                 user.score += this.answerValue;
                 this.answerValue--;
 
-                if (this.type === "CD") shouldProgress = true;
+                if (this.type === "CD") {
+                    shouldProgress = true;
+                }
+
+            } else if (this.type === "CD") {
+                //If we're in CD, pass on incorrect answers
+                user.answer = answer;
             }
+
             if (this.users.filter((user) => user.canAnswer).length == 0) {
                 shouldProgress = true;
             }
 
             if (shouldProgress) {
                 this.safeProgress(this.arrIndex + 1);
+            }
+            if (this.type == "CD") {
+                //Update incorrect answers for CD
+                this.sendScores();
             }
         }
     }

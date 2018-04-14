@@ -70,7 +70,7 @@ class GameManager {
 
             if (time > 0 && problems > 0) {
                 if (data.type === "FTW" || data.type === "CD") {
-                    const game = new Game(data.time, data.problems);
+                    const game = new Game(data.time, data.problems, data.type);
                     games.set(game.id, game);
 
                     joinGame(game.id);

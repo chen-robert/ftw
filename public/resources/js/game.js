@@ -92,12 +92,20 @@
             $("#start-game-button").hide();
 
             $("#answer-box").show();
+            $("#answer-box").focus();
         }
         game.setScores = function (scores) {
             scores.sort((a, b) => b.score - a.score);
             $("#userScores").empty();
             for (var i = 0; i < scores.length; i++) {
-                $("#userScores").append("<tr><td>" + scores[i].username + "</td><td class='text-right'>" + scores[i].score + "</td></tr");
+                let disp = scores[i].username;
+                let dispColor = "";
+                if (scores[i].answer) {
+                    disp += ": " + scores[i].answer;
+                    dispColor = "table-danger";
+                }
+                $("#userScores").append("<tr class='" + dispColor + "'><td>" + disp + "</td><td class='text-right'>" + scores[i].score + "</td></tr");
+
             }
         }
 

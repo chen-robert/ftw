@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 
 const userData = require("./userData.js");
 
-const chatUtils = require("./chat/chatUtils.js");
+const chatManager = require("./chat/chatManager.js");
 const gameManager = require("./gameManager.js");
 
 class UserManager {
@@ -41,10 +41,10 @@ class UserManager {
 
             const data = this.users.get(id);
             socket.on("disconnect", () => {
-                chatUtils.users.delete(data.username);
+                chatManager.users.delete(data.username);
                 this.updateAllUsers();
             });
-            chatUtils.addUser(data, socket);
+            chatManager.addUser(data, socket);
             this.gameManager.addSocket(data, socket, () => this.updateAllUsers());
             this.updateAllUsers();
             return true;
@@ -73,7 +73,7 @@ class UserManager {
 
     }
     updateAllUsers() {
-        this.io.emit("online users", chatUtils.onlineUsers);
+        this.io.emit("online users", chatManager.onlineUsers);
     }
 
 }
