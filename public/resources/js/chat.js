@@ -6,7 +6,7 @@ $(document).ready(function () {
         let day = date.getHours();
         let min = date.getMinutes();
 
-        if (min < 10) min = "0" + mi  n;
+        if (min < 10) min = "0" + min;
         return day + ":" + min;
     }
 
@@ -55,11 +55,14 @@ $(document).ready(function () {
             let gutter = document.createElement("span");
             $(gutter).addClass("chat-message-gutter");
             if (isNewSender) {
-                let pfp = document.createElement("img");
+                let pfp = document.createElement("canvas");
                 pfp.src = "resources/images/default.png";
-                $(pfp).addClass("pfp");
-                $(pfp).addClass("rounded-circle");
+                $(pfp).attr("data-jdenticon-value", user);
+                $(pfp).attr("width", "50");
+                $(pfp).attr("height", "50");
                 gutter.appendChild(pfp);
+
+                jdenticon.update(pfp);
             }
             message.appendChild(gutter);
 
