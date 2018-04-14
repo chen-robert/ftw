@@ -109,8 +109,8 @@
                 let disp = scores[i].username;
                 let dispColor = "";
                 if (scores[i].answer) {
-                    disp += ": " + scores[i].answer;
-                    dispColor = "table-danger";
+                    disp += ": " + scores[i].answer.text;
+                    dispColor = score[i].answer.correct ? "table-success" : "table-danger";
                 }
                 $("#userScores").append("<tr class='" + dispColor + "'><td>" + disp + "</td><td class='text-right'>" + scores[i].score + "</td></tr");
 
