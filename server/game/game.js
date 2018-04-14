@@ -201,9 +201,8 @@ module.exports = class Game {
                 this.safeProgress(this.arrIndex + 1);
                 if (this.type == "CD" && user.score === 4) {
                     //Skip to the end
-                    for (let i = this.arrIndex + 1; i < this.functionArr.length; i++) {
-                        this.safeProgress(i);
-                    }
+                    this.arrIndex = NaN;
+                    this.functionArr[this.functionArr.length - 1]();
                 }
             }
             if (this.type == "CD") {
