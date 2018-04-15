@@ -144,7 +144,9 @@
                 $(body).addClass("game-disp-body");
                 $(body).append("<p>Players: " + data.users.length + "</p>");
                 $(body).append("<p>" + data.timePerProblem + " sec</p>");
-                $(body).append("<p>Problems: " + data.problems + "</p>");
+                if (data.type !== "CD") {
+                    $(body).append("<p>Problems: " + data.problems + "</p>");
+                }
 
                 const footer = document.createElement("div");
                 $(footer).addClass("game-disp-header");
