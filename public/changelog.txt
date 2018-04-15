@@ -1,0 +1,7 @@
+April 14th
+Implemented seperate gamemode, CD.
+Increased problem diversity.
+Added a changelog.
+
+April 13th
+Built game. 

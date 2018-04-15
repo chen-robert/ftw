@@ -38,6 +38,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+
 app.use("/resources", express.static("public/resources"));
 
 http.listen(PORT, () => console.log("Listening on port " + PORT));
@@ -59,6 +60,8 @@ app.get("/login.html", (req, res) => res.sendFile(__dirname + "/public/login.htm
 app.get("/emoji/*", function (req, res) {
     res.sendFile(__dirname + "/node_modules/emoji-parser" + req.url);
 });
+
+app.get("/changelog.txt", (req, res) => res.sendFile(__dirname + "/public/changelog.txt"));
 
 app.post("/login", function (req, res) {
     if (req.body.username !== undefined && req.body.password !== undefined) {
