@@ -20,8 +20,8 @@ utils.getProblem = function () {
         };
     }
     if (g >= 6 && g < 8){
-        let a = Math.floor(100 * Math.random());
-        let b = Math.floor(50 * Math.random());
+        let a = Math.floor(50 * Math.random());
+        let b = Math.floor(30 * Math.random());
         return {
             text: "wot is " + a + " * " + b + "?",
             answer: "" + (a * b)
