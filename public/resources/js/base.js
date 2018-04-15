@@ -18,10 +18,6 @@ This JS file should be loaded first.
         });
         window.FTW.socket.on("redirect", (url) => window.location.replace(url));
         window.FTW.socket.on("chat error", (err) => {
-            $(".loading-display").stop(true, true);
-            $(".loading-display").css("width", "0%");
-            $("login-button").removeClass("disabled");
-
             $("#alert-text").text(err);
             $("#alert").stop(true, true);
             $("#alert").show();

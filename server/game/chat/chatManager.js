@@ -3,7 +3,7 @@ const chatUtils = require("./chatUtils.js");
 const emoji = require("emoji-parser");
 emoji.init().update();
 
-const swearList = require("badwords-list");
+const swearList = require("swearjar");
 
 class ChatManager {
     constructor() {
@@ -26,11 +26,9 @@ class ChatManager {
             message = message.trim();
             if (typeof message !== "string" || message.length == 0) return;
 
-            // No swearing!
-            if (swearList.regex.test(message)) {
-                socket.emit("chat error", "Failed to send message due to inappropriate language.");
-            }
 
+
+            message = swearList.censor(message);
             message = chatUtils.clean(message);
             message = chatUtils.parseLinks(message);
             message = emoji.parse(message, "/emoji");
@@ -39,6 +37,8 @@ class ChatManager {
                 from: name,
                 message: message
             }));
+
+
         });
         socket.on("admin command", function (data) {
             if (data.key === process.env.ADMIN_PASSWORD && typeof data.command === "string") {

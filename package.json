@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/gamester543/ftw#readme",
   "dependencies": {
-    "badwords-list": "^1.0.0",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
@@ -31,6 +30,7 @@
     "mongodb": "^3.0.5",
     "mongoose": "^5.0.12",
     "socket.io": "^2.1.0",
+    "swearjar": "^0.2.0",
     "uuid": "^3.2.1"
   }
 }
