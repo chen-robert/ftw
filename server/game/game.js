@@ -115,7 +115,7 @@ module.exports = class Game {
                     //Reason why these are reversed from above is because game hides / shows the answer
                     //box based on order of these emits.
                     _self.dataToSocket.forEach((socket) => socket.emit("problem", {
-                        text: "Something here? I guess.",
+                        text: "Loading Next Problem...",
                         answer: "0x536865727279"
                     }));
                     _self.dataToSocket.forEach((socket) => socket.emit("timer", {
