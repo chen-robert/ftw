@@ -124,7 +124,6 @@
             //Regenerate all games. This sacrifices efficiency for simplicity.
             for (var uuid in dataObj) {
                 const data = dataObj[uuid];
-                console.log(data);
                 //This means data is still in process of being finalized.
                 if (data.host === null) {
                     continue;
@@ -143,7 +142,9 @@
 
                 const body = document.createElement("div");
                 $(body).addClass("game-disp-body");
-                $(body).append("<strong>Players: " + data.users.length + "</strong>");
+                $(body).append("<p>Players: " + data.users.length + "</p>");
+                $(body).append("<p>" + data.timePerProblem + " sec</p>");
+                $(body).append("<p>Problems: " + data.problems + "</p>");
 
                 const footer = document.createElement("div");
                 $(footer).addClass("game-disp-header");
