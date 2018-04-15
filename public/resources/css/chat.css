@@ -46,11 +46,9 @@
 }
 
 #chat-display {
-    height: 350px;
+    height: 40%;
     overflow-x: hidden;
     overflow-y: scroll;
-
-    margin-bottom: 10px;
 }
 
 .image-container {
