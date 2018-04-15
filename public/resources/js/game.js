@@ -135,14 +135,20 @@
 
                 const header = document.createElement("div");
                 $(header).addClass("game-disp-header");
-                $(header).text(data.host.username);
+                if (data.started) {
+                    $(header).text("Game Started");
+                } else {
+                    $(header).text(data.type);
+                }
 
                 const body = document.createElement("div");
                 $(body).addClass("game-disp-body");
                 $(body).append("<strong>Players: " + data.users.length + "</strong>");
 
                 const footer = document.createElement("div");
-                $(footer).addClass("game-disp-footer");
+                $(footer).addClass("game-disp-header");
+                $(footer).text(data.host.username);
+
 
                 box.appendChild(header);
                 box.appendChild(body);
