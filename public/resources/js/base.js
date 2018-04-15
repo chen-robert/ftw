@@ -17,6 +17,19 @@ This JS file should be loaded first.
             }, 1000);
         });
         window.FTW.socket.on("redirect", (url) => window.location.replace(url));
+        window.FTW.socket.on("error", (err) => {
+            $(".loading-display").stop(true, true);
+            $(".loading-display").css("width", "0%");
+            $("login-button").removeClass("disabled");
+
+            $("#alert-text").text(err);
+            $("#alert").stop(true, true);
+            $("#alert").show();
+            $("#alert").css("top", "-100px");
+            $("#alert").animate({
+                top: "50px"
+            }, 1000).delay(2000).fadeOut(1000);
+        });
 
         window.FTW.socket.on("online users", (data) => window.FTW.userUtils.setUsers(data));
 
