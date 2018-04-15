@@ -146,6 +146,8 @@
                 $(body).append("<p>" + data.timePerProblem + " sec</p>");
                 if (data.type !== "CD") {
                     $(body).append("<p>Problems: " + data.problems + "</p>");
+                } else {
+                    $(body).append("<p></p>");
                 }
 
                 const footer = document.createElement("div");

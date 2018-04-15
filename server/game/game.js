@@ -128,6 +128,7 @@ module.exports = class Game {
             }
         }
         this.functionArr.push(function () {
+            _self.users.forEach((user) => user.canAnswer = false);
             _self.dataToSocket.forEach((socket) => socket.emit("problem", {
                 text: "It's over! Finally!",
                 answer: "0x536865727279"
@@ -170,7 +171,10 @@ module.exports = class Game {
         if (this.arrIndex + 1 !== expected) return;
         this.arrIndex++;
         const nextFunc = this.functionArr[this.arrIndex];
-        nextFunc();
+
+        if (typeof nextFunc === "function") {
+            nextFunc();
+        }
     }
 
     //Send scores to everybody
