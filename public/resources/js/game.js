@@ -147,7 +147,7 @@
                 if (data.type !== "CD") {
                     $(body).append("<p>Problems: " + data.problems + "</p>");
                 } else {
-                    $(body).append("<p></p>");
+                    $(body).append("<p>CD Scoring</p>");
                 }
 
                 const footer = document.createElement("div");
