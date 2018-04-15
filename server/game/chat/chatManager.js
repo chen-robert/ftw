@@ -25,7 +25,7 @@ class ChatManager {
         socket.on("public message", function (message) {
             message = message.trim();
             if (typeof message !== "string" || message.length == 0) return;
-
+            if (message.length > 120) return;
 
 
             message = swearList.censor(message);
@@ -59,8 +59,10 @@ class ChatManager {
         return pool;
     }
     disconnect(name) {
-        this.users.get(name).socket.emit("redirect", "/logout");
-        this.users.get(name).socket.disconnect();
+        if (this.users.has(name)) {
+            this.users.get(name).socket.emit("redirect", "/logout");
+            this.users.get(name).socket.disconnect();
+        }
     }
 }
 
