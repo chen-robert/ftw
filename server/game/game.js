@@ -37,6 +37,7 @@ module.exports = class Game {
             this.dataToMongoose.set(data, mongooseObj);
         }
         data.score = 0;
+        data.answer = undefined;
 
         this.sendScores();
     }
