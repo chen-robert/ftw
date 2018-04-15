@@ -1,7 +1,7 @@
 const utils = {};
 
 utils.getProblem = function () {
-    let g = Math.floor(10 * Math.random());
+    let g = Math.floor(12 * Math.random());
     
     if (g >= 0 && g < 3){
         let a = Math.floor(100 * Math.random());
@@ -36,6 +36,22 @@ utils.getProblem = function () {
         };
     }
     
+    if (g === 10){
+        let a = Math.floor(480 * Math.random()) + 20;
+        let b = Math.floor(5 * Math.random()) + 2;
+        return {
+            text: "What is the largest integer x such that " + b + " to the x is less than " + a + "?",
+            answer: "" + Math.floor(Math.log(a) / Math.log(b))
+        };
+    }
+    
+    if (g === 11){
+        let a = Math.floor(45 * Math.random()) + 5;
+        return {
+            text: "What is the sum of the first " + a + " integers?",
+            answer: "" + a * (a + 1) / 2
+        };
+    }
     //this part should never actually run?
     let a = Math.floor(100 * Math.random());
     return {
