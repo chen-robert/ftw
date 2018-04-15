@@ -56,7 +56,7 @@ utils.getProblem = function () {
         let c = Math.floor(100 * Math.random()) + 1;
         return {
             text: "Solve the equation: " + b + "X + " + c + " = " + (a * b + c),
-            answer: a
+            answer: "" + a
         };
     }
     if (g >= 16 && g < 18) {
@@ -65,7 +65,7 @@ utils.getProblem = function () {
         let c = Math.floor(25 * Math.random()) + 5;
         return {
             text: "If Bobert the builder can build " + a + " houses in " + b + "days, how many completed houses can Bobert build in " + c + " days?",
-            answer: Math.floor(a * c / b)
+            answer: "" + Math.floor(a * c / b)
         };
     }
     if (g >= 18 && g < 20) {
@@ -79,8 +79,8 @@ utils.getProblem = function () {
     if (g >= 20 && g < 22) {
         let a = Math.floor(200 * Math.random()) + 1;
         return {
-            text: "Find the "+ a + " squared",
-            answer: a*a
+            text: "Find " + a + " squared",
+            answer: "" + a * a
         };
     }
     //this part should never actually run?
