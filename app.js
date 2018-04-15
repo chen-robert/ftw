@@ -68,14 +68,6 @@ app.post("/login", function (req, res) {
         auth.login(req.body.username, req.body.password, function (err, user) {
             if (err) return res.send("Username + password not found");
 
-            var ip = req.headers["x-forwarded-for"];
-            if (ip) {
-                ip = ip.split(",").pop();
-            } else {
-                ip = req.connection.remoteAddress
-            }
-            console.log(req.body.username + " logging on from " + ip);
-
             const sessId = crypto.randomBytes(64).toString("hex");
             res.cookie(SESS_ID_COOKIE, sessId, {
                 maxAge: 999999,
