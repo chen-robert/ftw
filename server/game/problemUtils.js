@@ -1,5 +1,11 @@
 const utils = {};
 
+/*
+READ ME BEFORE YOU EDIT PROBLEMS
+
+Answer must be in the form of a String. This means "" + a, as opposed to just a. 
+
+*/
 utils.getProblem = function () {
     let g = Math.floor(22 * Math.random());
 
