@@ -68,7 +68,7 @@ class GameManager {
             const time = +data.time;
             const problems = +data.problems;
 
-            if (time > 0 && problems > 0) {
+            if (time > 0 && problems > 0 && time < 1000 && problems < 1000) {
                 if (data.type === "FTW" || data.type === "CD") {
                     //CD defaults
                     if (data.type === "CD") {
