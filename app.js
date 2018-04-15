@@ -25,6 +25,8 @@ const UserManager = require("./server/game/userManager.js");
 const userManager = new UserManager(io);
 const reportManager = require("./server/reportManager.js");
 
+const swearList = require("badwords-list");
+
 app.use((req, res, next) => {
     //Don't redirect in development
     if (process.env.NODE_ENV === "production" && req.header("x-forwarded-proto") !== "https") {
@@ -93,6 +95,9 @@ app.post("/create-account", function (req, res) {
         }
         if (!/^[a-zA-Z0-9_-]+$/.test(req.body.username)) {
             return res.send("Please make sure the username only includes numbers, letters, dashes, and/or underscores.");
+        }
+        if (swearList.regex.test(req.body.username)) {
+            return res.send("Username contains inappropriate language.");
         }
         auth.register(req.body.username, req.body.password, function (err, user) {
             if (err) return res.send("Username already exists.");
