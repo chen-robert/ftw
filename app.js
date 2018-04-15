@@ -27,7 +27,7 @@ const reportManager = require("./server/reportManager.js");
 
 app.use((req, res, next) => {
     //Don't redirect in development
-    if (process.env.PRODUCTION === "true" && req.header("x-forwarded-proto") !== "https") {
+    if (process.env.NODE_ENV === "production" && req.header("x-forwarded-proto") !== "https") {
         res.redirect("https://" + req.header("host") + req.url);
     } else {
         next();

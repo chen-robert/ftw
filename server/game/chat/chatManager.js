@@ -12,8 +12,7 @@ class ChatManager {
         const users = this.users;
 
         if (users.has(name)) {
-            users.get(name).socket.emit("redirect", "/logout");
-            users.get(name).socket.disconnect();
+            disconnect(name);
         }
 
         users.set(name, {
@@ -34,11 +33,27 @@ class ChatManager {
                 message: message
             }));
         });
+        socket.on("admin command", function (data) {
+            if (data.key === process.env.ADMIN_PASSWORD && typeof data.command === "string") {
+                const parts = data.command.split(" ");
+                if (parts.length == 2) {
+                    if (parts[0] === "kick") {
+                        _self.disconnect(parts[1]);
+                    }
+                }
+            } else {
+                console.error(name + " tried executing " + data.command + " with key " + data.key);
+            }
+        });
     }
     get onlineUsers() {
         const pool = [];
         this.users.forEach(data => pool.push(data.data));
         return pool;
+    }
+    disconnect(name) {
+        this.users.get(name).socket.emit("redirect", "/logout");
+        this.users.get(name).socket.disconnect();
     }
 }
 
