@@ -28,7 +28,7 @@ class ChatManager {
 
             // No swearing!
             if (swearList.regex.test(message)) {
-                socket.emit("error", "Failed to send message due to inappropriate language.");
+                socket.emit("chat error", "Failed to send message due to inappropriate language.");
             }
 
             message = chatUtils.clean(message);

@@ -17,7 +17,7 @@ This JS file should be loaded first.
             }, 1000);
         });
         window.FTW.socket.on("redirect", (url) => window.location.replace(url));
-        window.FTW.socket.on("error", (err) => {
+        window.FTW.socket.on("chat error", (err) => {
             $(".loading-display").stop(true, true);
             $(".loading-display").css("width", "0%");
             $("login-button").removeClass("disabled");
