@@ -91,7 +91,11 @@ $(document).ready(function () {
                 let message = $("#chat-box").val();
                 message = message.trim();
                 if (message !== "") {
-                    window.FTW.socket.emit("public message", message);
+                    if (message.charAt(0) === "/") {
+                        window.FTW.cmd.exec(message.substring(1));
+                    } else {
+                        window.FTW.socket.emit("public message", message);
+                    }
                 }
                 $("#chat-box").val("");
             }

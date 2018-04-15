@@ -24,8 +24,8 @@ class ChatManager {
         const _self = this;
         socket.on("public message", function (message) {
             message = message.trim();
-            if (typeof message !== "string" || message.length == 0) return;
-            if (message.length > 120) return;
+            if (typeof message !== "string") return;
+            if (message.length == 0 || message.length > 120) return;
 
 
             message = swearList.censor(message);
