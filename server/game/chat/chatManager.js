@@ -12,7 +12,7 @@ class ChatManager {
         const users = this.users;
 
         if (users.has(name)) {
-            disconnect(name);
+            this.disconnect(name);
         }
 
         users.set(name, {
