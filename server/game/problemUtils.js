@@ -1,13 +1,13 @@
 const utils = {};
 
 utils.getProblem = function () {
-    let g = Math.floor(20 * Math.random());
+    let g = Math.floor(22 * Math.random());
 
     if (g >= 0 && g < 3) {
         let a = Math.floor(200 * Math.random());
         let b = Math.floor(100 * Math.random());
         return {
-            text: "wot is " + a + " + " + b + "?",
+            text: "What is the value of " + a + " + " + b + "?",
             answer: "" + (a + b)
         };
     }
@@ -15,7 +15,7 @@ utils.getProblem = function () {
         let a = Math.floor(200 * Math.random());
         let b = Math.floor(150 * Math.random());
         return {
-            text: "wot is " + a + " - " + b + "?",
+            text: "What is the value of " + a + " - " + b + "?",
             answer: "" + (a - b)
         };
     }
@@ -23,7 +23,7 @@ utils.getProblem = function () {
         let a = Math.floor(30 * Math.random());
         let b = Math.floor(20 * Math.random());
         return {
-            text: "wot is " + a + " * " + b + "?",
+            text: "What is the value of " + a + " * " + b + "?",
             answer: "" + (a * b)
         };
     }
@@ -31,7 +31,7 @@ utils.getProblem = function () {
         let a = Math.floor(500 * Math.random());
         let b = Math.floor(11 * Math.random()) + 2;
         return {
-            text: "wot is " + a + " mod " + b + "?",
+            text: "What is the value of " + a + " mod " + b + "?",
             answer: "" + (a % b)
         };
     }
@@ -74,6 +74,13 @@ utils.getProblem = function () {
         return {
             text: "Alex and Bobert take turns taking between 1 and " + a + " sticks from a pile starting from " + b + ". If the last person to take a stick wins, and Alex goes first, who wins?",
             answer: (b % (a + 1) === 0) ? "Bobert" : "Alex"
+        };
+    }
+    if (g >= 20 && g < 22) {
+        let a = Math.floor(200 * Math.random()) + 1;
+        return {
+            text: "Find the "+ a + " squared",
+            answer: a*a
         };
     }
     //this part should never actually run?
