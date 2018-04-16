@@ -32,7 +32,18 @@ $(document).ready(function () {
                     } else {
                         this.send("Please specify somebody to ignore! /ignore [name] ")
                     }
-
+                    break;
+                case "w":
+                case "msg":
+                    if (parts.length >= 2) {
+                        const to = parts.splice(0, 1)[0];
+                        window.FTW.socket.emit("whisper", {
+                            to: to,
+                            message: parts.join(" ")
+                        });
+                    } else {
+                        this.send("Please use /" + cmd + " [name] [msg]");
+                    }
                     break;
                 default:
                     this.send("Unknown command. Do /help for help.");
@@ -41,7 +52,11 @@ $(document).ready(function () {
 
         }
         cmd.send = function (msg) {
-            window.FTW.chat.appendMessage("Ftw Bot", msg);
+            window.FTW.chat.appendMessage({
+                from: "Ftw Bot",
+                message: msg,
+                type: "system"
+            });
         }
 
         window.FTW.cmd = cmd;

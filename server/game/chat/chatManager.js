@@ -42,9 +42,7 @@ class ChatManager {
             let message = data.message;
             let to = data.to;
             message = _self.process(message);
-            console.log(to);
             if (typeof message === "string" && typeof to === "string") {
-                console.log("HI");
                 if (_self.users.has(to)) {
                     const msg = {
                         type: "private",

@@ -46,13 +46,20 @@ $(document).ready(function () {
             return header;
         }
 
-        chat.appendMessage = function (user, str) {
+        chat.appendMessage = function (msg) {
+            const user = msg.from;
+            const str = msg.message;
+            const type = msg.type;
             if (this.ignoreList.has(user)) return;
 
             let isNewSender = user !== chat.previousSender;
 
             let message = document.createElement("div");
             $(message).addClass("chat-item");
+
+            if (type === "private") {
+                $(message).addClass("chat-pm");
+            }
 
 
             let gutter = document.createElement("span");

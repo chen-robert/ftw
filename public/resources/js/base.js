@@ -11,7 +11,9 @@ This JS file should be loaded first.
 
         window.FTW.socket.on("message", (msg) => {
             const scrollDiff = $('#chat-display').prop("scrollHeight") - $('#chat-display').prop("scrollTop") - $('#chat-display').height();
-            window.FTW.chat.appendMessage(msg.from, msg.message);
+
+            window.FTW.chat.appendMessage(msg);
+
             $("#chat-display").stop(true, true);
             if (scrollDiff < 10) {
                 $("#chat-display").prop("scrollTop", $('#chat-display').prop("scrollHeight"));

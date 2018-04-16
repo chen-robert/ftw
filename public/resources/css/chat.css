@@ -91,3 +91,8 @@
 
     width: 25%;
 }
+
+.chat-pm {
+    margin-left: 25px;
+    background-color: #ffcccc;
+}
