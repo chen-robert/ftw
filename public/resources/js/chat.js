@@ -16,6 +16,7 @@ $(document).ready(function () {
 
     if (!window.FTW.chat) {
         const chat = {};
+        chat.ignoreList = new Set();
 
         chat.previousSender = "";
 
@@ -46,6 +47,8 @@ $(document).ready(function () {
         }
 
         chat.appendMessage = function (user, str) {
+            if (this.ignoreList.has(user)) return;
+
             let isNewSender = user !== chat.previousSender;
 
             let message = document.createElement("div");

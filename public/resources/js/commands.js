@@ -14,9 +14,25 @@ $(document).ready(function () {
                 case "help":
                     this.send("/help : Get help!");
                     this.send("/cc : Clear chat!");
+                    this.send("/ignore : Ignore / unignore somebody!");
                     break;
                 case "cc":
                     $("#chat-display").empty();
+                    break;
+                case "ignore":
+                    if (parts.length > 0) {
+                        const name = parts[0];
+                        if (window.FTW.chat.ignoreList.has(name)) {
+                            window.FTW.chat.ignoreList.delete(name);
+                            this.send(name + " is no longer ignored!");
+                        } else {
+                            window.FTW.chat.ignoreList.add(name);
+                            this.send(name + " is now ignored!");
+                        }
+                    } else {
+                        this.send("Please specify somebody to ignore! /ignore [name] ")
+                    }
+
                     break;
                 default:
                     this.send("Unknown command. Do /help for help.");
