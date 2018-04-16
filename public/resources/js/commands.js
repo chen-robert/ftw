@@ -15,6 +15,7 @@ $(document).ready(function () {
                     this.send("/help : Get help!");
                     this.send("/cc : Clear chat!");
                     this.send("/ignore : Ignore / unignore somebody!");
+                    this.send("/msg : Private messages!");
                     break;
                 case "cc":
                     $("#chat-display").empty();

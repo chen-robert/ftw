@@ -2,6 +2,7 @@ April 15th
 Added commands.
 You can now use /ignore to ignore spammers.
 Reworked how the game displays on smaller screens.
+Added private messages.
 
 April 14th
 Implemented seperate gamemode, CD.
