@@ -8,6 +8,7 @@ const swearList = require("swearjar");
 class ChatManager {
     constructor() {
         this.users = new Map();
+        this.muted = new Set();
     }
     addUser(data, socket) {
         const name = data.username;
@@ -23,21 +24,43 @@ class ChatManager {
         });
         const _self = this;
         socket.on("public message", function (message) {
-            message = message.trim();
-            if (typeof message !== "string") return;
-            if (message.length == 0 || message.length > 120) return;
+            if (_self.muted.has(name)) return;
 
+            message = _self.process(message);
+            if (typeof message === "string") {
+                users.forEach((data) => data.socket.emit("message", {
+                    type: "public",
+                    from: name,
+                    message: message
+                }));
+            }
+        });
 
-            message = swearList.censor(message);
-            message = chatUtils.clean(message);
-            message = chatUtils.parseLinks(message);
-            message = emoji.parse(message, "/emoji");
-            users.forEach((data) => data.socket.emit("message", {
-                type: "public",
-                from: name,
-                message: message
-            }));
+        socket.on("whisper", function (data) {
+            if (_self.muted.has(name)) return;
 
+            let message = data.message;
+            let to = data.to;
+            message = _self.process(message);
+            console.log(to);
+            if (typeof message === "string" && typeof to === "string") {
+                console.log("HI");
+                if (_self.users.has(to)) {
+                    const msg = {
+                        type: "private",
+                        from: name,
+                        message: message
+                    }
+                    _self.users.get(to).socket.emit("message", msg);
+                    socket.emit("message", msg);
+                } else {
+                    socket.emit("message", {
+                        type: "public",
+                        from: "Ftw Bot",
+                        message: "Username not found"
+                    });
+                }
+            }
 
         });
         socket.on("admin command", function (data) {
@@ -46,6 +69,20 @@ class ChatManager {
                 if (parts.length == 2) {
                     if (parts[0] === "kick") {
                         _self.disconnect(parts[1]);
+                    } else if (parts[0] === "mute") {
+                        _self.muted.add(parts[1]);
+                        socket.emit("message", {
+                            type: "public",
+                            from: "Ftw Bot",
+                            message: parts[1] + " is now muted!"
+                        });
+                    } else if (parts[0] === "unmute") {
+                        _self.muted.delete(parts[1]);
+                        socket.emit("message", {
+                            type: "public",
+                            from: "Ftw Bot",
+                            message: parts[1] + " is no longer muted!"
+                        });
                     }
                 }
             } else {
@@ -63,6 +100,18 @@ class ChatManager {
             this.users.get(name).socket.emit("redirect", "/logout");
             this.users.get(name).socket.disconnect();
         }
+    }
+    process(message) {
+        if (typeof message !== "string") return null;
+        message = message.trim();
+        if (message.length == 0 || message.length > 120) return null;
+
+
+        message = swearList.censor(message);
+        message = chatUtils.clean(message);
+        message = chatUtils.parseLinks(message);
+        message = emoji.parse(message, "/emoji");
+        return message;
     }
 }
 
