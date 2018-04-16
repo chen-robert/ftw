@@ -45,7 +45,7 @@ utils.getProblem = function () {
         let a = Math.floor(480 * Math.random()) + 20;
         let b = Math.floor(5 * Math.random()) + 2;
         return {
-             text: "What is the largest integer x such that " + b + " to the x is less than " + a + "?",
+            text: "What is the largest integer x such that " + b + " to the x is less than " + a + "?",
             answer: "" + Math.floor(Math.log(a) / Math.log(b))
         };
     }
@@ -82,38 +82,23 @@ utils.getProblem = function () {
             answer: (b % (a + 1) === 0) ? "Bobert" : "Alex"
         };
     }
-    if (g >= 20 && g < 23){
-        let a = 4;
-        let b = 4;
-        isPrime = function (n) {
-            if (isNaN(n) || !isFinite(n) || n%1 || n<2) return false; 
-            var m=Math.sqrt(n);
-            for (var i=2;i<=m;i++) if (n%i==0) return false;
+
+    if (g >= 20 && g < 25) {
+        const isPrime = function (n) {
+            if (isNaN(n) || !isFinite(n) || n < 2) return false;
+            var m = Math.sqrt(n);
+            for (var i = 2; i <= m; i++)
+                if (n % i == 0) return false;
             return true;
         }
-        while (!isPrime(a)){let a = Math.floor(50 * Math.random());}
-        while (!isPrime(b) || b === a){let b = Math.floor(40 * Math.random());}
-        return {
-            text: "What is the sum of the prime factors of " + (a * b),
-            answer: "" + (a + b)
-        };
-    }
-    if (g >= 23 && g < 25){
-        let a = 4;
-        let b = 4;
-        let c = 4;
-        isPrime = function (n) {
-            if (isNaN(n) || !isFinite(n) || n%1 || n<2) return false; 
-            var m=Math.sqrt(n);
-            for (var i=2;i<=m;i++) if (n%i==0) return false;
-            return true;
+        const num = Math.floor(100 * Math.random()) + 100;
+        let sum = 0;
+        for (let i = 2; i < num; i++) {
+            if (num % i == 0 && isPrime(i)) sum += i;
         }
-        while (!isPrime(a)){let a = Math.floor(20 * Math.random());}
-        while (!isPrime(b) || b === a){let b = Math.floor(20 * Math.random());}
-        while (!isPrime(c) || c === a || c === b){let c = Math.floor(20 * Math.random());}
         return {
-            text: "What is the sum of the prime factors of " + (a * b * c),
-            answer: "" + (a + b + c)
+            text: "What is the sum of the prime factors of " + num,
+            answer: "" + sum
         };
     }
     //this part should never actually run?

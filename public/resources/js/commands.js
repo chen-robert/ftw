@@ -52,7 +52,7 @@ $(document).ready(function () {
 
         }
         cmd.send = function (msg) {
-            window.FTW.chat.appendMessage({
+            window.FTW.chat.safeAppend({
                 from: "Ftw Bot",
                 message: msg,
                 type: "system"

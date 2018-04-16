@@ -94,7 +94,17 @@ $(document).ready(function () {
             $("#chat-display").append(message);
 
             chat.previousSender = user;
-        };
+        }
+        chat.safeAppend = function (msg) {
+            const scrollDiff = $('#chat-display').prop("scrollHeight") - $('#chat-display').prop("scrollTop") - $('#chat-display').height();
+
+            window.FTW.chat.appendMessage(msg);
+
+            $("#chat-display").stop(true, true);
+            if (scrollDiff < 10) {
+                $("#chat-display").prop("scrollTop", $('#chat-display').prop("scrollHeight"));
+            }
+        }
 
         $("#chat-box").keypress(function (e) {
             if (e.which == 13) {

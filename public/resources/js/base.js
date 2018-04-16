@@ -9,16 +9,7 @@ This JS file should be loaded first.
         window.FTW = {};
         window.FTW.socket = io();
 
-        window.FTW.socket.on("message", (msg) => {
-            const scrollDiff = $('#chat-display').prop("scrollHeight") - $('#chat-display').prop("scrollTop") - $('#chat-display').height();
-
-            window.FTW.chat.appendMessage(msg);
-
-            $("#chat-display").stop(true, true);
-            if (scrollDiff < 10) {
-                $("#chat-display").prop("scrollTop", $('#chat-display').prop("scrollHeight"));
-            }
-        });
+        window.FTW.socket.on("message", (msg) => window.FTW.chat.safeAppend(msg));
         window.FTW.socket.on("redirect", (url) => window.location.replace(url));
         window.FTW.socket.on("chat error", (err) => {
             $("#alert-text").text(err);

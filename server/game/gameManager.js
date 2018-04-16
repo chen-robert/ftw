@@ -65,10 +65,12 @@ class GameManager {
         socket.on("leave game", removeUser);
         socket.on("join game", joinGame);
         socket.on("create game", function (data) {
-            const time = +data.time;
-            const problems = +data.problems;
+            let time = +data.time;
+            let problems = +data.problems;
 
+            problems = Math.floor(problems);
             if (time > 0 && problems > 0 && time < 1000 && problems < 1000) {
+
                 if (data.type === "FTW" || data.type === "CD") {
                     //CD defaults
                     if (data.type === "CD") {
