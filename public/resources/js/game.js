@@ -95,7 +95,7 @@
             console.log("==== Problem Data ====");
             console.log(problem);
 
-            $("#problem-text").text(problem.text);
+            $("#problem-text").html(problem.text);
 
             $("#start-game-button").hide();
 

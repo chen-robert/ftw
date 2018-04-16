@@ -84,7 +84,7 @@ module.exports = class Game {
         setTimeout(() => _self.safeProgress(0), 5 * 1000);
 
         for (let i = 0; i < this.problems; i++) {
-            this.functionArr.push(function () {
+            this.functionArr.push(async function () {
                 _self.answerValue = problemWorth;
                 _self.users.forEach((user) => user.canAnswer = true);
 
@@ -92,7 +92,7 @@ module.exports = class Game {
                 _self.users.forEach((user) => user.answer = undefined);
                 _self.sendScores();
 
-                const problem = problemUtils.getProblem();
+                const problem = await problemUtils.getProblem();
                 _self.currProblem = problem;
 
                 //Order of these emits matters. 
@@ -189,7 +189,7 @@ module.exports = class Game {
             user.canAnswer = false;
 
             let shouldProgress = false;
-            if (answer === this.currProblem.answer) {
+            if (answer.toLowerCase() === this.currProblem.answer.toLowerCase()) {
                 user.score += this.answerValue;
                 this.answerValue--;
 
