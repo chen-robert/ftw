@@ -147,6 +147,11 @@ app.get("/logout", function (req, res) {
 });
 
 io.on("connection", function (socket) {
+    if (typeof socket.handshake.headers.cookie !== "string") {
+        socket.emit("redirect", "/logout");
+        return;
+    }
+
     var cookies = cookie.parse(socket.handshake.headers.cookie);
     if (!userManager.addSocket(cookies[SESS_ID_COOKIE], socket)) {
         socket.emit("redirect", "/logout");
