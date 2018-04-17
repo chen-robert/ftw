@@ -68,6 +68,7 @@ class GameManager {
             let time = +data.time;
             let problems = +data.problems;
 
+            time = Number((time).toFixed(3));
             problems = Math.floor(problems);
             if (time > 0 && problems > 0 && time < 1000 && problems < 1000) {
 
