@@ -11,14 +11,14 @@ This JS file should be loaded first.
 
         window.FTW.socket.on("message", (msg) => window.FTW.chat.safeAppend(msg));
         window.FTW.socket.on("redirect", (url) => window.location.replace(url));
-        window.FTW.socket.on("chat error", (err) => {
+        window.FTW.socket.on("notif error", (err) => {
             $("#alert-text").text(err);
             $("#alert").stop(true, true);
             $("#alert").show();
             $("#alert").css("top", "-100px");
             $("#alert").animate({
                 top: "50px"
-            }, 1000).delay(2000).fadeOut(1000);
+            }, 1000).delay(5000).fadeOut(1000);
         });
 
         window.FTW.socket.on("online users", (data) => window.FTW.userUtils.setUsers(data));

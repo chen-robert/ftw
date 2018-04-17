@@ -93,10 +93,12 @@ class ChatManager {
                         _self.disconnect(parts[1]);
 
                         socket.emit("message", _self.toMessage(parts[1] + " is now banned!"));
-                    } else if (parts[0] == "unban") {
+                    } else if (parts[0] === "unban") {
                         _self.banned.delete(parts[1]);
 
                         socket.emit("message", _self.toMessage(parts[1] + " is no longer banned!"));
+                    } else if (parts[0] === "restart") {
+                        users.forEach((data) => data.socket.emit("notif error", "Server Restarting"));
                     }
                 }
             } else {

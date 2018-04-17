@@ -33,7 +33,7 @@ module.exports.login = function (username, password, callback) {
 module.exports.register = function (username, password, callback) {
     user.findOne({
         username: {
-            $regex: new RegExp(username, "i")
+            $regex: new RegExp("^" + username, "i")
         }
     }).exec(function (err, obj) {
         if (err) {

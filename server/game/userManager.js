@@ -55,7 +55,7 @@ class UserManager {
     createData(username, callback) {
         userData.findOne({
             username: {
-                $regex: new RegExp(username, "i")
+                $regex: new RegExp("^" + username, "i")
             }
         }).exec(function (err, data) {
             if (err) throw err;

@@ -12,10 +12,10 @@ module.exports.Report = mongoose.model("Report", reportSchem);
 module.exports.addReport = function (name, comment, ip, callback) {
     module.exports.Report.findOne({
         username: {
-            $regex: new RegExp(name, "i")
+            $regex: new RegExp("^" + name + "$", "i")
         },
         comment: {
-            $regex: new RegExp(comment, "i")
+            $regex: new RegExp("^" + comment + "$", "i")
         },
         ip: ip
     }).exec(function (err, data) {
