@@ -132,7 +132,7 @@ class ChatManager {
     toMessage(str) {
         return {
             type: "public",
-            from: "Ftw Bot",
+            from: "Console",
             message: str
         };
     }
