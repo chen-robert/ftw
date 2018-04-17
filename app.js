@@ -84,7 +84,7 @@ app.post("/login", function (req, res) {
                 httpOnly: true
             });
 
-            userManager.addSession(sessId, user.username, () => res.send({
+            userManager.addSession(sessId, user.username, ip, () => res.send({
                 redirect: "/index.html"
             }));
         });

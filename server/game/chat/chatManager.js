@@ -11,14 +11,14 @@ class ChatManager {
         this.muted = new Set();
         this.banned = new Set();
     }
-    addUser(data, socket) {
+    addUser(data, socket, ip) {
         const name = data.username;
         const users = this.users;
 
         if (users.has(name)) {
             this.disconnect(name);
         }
-        if (this.banned.has(name)) {
+        if (this.banned.has(name) || this.banned.has(ip)) {
             socket.emit("redirect", "/logout");
             socket.disconnect();
             return;

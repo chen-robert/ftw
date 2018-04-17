@@ -11,11 +11,12 @@ class UserManager {
     constructor(io) {
         this.io = io;
         this.users = new Map();
+        this.ips = new Map();
 
         this.gameManager = gameManager(io);
     }
 
-    addSession(id, username, callback) {
+    addSession(id, username, ip, callback) {
         const _self = this;
 
         userData.findOne({
@@ -26,6 +27,7 @@ class UserManager {
                 throw new Error(username + " doesn't have data attached for some reason");
             }
             _self.users.set(id, obj);
+            _self.ips.set(id, ip);
 
             callback();
         });
@@ -35,7 +37,7 @@ class UserManager {
     }
     addSocket(id, socket) {
         if (id) {
-            if (!this.users.has(id)) {
+            if (!this.users.has(id) || !this.ips.has(id)) {
                 return false;
             }
 
@@ -44,7 +46,7 @@ class UserManager {
                 chatManager.users.delete(data.username);
                 this.updateAllUsers();
             });
-            chatManager.addUser(data, socket);
+            chatManager.addUser(data, socket, this.ips.get(id));
             this.gameManager.addSocket(data, socket, () => this.updateAllUsers());
             this.updateAllUsers();
             return true;
