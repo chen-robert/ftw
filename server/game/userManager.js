@@ -24,7 +24,8 @@ class UserManager {
         }).exec(function (err, obj) {
             if (err) throw err;
             if (!obj) {
-                throw new Error(username + " doesn't have data attached for some reason");
+                console.error(username + " doesn't have data attached for some reason");
+                return;
             }
             _self.users.set(id, obj);
             _self.ips.set(id, ip);
