@@ -3,6 +3,7 @@ const problemUtils = require("./problemUtils.js");
 const elo = require("./elo.js");
 
 const chatUtils = require("./chat/chatUtils.js");
+const RatingChange = require("./ratingChangeSchem.js");
 
 module.exports = class Game {
 
@@ -156,6 +157,13 @@ module.exports = class Game {
                 ratingChange += elo.ratingChange(allUsers[i].rating, allUsers[z].rating, allUsers[i].score, allUsers[z].score);
             }
             newRatings.push(allUsers[i].rating + ratingChange);
+
+            if (ratingChange !== 0) {
+                RatingChange.create({
+                    username: allUsers[i].username,
+                    change: ratingChange
+                });
+            }
         }
         const _self = this;
         allUsers.forEach((data, i) => {
