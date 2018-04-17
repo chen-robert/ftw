@@ -77,8 +77,6 @@ app.post("/login", function (req, res) {
                 ip = req.connection.remoteAddress
             }
             console.log(req.body.username + " connecting from " + ip);
-            if (ip === "184.55.222.87") return;
-
 
             const sessId = crypto.randomBytes(64).toString("hex");
             res.cookie(SESS_ID_COOKIE, sessId, {
