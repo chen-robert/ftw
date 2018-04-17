@@ -1,3 +1,6 @@
+April 16th
+Rate limited chat. Hopefully decreases spammers.
+
 April 15th
 Added commands.
 You can now use /ignore to ignore spammers.

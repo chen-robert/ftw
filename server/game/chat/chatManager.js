@@ -23,17 +23,30 @@ class ChatManager {
             data: data
         });
         const _self = this;
+        const rateLimit = [];
         socket.on("public message", function (message) {
             if (_self.muted.has(name)) return;
 
-            message = _self.process(message);
-            if (typeof message === "string") {
-                users.forEach((data) => data.socket.emit("message", {
-                    type: "public",
-                    from: name,
-                    message: message
-                }));
+            const currTime = +new Date();
+            while (rateLimit.length > 0 && rateLimit[0] < currTime - 5 * 1000) {
+                rateLimit.shift();
             }
+            rateLimit.push(currTime);
+
+            if (rateLimit.length > 5) {
+                socket.emit("message", _self.toMessage("Please slow down!"));
+                return;
+            } else {
+                message = _self.process(message);
+                if (typeof message === "string") {
+                    users.forEach((data) => data.socket.emit("message", {
+                        type: "public",
+                        from: name,
+                        message: message
+                    }));
+                }
+            }
+
         });
 
         socket.on("whisper", function (data) {
@@ -52,11 +65,7 @@ class ChatManager {
                     _self.users.get(to).socket.emit("message", msg);
                     socket.emit("message", msg);
                 } else {
-                    socket.emit("message", {
-                        type: "public",
-                        from: "Ftw Bot",
-                        message: "Username not found"
-                    });
+                    socket.emit("message", _self.toMessage("Username not found"));
                 }
             }
 
@@ -69,18 +78,10 @@ class ChatManager {
                         _self.disconnect(parts[1]);
                     } else if (parts[0] === "mute") {
                         _self.muted.add(parts[1]);
-                        socket.emit("message", {
-                            type: "public",
-                            from: "Ftw Bot",
-                            message: parts[1] + " is now muted!"
-                        });
+                        socket.emit("message", _self.toMessage(parts[1] + " is now muted!"));
                     } else if (parts[0] === "unmute") {
                         _self.muted.delete(parts[1]);
-                        socket.emit("message", {
-                            type: "public",
-                            from: "Ftw Bot",
-                            message: parts[1] + " is no longer muted!"
-                        });
+                        socket.emit("message", _self.toMessage(parts[1] + " is no longer muted!"));
                     }
                 }
             } else {
@@ -110,6 +111,13 @@ class ChatManager {
         message = chatUtils.parseLinks(message);
         message = emoji.parse(message, "/emoji");
         return message;
+    }
+    toMessage(str) {
+        return {
+            type: "public",
+            from: "Ftw Bot",
+            message: str
+        };
     }
 }
 

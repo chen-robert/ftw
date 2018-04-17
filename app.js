@@ -76,6 +76,7 @@ app.post("/login", function (req, res) {
             } else {
                 ip = req.connection.remoteAddress
             }
+            console.log(req.body.username + " connecting from " + ip);
 
 
 
