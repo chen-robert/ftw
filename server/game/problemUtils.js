@@ -7,7 +7,7 @@ Answer must be in the form of a String. This means "" + a, as opposed to just a.
 
 */
 utils.getProblem = function () {
-    let g = Math.floor(22 * Math.random());
+    let g = Math.floor(24 * Math.random());
 
     if (g >= 0 && g < 3) {
         let a = Math.floor(200 * Math.random());
@@ -77,13 +77,14 @@ utils.getProblem = function () {
     if (g >= 18 && g < 20) {
         let a = Math.floor(10 * Math.random()) + 1;
         let b = Math.floor(50 * Math.random()) + a;
+        let c = Math.floor(2 * Math.random());
         return {
-            text: "Alex and Bobert take turns taking between 1 and " + a + " sticks from a pile starting from " + b + ". If the last person to take a stick wins, and Alex goes first, who wins?",
-            answer: (b % (a + 1) === 0) ? "Bobert" : "Alex"
+            text: "Alex and Bobert take turns taking between 1 and " + a + " sticks from a pile starting from " + b + ". If the last person to take a stick wins, and " + (c > 0 ? "Alex" : "Bobert") + " goes first, who wins?",
+            answer: (b % (a + 1) === 0) ? (c > 0 ? "Bobert" : "Alex") : (c > 0 ? "Alex" : "Bobert")
         };
     }
 
-    if (g >= 20 && g < 25) {
+    if (g >= 20 && g < 24) {
         const isPrime = function (n) {
             if (isNaN(n) || !isFinite(n) || n < 2) return false;
             var m = Math.sqrt(n);
@@ -93,7 +94,7 @@ utils.getProblem = function () {
         }
         const num = Math.floor(100 * Math.random()) + 100;
         let sum = 0;
-        for (let i = 2; i < num; i++) {
+        for (let i = 2; i <= num; i++) {
             if (num % i == 0 && isPrime(i)) sum += i;
         }
         return {
