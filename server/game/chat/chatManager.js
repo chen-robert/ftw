@@ -15,8 +15,13 @@ class ChatManager {
         const name = data.username;
         const users = this.users;
 
-        if (users.has(name) || banned.has(name)) {
+        if (users.has(name)) {
             this.disconnect(name);
+        }
+        if (this.banned.has(name)) {
+            socket.emit("redirect", "/logout");
+            socket.disconnect();
+            return;
         }
 
         users.set(name, {
@@ -82,24 +87,16 @@ class ChatManager {
                         socket.emit("message", _self.toMessage(parts[1] + " is now muted!"));
                     } else if (parts[0] === "unmute") {
                         _self.muted.delete(parts[1]);
-<<<<<<< HEAD
                         socket.emit("message", _self.toMessage(parts[1] + " is no longer muted!"));
-=======
-                        socket.emit("message", {
-                            type: "public",
-                            from: "Ftw Bot",
-                            message: parts[1] + " is no longer muted!"
-                        });
                     } else if (parts[0] === "ban") {
                         _self.banned.add(parts[1]);
-                        _self.muted.add(parts[1]);
-                        this.disconnect(parts[1]);
-                        socket.emit("message", {
-                            type: "public",
-                            from: "Ftw Bot",
-                            message: parts[1] + " is now username banned!"
-                        });
->>>>>>> a1765abe1bb221f4af66ca6d23de7a3ed14886ed
+                        _self.disconnect(parts[1]);
+
+                        socket.emit("message", _self.toMessage(parts[1] + " is now banned!"));
+                    } else if (parts[0] == "unban") {
+                        _self.banned.delete(parts[1]);
+
+                        socket.emit("message", _self.toMessage(parts[1] + " is no longer banned!"));
                     }
                 }
             } else {
