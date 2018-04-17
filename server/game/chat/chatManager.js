@@ -9,12 +9,13 @@ class ChatManager {
     constructor() {
         this.users = new Map();
         this.muted = new Set();
+        this.banned = new Set();
     }
     addUser(data, socket) {
         const name = data.username;
         const users = this.users;
 
-        if (users.has(name)) {
+        if (users.has(name) || banned.has(name)) {
             this.disconnect(name);
         }
 
@@ -81,7 +82,24 @@ class ChatManager {
                         socket.emit("message", _self.toMessage(parts[1] + " is now muted!"));
                     } else if (parts[0] === "unmute") {
                         _self.muted.delete(parts[1]);
+<<<<<<< HEAD
                         socket.emit("message", _self.toMessage(parts[1] + " is no longer muted!"));
+=======
+                        socket.emit("message", {
+                            type: "public",
+                            from: "Ftw Bot",
+                            message: parts[1] + " is no longer muted!"
+                        });
+                    } else if (parts[0] === "ban") {
+                        _self.banned.add(parts[1]);
+                        _self.muted.add(parts[1]);
+                        this.disconnect(parts[1]);
+                        socket.emit("message", {
+                            type: "public",
+                            from: "Ftw Bot",
+                            message: parts[1] + " is now username banned!"
+                        });
+>>>>>>> a1765abe1bb221f4af66ca6d23de7a3ed14886ed
                     }
                 }
             } else {
