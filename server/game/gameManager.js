@@ -74,10 +74,10 @@ class GameManager {
                 if (data.type === "FTW" || data.type === "CD") {
                     //CD defaults
                     if (data.type === "CD") {
-                        data.problems = 100;
-                        data.time = 45;
+                        problems = 100;
+                        time = 45;
                     }
-                    const game = new Game(data.time, data.problems, data.type);
+                    const game = new Game(time, problems, data.type);
                     games.set(game.id, game);
 
                     joinGame(game.id);
