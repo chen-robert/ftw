@@ -28,6 +28,7 @@ class UserManager {
                 console.error(username + " doesn't have data attached for some reason. Creating new data.");
                 return _self.createData(username, () => _self.addSession(id, username, ip, callback));
             }
+
             _self.users.set(id, obj);
             _self.ips.set(id, ip);
 
@@ -78,6 +79,27 @@ class UserManager {
     }
     updateAllUsers() {
         this.io.emit("online users", chatManager.onlineUsers);
+    }
+    getData(username, callback) {
+        userData.findOne({
+            username: {
+                $regex: new RegExp("^" + username + "$", "i")
+            }
+        }).exec(function (err, data) {
+            if (err) return callback(err);
+
+            //We want tight control over what data is leaked
+            if (data) return callback(null, {
+                username: data.username,
+                rating: data.rating,
+                games: data.games,
+                wins: data.wins
+            });
+
+            callback({
+                err: "No data found"
+            });
+        });
     }
 
 }

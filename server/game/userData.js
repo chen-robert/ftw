@@ -9,7 +9,9 @@ const userDataSchem = new mongoose.Schema({
         required: true,
         trim: true
     },
-    rating: Number
+    rating: Number,
+    games: Number,
+    wins: Number
 });
 
 module.exports = mongoose.model("UserData", userDataSchem);

@@ -153,6 +153,20 @@ app.get("/logout", function (req, res) {
     }
     res.redirect("/login.html")
 });
+app.get("/stats", function (req, res) {
+    if (req.query.username) {
+        userManager.getData(req.query.username, (err, data) => {
+            if (err) {
+                return res.send({
+                    error: "Username not found"
+                });
+            }
+            return res.send(data);
+        })
+    } else {
+        res.send({});
+    }
+});
 
 io.on("connection", function (socket) {
     if (typeof socket.handshake.headers.cookie !== "string") {

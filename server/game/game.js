@@ -49,7 +49,9 @@ module.exports = class Game {
     }
     setHost(data) {
         this.host = data;
-        this.dataToSocket.get(data).emit("set host");
+        if (!this.started) {
+            this.dataToSocket.get(data).emit("set host");
+        }
     }
 
     remove(data) {
@@ -159,6 +161,9 @@ module.exports = class Game {
     updateElo() {
         const allUsers = this.users.concat(this.usersThatLeft);
         const newRatings = [];
+
+        let maxChange = -1;
+        let maxChangeData = null;
         for (let i = 0; i < allUsers.length; i++) {
             let ratingChange = 0;
             for (let z = 0; z < allUsers.length; z++) {
@@ -166,6 +171,12 @@ module.exports = class Game {
                 ratingChange += elo.ratingChange(allUsers[i].rating, allUsers[z].rating, allUsers[i].score, allUsers[z].score);
             }
             newRatings.push(allUsers[i].rating + ratingChange);
+            if (ratingChange > maxChange) {
+                maxChange = ratingChange;
+                maxChangeData = allUsers[i];
+            } else if (ratingChange === maxChange) {
+                maxChangeData = null;
+            }
 
             if (ratingChange !== 0) {
                 RatingChange.create({
@@ -177,8 +188,13 @@ module.exports = class Game {
         const _self = this;
         allUsers.forEach((data, i) => {
             data.rating = newRatings[i];
-            _self.dataToMongoose.get(data).rating = newRatings[i];
-            _self.dataToMongoose.get(data).save(function (err) {
+
+            const mongooseObj = _self.dataToMongoose.get(data);
+            mongooseObj.rating = newRatings[i];
+            mongooseObj.games++;
+            if (maxChangeData === data) mongooseObj.wins++;
+
+            mongooseObj.save(function (err) {
                 if (err) console.error(err);
             });
         });
