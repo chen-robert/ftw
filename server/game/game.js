@@ -5,7 +5,7 @@ const elo = require('./elo.js');
 const chatUtils = require('./chat/chatUtils.js');
 
 module.exports = class Game {
-  constructor(timePerProblem, problems, type) {
+  constructor(timePerProblem, problems, type, pw) {
     // Active users in game
     this.users = [];
     this.usersThatLeft = [];
@@ -23,14 +23,13 @@ module.exports = class Game {
 
     this.currProblem = {};
     this.answerValue = NaN;
+
+    this.pw = pw;
+    this.private = pw !== '';
   }
 
   // We need access to mongooseObj to update user ratings later.
   add(data, socket, mongooseObj) {
-    if (this.host === null) {
-      this.host = data;
-    }
-
     if (this.users.indexOf(data) === -1) {
       this.users.push(data);
       this.dataToSocket.set(data, socket);
@@ -47,6 +46,15 @@ module.exports = class Game {
     /* eslint no-param-reassign: 2 */
 
     this.sendScores();
+
+    if (this.host === null) {
+      this.setHost(data);
+    }
+  }
+
+  setHost(data) {
+    this.host = data;
+    this.dataToSocket.get(data).emit('set host');
   }
 
   remove(data) {
@@ -68,7 +76,7 @@ module.exports = class Game {
     }
 
     if (this.host === data) {
-      [this.host] = this.users;
+      this.setHost(this.users[0]);
     }
 
     return false;

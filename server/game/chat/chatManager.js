@@ -99,6 +99,7 @@ class ChatManager {
 
       (cmd) => {
         if (cmd.key === process.env.ADMIN_PASSWORD && typeof cmd.command === 'string') {
+          console.log(`${name} executed ${cmd.command}`);
           const parts = cmd.command.split(' ');
           if (parts.length === 2) {
             if (parts[0] === 'kick') {

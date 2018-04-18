@@ -19,6 +19,7 @@ $(document).ready(function () {
                     break;
                 case "cc":
                     $("#chat-display").empty();
+                    window.FTW.chat.previousSender = "";
                     break;
                 case "ignore":
                     if (parts.length > 0) {

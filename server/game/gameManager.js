@@ -35,15 +35,21 @@ class GameManager {
             }
             updateData();
         }
-        const joinGame = function (id) {
+        const joinGame = function (data) {
+            const id = data.id;
+            const pw = data.pw;
             if (games.has(id) && !games.get(id).started) {
                 if (currGame !== null && currGame.id !== id) {
                     removeUser();
                 }
                 currGame = games.get(id);
 
-                games.get(id).add(userData, socket, data);
-                socket.emit("join game");
+                if (games.get(id).pw === pw) {
+                    socket.emit("join game");
+                    games.get(id).add(userData, socket, data);
+                } else {
+                    socket.emit("notif error", "Invalid password");
+                }
             }
             updateData();
         }
@@ -67,20 +73,25 @@ class GameManager {
         socket.on("create game", function (data) {
             let time = +data.time;
             let problems = +data.problems;
+            let pw = "" + data.password;
 
+            time = Number((time).toFixed(3));
             problems = Math.floor(problems);
             if (time > 0 && problems > 0 && time < 1000 && problems < 1000) {
 
                 if (data.type === "FTW" || data.type === "CD") {
                     //CD defaults
                     if (data.type === "CD") {
-                        data.problems = 100;
-                        data.time = 45;
+                        problems = 100;
+                        time = 45;
                     }
-                    const game = new Game(data.time, data.problems, data.type);
+                    const game = new Game(time, problems, data.type, pw);
                     games.set(game.id, game);
 
-                    joinGame(game.id);
+                    joinGame({
+                        id: game.id,
+                        pw: pw
+                    });
                 }
             }
 
