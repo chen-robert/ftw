@@ -8,12 +8,18 @@ const swearList = require("swearjar");
 class ChatManager {
     constructor() {
         this.users = new Map();
+        //Stores lowerCaseString -> string for PM functions. This code seems really ugly.
+        this.nameMap = new Map();
+
         this.muted = new Set();
         this.banned = new Set();
     }
     addUser(data, socket, ip) {
         const name = data.username;
+        const nameLower = name.toLowerCase();
         const users = this.users;
+
+        this.nameMap.set(nameLower, name);
 
         if (users.has(name)) {
             this.disconnect(name);
@@ -62,13 +68,13 @@ class ChatManager {
             let to = data.to;
             message = _self.process(message);
             if (typeof message === "string" && typeof to === "string") {
-                if (_self.users.has(to)) {
+                if (_self.nameMap.has(to)) {
                     const msg = {
                         type: "private",
                         from: name,
                         message: message
                     }
-                    _self.users.get(to).socket.emit("message", msg);
+                    _self.users.get(_self.nameMap.get(to)).socket.emit("message", msg);
                     socket.emit("message", msg);
                 } else {
                     socket.emit("message", _self.toMessage("Username not found"));
