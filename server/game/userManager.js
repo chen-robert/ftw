@@ -23,9 +23,10 @@ class UserManager {
             username: username
         }).exec(function (err, obj) {
             if (err) throw err;
+
             if (!obj) {
-                console.error(username + " doesn't have data attached for some reason");
-                return;
+                console.error(username + " doesn't have data attached for some reason. Creating new data.");
+                return _self.createData(username, () => _self.addSession(id, username, ip, callback));
             }
             _self.users.set(id, obj);
             _self.ips.set(id, ip);
@@ -58,10 +59,10 @@ class UserManager {
     createData(username, callback) {
         userData.findOne({
             username: {
-                $regex: new RegExp("^" + username, "i")
+                $regex: new RegExp("^" + username + "$", "i")
             }
         }).exec(function (err, data) {
-            if (err) throw err;
+            if (err) return console.log(err);
             if (data) {
                 //Data already exists. No need to create new.
             } else {

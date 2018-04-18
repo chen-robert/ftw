@@ -71,7 +71,6 @@
         }
         game.joinGame = function () {
             $("#problem-box").show();
-            $("#start-game-button").show();
             $("#leave-game-button").show();
             $("#table-scores").show();
 
@@ -80,6 +79,9 @@
             $("#table-ratings").hide();
 
             $("#answer-box").hide();
+        }
+        game.setHost = function () {
+            $("#start-game-button").show();
         }
         game.setTimer = function (params) {
             $("#problem-header").text(params.type);

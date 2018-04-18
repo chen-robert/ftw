@@ -29,9 +29,6 @@ module.exports = class Game {
 
     //We need access to mongooseObj to update user ratings later.
     add(data, socket, mongooseObj) {
-        if (this.host === null) {
-            this.host = data;
-        }
         if (this.users.indexOf(data) == -1) {
             this.users.push(data);
             this.dataToSocket.set(data, socket);
@@ -41,6 +38,14 @@ module.exports = class Game {
         data.answer = undefined;
 
         this.sendScores();
+
+        if (this.host === null) {
+            this.setHost(data);
+        }
+    }
+    setHost(data) {
+        this.host = data;
+        this.dataToSocket.get(data).emit("set host");
     }
 
     remove(data) {
@@ -57,7 +62,7 @@ module.exports = class Game {
         //If the room would be empty, we'll delete it
         if (this.users.length == 0) return true;
         if (this.host === data) {
-            this.host = this.users[0];
+            this.setHost(this.users[0]);
         }
         return false;
     }

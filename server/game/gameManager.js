@@ -42,8 +42,8 @@ class GameManager {
                 }
                 currGame = games.get(id);
 
-                games.get(id).add(userData, socket, data);
                 socket.emit("join game");
+                games.get(id).add(userData, socket, data);
             }
             updateData();
         }
