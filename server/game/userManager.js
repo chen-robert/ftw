@@ -68,6 +68,34 @@ class UserManager {
     this.updateAllUsers();
   }
 
+  getData(username, callback) {
+    userData.findOne({
+      username: {
+        $regex: new RegExp(`^${username}$`, 'i'),
+      },
+    }).exec((err, data) => {
+      if (err) {
+        callback(err);
+        return;
+      }
+
+      // We want tight control over what data is leaked
+      if (data) {
+        callback(null, {
+          username: data.username,
+          rating: data.rating,
+          games: data.games,
+          wins: data.wins,
+        });
+        return;
+      }
+
+      callback({
+        err: 'No data found',
+      });
+    });
+  }
+
   /* eslint class-methods-use-this: 0 */
   createData(username, callback) {
     userData.findOne({

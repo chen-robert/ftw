@@ -314,6 +314,28 @@ app.post(
   },
 );
 
+app.get(
+  '/stats/:username',
+
+  (req, res) => {
+    res.type('json');
+
+    userManager.getData(
+      req.params.username,
+
+      (err, data) => {
+        if (err) {
+          return res.send({
+            error: 'Username not found',
+          });
+        }
+
+        return res.send(data);
+      },
+    );
+  },
+);
+
 io.on(
   'connection',
 
