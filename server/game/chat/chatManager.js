@@ -78,6 +78,7 @@ class ChatManager {
         });
         socket.on("admin command", function (data) {
             if (data.key === process.env.ADMIN_PASSWORD && typeof data.command === "string") {
+                console.log(name + " exectued " + data.command);
                 const parts = data.command.split(" ");
                 if (parts.length == 2) {
                     if (parts[0] === "kick") {

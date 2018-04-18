@@ -7,10 +7,11 @@ const RatingChange = require("./ratingChangeSchem.js");
 
 module.exports = class Game {
 
-    constructor(timePerProblem, problems, type) {
+    constructor(timePerProblem, problems, type, pw) {
         //Active users in game
         this.users = [];
         this.usersThatLeft = [];
+
         //This won't be transfered because map's can't be serialized.
         this.dataToSocket = new Map();
         this.dataToMongoose = new Map();
@@ -25,6 +26,9 @@ module.exports = class Game {
 
         this.currProblem = {};
         this.answerValue = NaN;
+
+        this.pw = pw;
+        this.private = pw !== "";
     }
 
     //We need access to mongooseObj to update user ratings later.

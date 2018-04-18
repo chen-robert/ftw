@@ -49,6 +49,8 @@ module.exports.register = function (username, password, callback) {
             password: password
         }, function (err, obj) {
             if (err) {
+                console.log("Failed to create user data");
+                console.log(err);
                 return callback(err);
             }
             return callback(null, obj);

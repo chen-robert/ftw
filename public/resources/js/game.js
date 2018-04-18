@@ -3,7 +3,7 @@
     if (window.FTW && !window.FTW.game) {
         //This is the button that appears on the nav
         $("#create-game-button").click(function () {
-            $("#create-game-model").modal("toggle");
+            $("#create-game-modal").modal("toggle");
 
             $("#create-ftw").trigger("click");
         });
@@ -12,9 +12,19 @@
             window.FTW.socket.emit("create game", {
                 time: $("#create-time").val(),
                 problems: $("#create-problem-count").val(),
+                password: $("#game-password").val(),
                 type: window.FTW.game.currMode
             });
-            $("#create-game-model").modal("toggle");
+            $("#game-password").val("");
+            $("#create-game-modal").modal("toggle");
+        });
+        $("#join-game").click(function () {
+            window.FTW.socket.emit("join game", {
+                id: game.currChoice,
+                pw: $("#game-join-password").val()
+            });
+            $("#game-join-modal").modal("toggle");
+            $("#game-join-password").val("");
         });
 
         $("#create-ftw").click(function () {
@@ -165,7 +175,15 @@
                     $(body).addClass("game-started");
                 } else {
                     $(box).click(function () {
-                        window.FTW.socket.emit("join game", uuid);
+                        if (data.private) {
+                            $("#game-join-modal").modal("toggle");
+                            game.currChoice = uuid;
+                        } else {
+                            window.FTW.socket.emit("join game", {
+                                id: uuid,
+                                pw: ""
+                            });
+                        }
                     });
                 }
 
