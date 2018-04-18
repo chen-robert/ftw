@@ -68,13 +68,14 @@ class ChatManager {
             let to = data.to;
             message = _self.process(message);
             if (typeof message === "string" && typeof to === "string") {
-                if (_self.nameMap.has(to)) {
+                to = _self.nameMap.get(to.toLowerCase());
+                if (_self.users.has(to)) {
                     const msg = {
                         type: "private",
                         from: name,
                         message: message
                     }
-                    _self.users.get(_self.nameMap.get(to)).socket.emit("message", msg);
+                    _self.users.get(to).socket.emit("message", msg);
                     socket.emit("message", msg);
                 } else {
                     socket.emit("message", _self.toMessage("Username not found"));
