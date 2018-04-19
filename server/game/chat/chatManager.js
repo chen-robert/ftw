@@ -1,159 +1,190 @@
-const chatUtils = require("./chatUtils.js");
-const chatLog = require("./chatLog.js");
-const moment = require("moment");
+const chatUtils = require('./chatUtils.js');
+const chatLog = require('./chatLog.js');
+const moment = require('moment');
 
-const emoji = require("emoji-parser");
+const emoji = require('emoji-parser');
+
 emoji.init().update();
 
-const swearList = require("swearjar");
+const swearList = require('swearjar');
 
 class ChatManager {
-    constructor() {
-        this.users = new Map();
-        //Stores lowerCaseString -> string for PM functions. This code seems really ugly.
-        this.nameMap = new Map();
+  constructor() {
+    this.users = new Map();
 
-        this.muted = new Set();
-        this.banned = new Set();
+    // Stores lowerCaseString -> string for PM functions. This code seems really ugly.
+    this.nameMap = new Map();
+
+    this.muted = new Set();
+    this.banned = new Set();
+  }
+
+  addUser(data, socket, ip) {
+    const name = data.username;
+    const nameLower = name.toLowerCase();
+    const { users } = this;
+
+    this.nameMap.set(nameLower, name);
+
+    if (users.has(name)) {
+      this.disconnect(name);
     }
-    addUser(data, socket, ip) {
-        const name = data.username;
-        const nameLower = name.toLowerCase();
-        const users = this.users;
+    if (this.banned.has(name) || this.banned.has(ip)) {
+      socket.emit('redirect', '/logout');
+      socket.disconnect();
+      return;
+    }
 
-        this.nameMap.set(nameLower, name);
+    users.set(name, { socket, data });
 
-        if (users.has(name)) {
-            this.disconnect(name);
+    const rateLimit = [];
+    socket.on(
+      'public message',
+
+      (message) => {
+        if (this.muted.has(name)) {
+          return;
         }
-        if (this.banned.has(name) || this.banned.has(ip)) {
-            socket.emit("redirect", "/logout");
-            socket.disconnect();
-            return;
+
+        const currTime = +new Date();
+
+        while (rateLimit.length > 0 && rateLimit[0] < currTime - (5 * 1000)) {
+          rateLimit.shift();
         }
 
-        users.set(name, {
-            socket: socket,
-            data: data
-        });
-        const _self = this;
-        const rateLimit = [];
-        socket.on("public message", function (message) {
-            if (_self.muted.has(name)) return;
+        rateLimit.push(currTime);
 
-            const currTime = +new Date();
-            while (rateLimit.length > 0 && rateLimit[0] < currTime - 5 * 1000) {
-                rateLimit.shift();
-            }
-            rateLimit.push(currTime);
+        if (rateLimit.length > 5) {
+          socket.emit('message', ChatManager.toMessage('Please slow down!'));
+        } else {
+          const msg = ChatManager.process(message);
+          if (typeof msg === 'string') {
+            users.forEach(usrdata => usrdata.socket.emit(
+              'message',
+              {
+                type: 'public',
+                from: name,
+                message: msg,
+              },
+            ));
 
-            if (rateLimit.length > 5) {
-                socket.emit("message", _self.toMessage("Please slow down!"));
-                return;
-            } else {
-                message = _self.process(message);
-                if (typeof message === "string") {
-                    users.forEach((data) => data.socket.emit("message", {
-                        type: "public",
-                        from: name,
-                        message: message
-                    }));
-
-                    // Add to chat log
-                    chatLog.create({
-                        date: moment().format('YYYY-MM-DD'),
-                        time: moment().format('HH:mm:ss'),
-                        username: name,
-                        message: message,
-                    });
-                }
-            }
-
-        });
-
-        socket.on("whisper", function (data) {
-            if (_self.muted.has(name)) return;
-
-            let message = data.message;
-            let to = data.to;
-            message = _self.process(message);
-            if (typeof message === "string" && typeof to === "string") {
-                to = _self.nameMap.get(to.toLowerCase());
-                if (_self.users.has(to)) {
-                    const msg = {
-                        type: "private",
-                        from: name,
-                        message: message
-                    }
-                    _self.users.get(to).socket.emit("message", msg);
-                    socket.emit("message", msg);
-                } else {
-                    socket.emit("message", _self.toMessage("Username not found"));
-                }
-            }
-
-        });
-        socket.on("admin command", function (data) {
-            if (data.key === process.env.ADMIN_PASSWORD && typeof data.command === "string") {
-                console.log(name + " exectued " + data.command);
-                const parts = data.command.split(" ");
-                if (parts.length == 2) {
-                    if (parts[0] === "kick") {
-                        _self.disconnect(parts[1]);
-                    } else if (parts[0] === "mute") {
-                        _self.muted.add(parts[1]);
-                        socket.emit("message", _self.toMessage(parts[1] + " is now muted!"));
-                    } else if (parts[0] === "unmute") {
-                        _self.muted.delete(parts[1]);
-                        socket.emit("message", _self.toMessage(parts[1] + " is no longer muted!"));
-                    } else if (parts[0] === "ban") {
-                        _self.banned.add(parts[1]);
-                        _self.disconnect(parts[1]);
-
-                        socket.emit("message", _self.toMessage(parts[1] + " is now banned!"));
-                    } else if (parts[0] === "unban") {
-                        _self.banned.delete(parts[1]);
-
-                        socket.emit("message", _self.toMessage(parts[1] + " is no longer banned!"));
-                    } else if (parts[0] === "restart") {
-                        users.forEach((data) => data.socket.emit("notif error", "Server Restarting"));
-                    }
-                }
-            } else {
-                console.error(name + " tried executing " + data.command + " with key " + data.key);
-            }
-        });
-    }
-    get onlineUsers() {
-        const pool = [];
-        this.users.forEach(data => pool.push(data.data));
-        return pool;
-    }
-    disconnect(name) {
-        if (this.users.has(name)) {
-            this.users.get(name).socket.emit("redirect", "/logout");
-            this.users.get(name).socket.disconnect();
+            // Add to chat log
+            chatLog.create({
+              date: moment().format('YYYY-MM-DD'),
+              time: moment().format('HH:mm:ss'),
+              username: name,
+              message: msg,
+            });
+          }
         }
-    }
-    process(message) {
-        if (typeof message !== "string") return null;
-        message = message.trim();
-        if (message.length == 0 || message.length > 120) return null;
+      },
+    );
 
+    socket.on(
+      'whisper',
 
-        message = swearList.censor(message);
-        message = chatUtils.clean(message);
-        message = chatUtils.parseLinks(message);
-        message = emoji.parse(message, "/emoji");
-        return message;
+      (whisper) => {
+        if (this.muted.has(name)) {
+          return;
+        }
+
+        let { message, to } = whisper;
+        message = ChatManager.process(message);
+
+        if (typeof message === 'string' && typeof to === 'string') {
+          to = this.nameMap.get(to.toLowerCase());
+
+          if (this.users.has(to)) {
+            const msg = {
+              message,
+              type: 'private',
+              from: name,
+            };
+
+            this.users.get(to).socket.emit('message', msg);
+            socket.emit('message', msg);
+          } else {
+            socket.emit('message', ChatManager.toMessage('Username not found'));
+          }
+        }
+      },
+    );
+
+    socket.on(
+      'admin command',
+
+      (cmd) => {
+        if (cmd.key === process.env.ADMIN_PASSWORD && typeof cmd.command === 'string') {
+          console.log(`${name} executed ${cmd.command}`);
+          const parts = cmd.command.split(' ');
+
+          if (parts.length === 2) {
+            if (parts[0] === 'kick') {
+              this.disconnect(parts[1]);
+            } else if (parts[0] === 'mute') {
+              this.muted.add(parts[1]);
+              socket.emit('message', ChatManager.toMessage(`${parts[1]} is now muted!`));
+            } else if (parts[0] === 'unmute') {
+              this.muted.delete(parts[1]);
+              socket.emit('message', ChatManager.toMessage(`${parts[1]} is no longer muted!`));
+            } else if (parts[0] === 'ban') {
+              this.banned.add(parts[1]);
+              this.disconnect(parts[1]);
+
+              socket.emit('message', ChatManager.toMessage(`${parts[1]} is now banned!`));
+            } else if (parts[0] === 'unban') {
+              this.banned.delete(parts[1]);
+
+              socket.emit('message', ChatManager.toMessage(`${parts[1]} is no longer banned!`));
+            } else if (parts[0] === 'restart') {
+              users.forEach(usrdata => usrdata.socket.emit('notif error', 'Server Restarting'));
+            }
+          }
+        } else {
+          console.error(`${name} tried executing ${cmd.command} with key ${cmd.key}`);
+        }
+      },
+    );
+  }
+
+  get onlineUsers() {
+    const pool = [];
+    this.users.forEach(data => pool.push(data.data));
+    return pool;
+  }
+
+  disconnect(name) {
+    if (this.users.has(name)) {
+      this.users.get(name).socket.emit('redirect', '/logout');
+      this.users.get(name).socket.disconnect();
     }
-    toMessage(str) {
-        return {
-            type: "public",
-            from: "Console",
-            message: str
-        };
+  }
+
+  static process(message) {
+    if (typeof message !== 'string') {
+      return null;
     }
+
+    let msg = message.trim();
+
+    if (msg.length === 0 || msg.length > 120) {
+      return null;
+    }
+
+    msg = swearList.censor(message);
+    msg = chatUtils.clean(message);
+    msg = chatUtils.parseLinks(message);
+    msg = emoji.parse(message, '/emoji');
+    return message;
+  }
+
+  static toMessage(str) {
+    return {
+      type: 'public',
+      from: 'Console',
+      message: str,
+    };
+  }
 }
 
 module.exports = new ChatManager();
