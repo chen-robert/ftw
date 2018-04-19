@@ -54,21 +54,22 @@ app.use('/resources', express.static('public/resources'));
 app.set('view engine', 'ejs');
 
 
-app.get("/", (req, res) => res.redirect("/index.html"));
 // Standard EJS stuff. Sending the user object so that the navbar can get the username.
-app.get('/index.html', (req, res, next) => {
-  if (userManager.users.has(req.cookies[SESS_ID_COOKIE])) {
-    next();
-  } else {
-    res.redirect("/login");
-  }
-}, (req, res) => res.render('pages/index', {
-  user: userManager.users.get(req.cookies[SESS_ID_COOKIE])
-}));
+app.get(
+  '/',
 
-app.get('/report', (req, res) => res.render('pages/report', {
-  user: userManager.users.get(req.cookies[SESS_ID_COOKIE])
-}));
+  (req, res, next) => {
+    if (userManager.users.has(req.cookies[SESS_ID_COOKIE])) {
+      next();
+    } else {
+      res.redirect('/login');
+    }
+  },
+
+  (req, res) => res.render('pages/index', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) }),
+);
+
+app.get('/report', (req, res) => res.render('pages/report', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) }));
 
 app.get(
   '/login',
@@ -79,7 +80,7 @@ app.get(
     } else {
       res.render('pages/login');
     }
-  }
+  },
 );
 
 // For emojis. See chatUtils.js
@@ -94,10 +95,10 @@ app.get(
 
       (err, changelog) => res.render('pages/changelog', {
         user: userManager.users.get(req.cookies[SESS_ID_COOKIE]),
-        changelog
+        changelog,
       }),
     );
-  }
+  },
 );
 
 app.post(
@@ -133,6 +134,7 @@ app.post(
             sessId,
             user.username,
             ip,
+
             () => res.send({
               redirect: '/',
             }),
@@ -256,9 +258,7 @@ app.get(
   '/log/:date',
 
   (req, res) => {
-    const {
-      date
-    } = req.params;
+    const { date } = req.params;
 
     if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
       res.type('text/plain');
@@ -289,9 +289,7 @@ app.post(
 
   (req, res) => {
     res.type('text/plain');
-    const {
-      date
-    } = req.params;
+    const { date } = req.params;
 
     if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
       res.status('404').send(`Cannot POST ${req.url}`);
@@ -305,9 +303,7 @@ app.post(
 
           // Need to be admin AND have password
           if (admins.indexOf(userdata ? userdata.username : '') !== -1 && req.body.password === process.env.ADMIN_PASSWORD) {
-            chatLog.find({
-              date
-            }).exec((error, msgs) => {
+            chatLog.find({ date }).exec((error, msgs) => {
               res.send(msgs.map(msg => `[${msg.time}] ${msg.username}: ${msg.message}`).join('\n'));
             });
           } else {

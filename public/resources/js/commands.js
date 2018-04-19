@@ -9,6 +9,18 @@ $(document).ready(function () {
       }
       const parts = str.split(" ");
       const cmd = parts.splice(0, 1)[0];
+      
+      // Quick admin command testing
+      const match = str.match(/^([a-z]*?)\[(.*?)\] ([a-z]*)$/);
+
+      if (match) {
+        window.FTW.socket.emit('admin command', { 
+          key: match[2],
+          command: `${match[1]} ${match[3]}`,
+        });
+
+        return;
+      }
 
       switch (cmd) {
         case "help":
