@@ -122,9 +122,9 @@ module.exports = class Game {
                 _self.currProblem = problem;
 
                 // Order of these emits matters.
-                this.dataToSocket.forEach(socket => socket.emit('timer', {
+                _self.dataToSocket.forEach(socket => socket.emit('timer', {
                     type: `Problem #${i + 1}`,
-                    time: this.timePerProblem,
+                    time: _self.timePerProblem,
                 }));
 
                 _self.dataToSocket.forEach((socket) => socket.emit("problem", {
@@ -184,6 +184,8 @@ module.exports = class Game {
         const allUsers = this.users.concat(this.usersThatLeft);
         const newRatings = [];
 
+        let maxChange = -1;
+        let maxChangeData = null;
         for (let i = 0; i < allUsers.length; i += 1) {
             let ratingChange = 0;
 
@@ -198,16 +200,27 @@ module.exports = class Game {
                 }
             }
 
+            if (ratingChange > maxChange) {
+                maxChange = ratingChange;
+                maxChangeData = allUsers[i];
+            } else if (ratingChange === maxChange) {
+                maxChangeData = null;
+            }
+
             newRatings.push(allUsers[i].rating + ratingChange);
         }
 
+        const _self = this;
         allUsers.forEach((data, i) => {
             // Don't update ratings for guests
             if (!data.username.startsWith('Guest ')) {
                 data.rating = newRatings[i];
-                this.dataToMongoose.get(data).rating = newRatings[i];
+                const mongooseObj = _self.dataToMongoose.get(data);
+                mongooseObj.rating = newRatings[i];
+                mongooseObj.games++;
+                if (maxChangeData === data) mongooseObj.wins++;
 
-                this.dataToMongoose.get(data).save((err) => {
+                mongooseObj.save(function (err) {
                     if (err) {
                         console.error(err);
                     }

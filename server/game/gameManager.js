@@ -35,9 +35,9 @@ class GameManager {
             }
             updateData();
         }
-        const joinGame = function (data) {
-            const id = data.id;
-            const pw = data.pw;
+        const joinGame = function (funcData) {
+            const id = funcData.id;
+            const pw = funcData.pw;
             if (games.has(id) && !games.get(id).started) {
                 if (currGame !== null && currGame.id !== id) {
                     removeUser();
