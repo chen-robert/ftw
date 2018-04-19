@@ -2,45 +2,45 @@
 <html lang="en">
 
 <head>
-   <title>FTW Login</title>
-   <% include ../partials/bootstrap %>
-   <!-- Custom CSS -->
-   <link rel="stylesheet" href="/resources/css/chat.css">
-   <link rel="stylesheet" href="/resources/css/login.css">
+  <title>FTW Login</title>
+  <% include ../partials/bootstrap %>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/resources/css/chat.css" />
+  <link rel="stylesheet" href="/resources/css/login.css" />
 </head>
 
 <body class="text-center">
-   <% include ../partials/nav %>
-   <div class="loading-bar">
-      <div class="loading-display"></div>
-   </div>
-   <div id="alert" class="alert alert-danger" style="display: none;">
-      <strong id="alert-text"></strong>
-   </div>
-   <div class="login-div" style="width: 300px; margin-top: 15px;">
-      <ul class="nav nav-tabs nav-justified">
-         <li class="nav-item"><a class="nav-link active" href="#" id="sign-in">Sign In</a></li>
-         <li class="nav-item"><a class="nav-link" href="#" id="create">Create Account</a></li>
-      </ul>
-      <div class="login-content border-top-0">
-         <div class="login-img">
-            <img src="resources/images/default.png" class="rounded-circle pfp">
-         </div>
-         <form id="login-form" class="form-group" action="/login" method="post">
-            <div class="form-item">
-               <input type="text" class="form-control" id="username" name="username" placeholder="Username">
-               <div class="error-text" for="username">You can't leave this empty!</div>
-            </div>
-            <div class="form-item">
-               <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-               <div class="error-text" for="password">You can't leave this empty!</div>
-            </div>
-            <button class="btn btn-primary signin-button" type="submit" id="login-button">Sign In</button>
-         </form>
+  <% include ../partials/nav %>
+  <div class="loading-bar">
+    <div class="loading-display"></div>
+  </div>
+  <div id="alert" class="alert alert-danger" style="display: none;">
+    <strong id="alert-text"></strong>
+  </div>
+  <div class="login-div" style="width: 300px; margin-top: 15px;">
+    <ul class="nav nav-tabs nav-justified">
+      <li class="nav-item"><a class="nav-link active" href="#" id="sign-in">Sign In</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" id="create">Create Account</a></li>
+    </ul>
+    <div class="login-content border-top-0">
+      <div class="login-img">
+        <img src="resources/images/default.png" class="rounded-circle pfp">
       </div>
-   </div>
-   <!-- Custom JS -->
-   <script src="/resources/js/login.js"></script>
+      <form id="login-form" class="form-group" action="/login" method="post">
+        <div class="form-item">
+          <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+          <div class="error-text" for="username">You can't leave this empty!</div>
+        </div>
+        <div class="form-item">
+          <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+          <div class="error-text" for="password">You can't leave this empty!</div>
+        </div>
+        <button class="btn btn-primary signin-button" type="submit" id="login-button">Sign In</button>
+      </form>
+    </div>
+  </div>
+  <!-- Custom JS -->
+  <script src="/resources/js/login.js"></script>
 </body>
 
 </html>
