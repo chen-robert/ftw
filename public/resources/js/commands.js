@@ -9,12 +9,12 @@ $(document).ready(function () {
       }
       const parts = str.split(" ");
       const cmd = parts.splice(0, 1)[0];
-      
+
       // Quick admin command testing
       const match = str.match(/^([a-z]*?)\[(.*?)\] ([a-z]*)$/);
 
       if (match) {
-        window.FTW.socket.emit('admin command', { 
+        window.FTW.socket.emit('admin command', {
           key: match[2],
           command: `${match[1]} ${match[3]}`,
         });
@@ -28,7 +28,7 @@ $(document).ready(function () {
           this.send("/cc : Clear chat!");
           this.send("/ignore : Ignore / unignore somebody!");
           this.send("/msg : Private messages!");
-          this.send("/stas : Get somebody's stats")
+          this.send("/stats : Get somebody's stats")
           break;
         case "cc":
           $("#chat-display").empty();
