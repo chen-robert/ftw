@@ -1,3 +1,6 @@
+April 18th:
+Prevented chat peeking.
+
 April 17th:
 Password protected games!
 Only host can start games now.
