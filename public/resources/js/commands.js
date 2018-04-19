@@ -16,6 +16,7 @@ $(document).ready(function () {
                     this.send("/cc : Clear chat!");
                     this.send("/ignore : Ignore / unignore somebody!");
                     this.send("/msg : Private messages!");
+                    this.send("/stas : Get somebody's stats")
                     break;
                 case "cc":
                     $("#chat-display").empty();
@@ -45,6 +46,28 @@ $(document).ready(function () {
                         });
                     } else {
                         this.send("Please use /" + cmd + " [name] [msg]");
+                    }
+                    break;
+                case "stats":
+                    const _self = this;
+                    if (parts.length >= 1) {
+                        const xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                const response = JSON.parse(this.responseText);
+                                if (response.error) {
+                                    _self.send(response.error);
+                                } else {
+                                    console.log(this)
+                                    _self.send(`${response.username} has rating ${response.rating}`);
+                                    _self.send(`They also have ${response.wins} wins out of ${response.games} games played.`);
+                                }
+                            }
+                        };
+                        xhttp.open("GET", "/stats/" + parts[0], true);
+                        xhttp.send();
+                    } else {
+                        this.send("Please specify a username");
                     }
                     break;
                 default:
