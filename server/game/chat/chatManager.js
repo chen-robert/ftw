@@ -51,6 +51,14 @@ class ChatManager {
                 socket.emit("message", _self.toMessage("Please slow down!"));
                 return;
             } else {
+                // Add to chat log
+                chatLog.create({
+                    date: moment().format('YYYY-MM-DD'),
+                    time: moment().format('HH:mm:ss'),
+                    username: name,
+                    message: message,
+                });
+
                 message = _self.process(message);
                 if (typeof message === "string") {
                     users.forEach((data) => data.socket.emit("message", {
@@ -58,14 +66,6 @@ class ChatManager {
                         from: name,
                         message: message
                     }));
-
-                    // Add to chat log
-                    chatLog.create({
-                        date: moment().format('YYYY-MM-DD'),
-                        time: moment().format('HH:mm:ss'),
-                        username: name,
-                        message: message,
-                    });
                 }
             }
 

@@ -2,108 +2,108 @@
 <html lang="en">
 
 <head>
-    <title>FTW-clone</title>
-    <% include ../partials/bootstrap %>
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="/resources/css/chat.css">
-        <link rel="stylesheet" href="/resources/css/game.css">
-        <link rel="stylesheet" href="/resources/css/main.css">
+  <title>FTW-clone</title>
+  <% include ../partials/bootstrap %>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/resources/css/chat.css">
+    <link rel="stylesheet" href="/resources/css/game.css">
+    <link rel="stylesheet" href="/resources/css/main.css">
 </head>
 
 <body>
-    <%- include('../partials/nav', { user }) %>
-        <div id="alert" class="alert alert-danger" style="display: none;">
-            <strong id="alert-text"></strong>
-        </div>
-        <div id="create-game-modal" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content text-center">
-                    <ul class="nav nav-tabs nav-justified">
-                        <li class="nav-item"><a class="nav-link active" href="#" id="create-ftw">FTW</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#" id="create-countdown">Countdown</a></li>
-                    </ul>
-                    <div style="padding: 15px; ">
-                        <div class="modal-row">
-                            <span>Time Per Problem</span>
-                            <input id="create-time" name="create-time" type="number" class="create-game-input" value="45" min="1" max="999">
-                        </div>
-                        <div class="modal-row">
-                            <span>Number of Problems</span>
-                            <input id="create-problem-count" name="create-problem-count" type="number" class="create-game-input" value="10" min="1" max="999">
-                        </div>
-                        <div class="modal-row">
-                            <span>Password</span>
-                            <input id="game-password" name="game-password" type="input" class="create-game-input" value="">
-                        </div>
-                        <div>
-                            <button id="create-game" class="btn btn-info">Create Game</button>
-                        </div>
-                    </div>
-                </div>
+  <%- include('../partials/nav', { user }) %>
+    <div id="alert" class="alert alert-danger" style="display: none;">
+      <strong id="alert-text"></strong>
+    </div>
+    <div id="create-game-modal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content text-center">
+          <ul class="nav nav-tabs nav-justified">
+            <li class="nav-item"><a class="nav-link active" href="#" id="create-ftw">FTW</a></li>
+            <li class="nav-item"><a class="nav-link" href="#" id="create-countdown">Countdown</a></li>
+          </ul>
+          <div style="padding: 15px; ">
+            <div class="modal-row">
+              <span>Time Per Problem</span>
+              <input id="create-time" name="create-time" type="number" class="create-game-input" value="45" min="1" max="999">
             </div>
-        </div>
-        <div id="game-join-modal" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content text-center">
-                    <div class="modal-row">
-                        <input id="game-join-password" name="game-join-password" type="input" class="form-control" placeholder="Password">
-                    </div>
-                    <button id="join-game" class="btn btn-info">Join Game</button>
-                </div>
+            <div class="modal-row">
+              <span>Number of Problems</span>
+              <input id="create-problem-count" name="create-problem-count" type="number" class="create-game-input" value="10" min="1" max="999">
             </div>
+            <div class="modal-row">
+              <span>Password</span>
+              <input id="game-password" name="game-password" type="input" class="create-game-input" value="">
+            </div>
+            <div>
+              <button id="create-game" class="btn btn-info">Create Game</button>
+            </div>
+          </div>
         </div>
-        <div class="container-fluid" style="height: 100%;">
-            <div class="row">
-                <div class="col" style="min-width: 300px;">
-                    <table id="table-ratings" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th class="text-right">Rating</th>
-                            </tr>
-                        </thead>
-                        <tbody id="userData"></tbody>
-                    </table>
-                    <table id="table-scores" class="table table-striped" style="display: none;">
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th class="text-right">Score</th>
-                            </tr>
-                        </thead>
-                        <tbody id="userScores"></tbody>
-                    </table>
+      </div>
+    </div>
+    <div id="game-join-modal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content text-center">
+          <div class="modal-row">
+            <input id="game-join-password" name="game-join-password" type="input" class="form-control" placeholder="Password">
+          </div>
+          <button id="join-game" class="btn btn-info">Join Game</button>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid" style="height: 100%;">
+      <div class="row">
+        <div class="col" style="min-width: 300px;">
+          <table id="table-ratings" class="table table-striped">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th class="text-right">Rating</th>
+              </tr>
+            </thead>
+            <tbody id="userData"></tbody>
+          </table>
+          <table id="table-scores" class="table table-striped" style="display: none;">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th class="text-right">Score</th>
+              </tr>
+            </thead>
+            <tbody id="userScores"></tbody>
+          </table>
+        </div>
+
+        <!-- Game content -->
+        <main class="col" style="min-width: calc(100% - 300px); height: 100%;">
+          <nav class="navbar navbar-expand navbar-light">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item"><button id="start-game-button" class="btn btn-info" style="display: none;">Start Game</button></li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item"><button id="create-game-button" class="btn btn-info navbar-btn">Create Game</button></li>
+
+              <li><button id="leave-game-button" class="btn btn-info" style="display: none;">Leave Game</button>
+              </li>
+            </ul>
+          </nav>
+          <section style="height: calc(100vh - 190px); margin-bottom: 15px;">
+            <div class="game-content">
+              <div id="game-display"></div>
+              <div id="problem-box" style="display: none;">
+                <div class="problem-header">
+                  <p id="problem-header">Waiting to start...</p>
                 </div>
+                <div id="timer"></div>
 
-                <!-- Game content -->
-                <main class="col" style="min-width: calc(100% - 300px); height: 100%;">
-                    <nav class="navbar navbar-expand navbar-light">
-                        <ul class="navbar-nav mr-auto">
-                            <li class="nav-item"><button id="start-game-button" class="btn btn-info" style="display: none;">Start Game</button></li>
-                        </ul>
-                        <ul class="navbar-nav ml-auto">
-                            <li class="nav-item"><button id="create-game-button" class="btn btn-info navbar-btn">Create Game</button></li>
-
-                            <li><button id="leave-game-button" class="btn btn-info" style="display: none;">Leave Game</button>
-                            </li>
-                        </ul>
-                    </nav>
-                    <section style="height: calc(100vh - 190px); margin-bottom: 15px;">
-                        <div class="game-content">
-                            <div id="game-display"></div>
-                            <div id="problem-box" style="display: none;">
-                                <div class="problem-header">
-                                    <p id="problem-header">Waiting to start...</p>
-                                </div>
-                                <div id="timer"></div>
-
-                                <div id="problem-text"></div>
-                                <input type="text" class="form-control" id="answer-box" placeholder="Answer">
-                            </div>
-                        </div>
-                        <div id="chat-display">
-                            <!-- Sample Chat Message -->
-                            <!--
+                <div id="problem-text"></div>
+                <input type="text" class="form-control" id="answer-box" placeholder="Answer">
+              </div>
+            </div>
+            <div id="chat-display">
+              <!-- Sample Chat Message -->
+              <!--
             <div class="chat-item">
               <div class="chat-message-gutter">
                 <div class="image-container">
@@ -121,25 +121,25 @@
     </div>
   </div>
   -->
-                        </div>
-                    </section>
-                    <% if (user) { %>
-                        <input type="text" class="form-control" id="chat-box" placeholder="Message">
-                        <% } %>
-                </main>
             </div>
+          </section>
+          <% if (user) { %>
+            <input type="text" class="form-control" id="chat-box" placeholder="Message">
+            <% } %>
+        </main>
+      </div>
 
-        </div>
-        <!-- Jdenticon JS -->
-        <script src="/resources/vendor/jdenticon-2.1.0.min.js"></script>
-        <!-- Node JS -->
-        <script src="/socket.io/socket.io.js"></script>
-        <!-- Custom JS -->
-        <script src="/resources/js/base.js"></script>
-        <script src="/resources/js/chat.js"></script>
-        <script src="/resources/js/commands.js"></script>
-        <script src="/resources/js/game.js"></script>
-        <script src="/resources/js/userDisplay.js"></script>
+    </div>
+    <!-- Jdenticon JS -->
+    <script src="/resources/vendor/jdenticon-2.1.0.min.js"></script>
+    <!-- Node JS -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- Custom JS -->
+    <script src="/resources/js/base.js"></script>
+    <script src="/resources/js/chat.js"></script>
+    <script src="/resources/js/commands.js"></script>
+    <script src="/resources/js/game.js"></script>
+    <script src="/resources/js/userDisplay.js"></script>
 </body>
 
 </html>
