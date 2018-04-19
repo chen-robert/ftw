@@ -1,5 +1,6 @@
 April 18th:
 Prevented chat peeking.
+Added /stats.
 
 April 17th:
 Password protected games!
