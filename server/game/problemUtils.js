@@ -7,7 +7,7 @@ Answer must be in the form of a String. This means "" + a, as opposed to just a.
 
 */
 utils.getProblem = function () {
-    let g = Math.floor(24 * Math.random());
+    let g = Math.floor(30 * Math.random());
 
     if (g >= 0 && g < 3) {
         let a = Math.floor(200 * Math.random());
@@ -99,6 +99,31 @@ utils.getProblem = function () {
         }
         return {
             text: "What is the sum of the prime factors of " + num,
+            answer: "" + sum
+        };
+    }
+    
+    if(g >= 24 && g < 27){
+        let num = Math.floor(10000 * Math.random()) + 100;
+        let five = 5;
+        let sum = 0;
+        while(a/five > 0){
+            sum += a/five;
+            five *= 5;
+        }
+        return {
+            text: "How many terminating zeros does " + num + "! have?",
+            answer: "" + sum
+        };
+    }
+    
+    if(g >= 27 && g < 30){
+        return {
+            var primes = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97];
+            let a = Math.floor(24 * Math.random());
+            let b = Math.floor(24 * Math.random());
+            let sum = a*b-a-b;
+            text: "Pencils are sold in either bundles of " + a + " or " + 29 + ". What is the largest quantity of pencils that cannot be bought?",
             answer: "" + sum
         };
     }
