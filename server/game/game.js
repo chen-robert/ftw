@@ -1,18 +1,15 @@
 const uuidv1 = require('uuid/v1');
-const problemUtils = require("./problemUtils.js");
-const elo = require("./elo.js");
+const problemUtils = require('./problemUtils.js');
+const elo = require('./elo.js');
 
-const chatUtils = require("./chat/chatUtils.js");
-const RatingChange = require("./ratingChangeSchem.js");
+const chatUtils = require('./chat/chatUtils.js');
 
 module.exports = class Game {
-
     constructor(timePerProblem, problems, type, pw) {
-        //Active users in game
+        // Active users in game
         this.users = [];
         this.usersThatLeft = [];
-
-        //This won't be transfered because map's can't be serialized.
+        // This won't be transfered because map's can't be serialized.
         this.dataToSocket = new Map();
         this.dataToMongoose = new Map();
 
@@ -28,18 +25,25 @@ module.exports = class Game {
         this.answerValue = NaN;
 
         this.pw = pw;
-        this.private = pw !== "";
+        this.private = pw !== '';
     }
 
-    //We need access to mongooseObj to update user ratings later.
+    // We need access to mongooseObj to update user ratings later.
     add(data, socket, mongooseObj) {
-        if (this.users.indexOf(data) == -1) {
+        if (this.users.indexOf(data) === -1) {
             this.users.push(data);
             this.dataToSocket.set(data, socket);
-            this.dataToMongoose.set(data, mongooseObj);
+
+            // Only use mongoose if register user
+            if (!data.username.startsWith('Guest ')) {
+                this.dataToMongoose.set(data, mongooseObj);
+            }
         }
+
+        /* eslint no-param-reassign: 0 */
         data.score = 0;
         data.answer = undefined;
+        /* eslint no-param-reassign: 2 */
 
         this.sendScores();
 
@@ -47,27 +51,30 @@ module.exports = class Game {
             this.setHost(data);
         }
     }
+
     setHost(data) {
         this.host = data;
-        if (!this.started) {
-            this.dataToSocket.get(data).emit("set host");
-        }
+        this.dataToSocket.get(data).emit('set host');
     }
 
     remove(data) {
-        if (this.users.indexOf(data) == -1) {
-            console.error("Tried to delete somebody that didn't exist in game.");
-            console.error(data);
+        if (this.users.indexOf(data) === -1) {
+            console.error('Tried to delete somebody that didn\'t exist in game.');
             return true;
         }
+
         this.dataToSocket.delete(data);
         this.users.splice(this.users.indexOf(data), 1);
 
         this.usersThatLeft.push(data);
 
         this.sendScores();
-        //If the room would be empty, we'll delete it
-        if (this.users.length == 0) return true;
+
+        // If the room would be empty, we'll delete it
+        if (this.users.length === 0) {
+            return true;
+        }
+
         if (this.host === data) {
             this.setHost(this.users[0]);
         }
@@ -77,7 +84,8 @@ module.exports = class Game {
     start(callback) {
         if (this.started) return;
         let problemWorth = this.users.length;
-        if (this.type === "CD") problemWorth = 1;
+        if (this.type === 'CD') problemWorth = 1;
+
 
         this.started = true;
 
@@ -85,10 +93,15 @@ module.exports = class Game {
             user.canAnswer = false;
             user.score = 0;
         });
-        this.dataToSocket.forEach((socket) => socket.emit("timer", {
-            type: "Starting",
-            time: 5
-        }));
+
+        this.dataToSocket.forEach(socket => socket.emit(
+            'timer',
+
+            {
+                type: 'Starting',
+                time: 5,
+            }
+        ));
         let time = 5;
 
         this.functionArr = [];
@@ -108,10 +121,10 @@ module.exports = class Game {
                 const problem = problemUtils.getProblem();
                 _self.currProblem = problem;
 
-                //Order of these emits matters. 
-                _self.dataToSocket.forEach((socket) => socket.emit("timer", {
-                    type: "Problem #" + (i + 1),
-                    time: _self.timePerProblem
+                // Order of these emits matters.
+                this.dataToSocket.forEach(socket => socket.emit('timer', {
+                    type: `Problem #${i + 1}`,
+                    time: this.timePerProblem,
                 }));
 
                 _self.dataToSocket.forEach((socket) => socket.emit("problem", {
@@ -165,112 +178,107 @@ module.exports = class Game {
 
             callback();
         });
-
-
     }
+
     updateElo() {
         const allUsers = this.users.concat(this.usersThatLeft);
         const newRatings = [];
 
-        let maxChange = -1;
-        let maxChangeData = null;
-        for (let i = 0; i < allUsers.length; i++) {
+        for (let i = 0; i < allUsers.length; i += 1) {
             let ratingChange = 0;
-            for (let z = 0; z < allUsers.length; z++) {
-                if (i == z) continue;
-                ratingChange += elo.ratingChange(allUsers[i].rating, allUsers[z].rating, allUsers[i].score, allUsers[z].score);
-            }
-            newRatings.push(allUsers[i].rating + ratingChange);
-            if (ratingChange > maxChange) {
-                maxChange = ratingChange;
-                maxChangeData = allUsers[i];
-            } else if (ratingChange === maxChange) {
-                maxChangeData = null;
+
+            for (let z = 0; z < allUsers.length; z += 1) {
+                if (i !== z) {
+                    ratingChange += elo.ratingChange(
+                        allUsers[i].rating,
+                        allUsers[z].rating,
+                        allUsers[i].score,
+                        allUsers[z].score
+                    );
+                }
             }
 
-            if (ratingChange !== 0) {
-                RatingChange.create({
-                    username: allUsers[i].username,
-                    change: ratingChange
+            newRatings.push(allUsers[i].rating + ratingChange);
+        }
+
+        allUsers.forEach((data, i) => {
+            // Don't update ratings for guests
+            if (!data.username.startsWith('Guest ')) {
+                data.rating = newRatings[i];
+                this.dataToMongoose.get(data).rating = newRatings[i];
+
+                this.dataToMongoose.get(data).save((err) => {
+                    if (err) {
+                        console.error(err);
+                    }
                 });
             }
-        }
-        const _self = this;
-        allUsers.forEach((data, i) => {
-            data.rating = newRatings[i];
-
-            const mongooseObj = _self.dataToMongoose.get(data);
-            mongooseObj.rating = newRatings[i];
-            mongooseObj.games++;
-            if (maxChangeData === data) mongooseObj.wins++;
-
-            mongooseObj.save(function (err) {
-                if (err) console.error(err);
-            });
         });
     }
-    //Safely progress to the next part of the game.
+
+    // Safely progress to the next part of the game.
     safeProgress(expected) {
-        if (this.arrIndex + 1 !== expected) return;
-        this.arrIndex++;
+        if (this.arrIndex + 1 !== expected) {
+            return;
+        }
+
+        this.arrIndex += 1;
         const nextFunc = this.functionArr[this.arrIndex];
 
-        if (typeof nextFunc === "function") {
+        if (typeof nextFunc === 'function') {
             nextFunc();
         }
     }
 
-    //Send scores to everybody
+    // Send scores to everybody
     sendScores() {
-        //Lazy implementation, but we can afford sending extra data
-        this.dataToSocket.forEach((socket) => socket.emit("scores", this.users));
+        // Lazy implementation, but we can afford sending extra data
+        this.dataToSocket.forEach(socket => socket.emit('scores', this.users));
     }
 
     answer(user, answer) {
-        let cleanAnswer = chatUtils.clean(answer);
+        const cleanAnswer = chatUtils.clean(answer);
+
         if (user.canAnswer) {
             user.canAnswer = false;
 
             let shouldProgress = false;
-            if (answer === this.currProblem.answer) {
-                user.score += this.answerValue;
-                this.answerValue--;
 
-                if (this.type === "CD") {
+            if (answer.toLowerCase() === this.currProblem.answer.toLowerCase()) {
+                user.score += this.answerValue;
+                this.answerValue -= 1;
+
+                if (this.type === 'CD') {
                     shouldProgress = true;
                     user.answer = {
                         text: cleanAnswer,
-                        correct: true
+                        correct: true,
                     };
                 }
-
-            } else if (this.type === "CD") {
-                //If we're in CD, pass on incorrect answers
+            } else if (this.type === 'CD') {
+                // If we're in CD, pass on incorrect answers
                 user.answer = {
                     text: cleanAnswer,
-                    correct: false
+                    correct: false,
                 };
             }
 
-            if (this.users.filter((user) => user.canAnswer).length == 0) {
+            if (this.users.filter(usrdata => usrdata.canAnswer).length === 0) {
                 shouldProgress = true;
             }
 
             if (shouldProgress) {
                 this.safeProgress(this.arrIndex + 1);
-                if (this.type == "CD" && user.score === 4) {
-                    //Skip to the end
+                if (this.type === 'CD' && user.score === 4) {
+                    // Skip to the end
                     this.arrIndex = NaN;
                     this.functionArr[this.functionArr.length - 1]();
                 }
             }
-            if (this.type == "CD") {
-                //Update incorrect answers for CD
+            if (this.type === 'CD') {
+                // Update incorrect answers for CD
                 this.sendScores();
             }
         }
     }
-
-
-
-}
+};

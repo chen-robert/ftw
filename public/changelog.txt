@@ -9,6 +9,7 @@ Started logging game data.
 April 16th
 Rate limited chat. Hopefully decreases spammers.
 
+
 April 15th
 Added commands.
 You can now use /ignore to ignore spammers.
@@ -22,6 +23,3 @@ Added a changelog.
 
 April 13th
 Built game. 
-
-
-Github Link: https://github.com/gamester543/ftw
