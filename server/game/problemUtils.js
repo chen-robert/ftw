@@ -25,8 +25,9 @@ const isPrime = (n) => {
 
 /**
  * READ ME BEFORE YOU EDIT PROBLEMS
- * Answer must be in the form of a String.
- * Please do NOT use "" + to type coerce integers, as it is bad practice.
+ * Problems may (and in most cases, should) contain LaTeX.
+ * Answer must be in the form of a String. However, please do NOT use '' + to type coerce integers.
+ * Doing is is generally bad practice and can lead to unindented results.
  * Use String(...) or (...).toString() instead.
  */
 utils.getProblem = () => {
@@ -76,9 +77,13 @@ utils.getProblem = () => {
     const a = Math.floor(480 * Math.random()) + 20;
     const b = Math.floor(5 * Math.random()) + 2;
 
+    // Check for floating point errors
+    const log = Math.log(a) / Math.log(b);
+    const round = Math.floor(log + 0.5);
+
     return {
-      text: `What is the largest integer $x$ such that $${b}^x < ${a}$?`,
-      answer: String(Math.floor(Math.log(a) / Math.log(b))),
+      text: `What is the largest integer $x$ such that $${b}^x \\le ${a}$?`,
+      answer: String(a ** round === b ? round : Math.floor(log)),
     };
   }
 
