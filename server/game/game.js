@@ -1,6 +1,7 @@
 const uuidv1 = require('uuid/v1');
 const problemUtils = require('./problemUtils.js');
 const elo = require('./elo.js');
+const katex = require('../../public/resources/vendor/katex/katex.min.js');
 
 const chatUtils = require('./chat/chatUtils.js');
 
@@ -100,81 +101,112 @@ module.exports = class Game {
       {
         type: 'Starting',
         time: 5,
-      }
+      },
     ));
-    let time = 5;
+
+    // leet time = 5;
 
     this.functionArr = [];
     this.arrIndex = -1;
-    const _self = this;
-    setTimeout(() => _self.safeProgress(0), 5 * 1000);
 
-    for (let i = 0; i < this.problems; i++) {
-      this.functionArr.push(function () {
-        _self.answerValue = problemWorth;
-        _self.users.forEach((user) => user.canAnswer = true);
+    setTimeout(() => this.safeProgress(0), 5 * 1000);
 
-        //Reset CD scoreboard
-        _self.users.forEach((user) => user.answer = undefined);
-        _self.sendScores();
+    for (let i = 0; i < this.problems; i += 1) {
+      this.functionArr.push(() => {
+        this.answerValue = problemWorth;
+
+        this.users.forEach((user) => {
+          user.canAnswer = true;
+        });
+
+        // Reset CD scoreboard
+        this.users.forEach((user) => {
+          user.answer = undefined;
+        });
+
+        this.sendScores();
 
         const problem = problemUtils.getProblem();
-        _self.currProblem = problem;
+
+        // Replace $...$ with KaTeX
+        problem.text = problem.text.replace(
+          /\$(.*?)\$/g,
+
+          (a, b) => {
+            try {
+              return katex.renderToString(b);
+            } catch (e) {
+              return a;
+            }
+          },
+        );
+
+        this.currProblem = problem;
 
         // Order of these emits matters.
-        _self.dataToSocket.forEach(socket => socket.emit('timer', {
+        this.dataToSocket.forEach(socket => socket.emit('timer', {
           type: `Problem #${i + 1}`,
-          time: _self.timePerProblem,
+          time: this.timePerProblem,
         }));
 
-        _self.dataToSocket.forEach((socket) => socket.emit("problem", {
+        this.dataToSocket.forEach(socket => socket.emit('problem', {
           text: problem.text,
-          answer: "0x536865727279"
+          answer: '0x536865727279',
         }));
 
-        _self.dataToSocket.forEach((socket) => socket.emit("chat freeze", true));
+        this.dataToSocket.forEach(socket => socket.emit('chat freeze', true));
 
-        setTimeout(() => _self.safeProgress(2 * i + 1), _self.timePerProblem * 1000);
+        setTimeout(() => this.safeProgress((2 * i) + 1), this.timePerProblem * 1000);
       });
 
-      if (i != this.problems - 1) {
-        this.functionArr.push(function () {
-          _self.users.forEach((user) => user.canAnswer = false);
-          //Reason why these are reversed from above is because game hides / shows the answer
-          //box based on order of these emits.
-          _self.dataToSocket.forEach((socket) => socket.emit("problem", {
-            text: "Loading Next Problem...",
-            answer: "0x536865727279"
+      if (i !== this.problems - 1) {
+        this.functionArr.push(() => {
+          this.users.forEach((user) => {
+            user.canAnswer = false;
+          });
+
+          /**
+           * Reason why these are reversed from above is because game hides / shows the answer
+           * box based on order of these emits.
+           */
+          this.dataToSocket.forEach(socket => socket.emit('problem', {
+            text: 'Loading Next Problem...',
+            answer: '0x536865727279',
           }));
-          _self.dataToSocket.forEach((socket) => socket.emit("timer", {
-            type: "Intermission",
-            time: 5
+
+          this.dataToSocket.forEach(socket => socket.emit('timer', {
+            type: 'Intermission',
+            time: 5,
           }));
 
 
-          _self.dataToSocket.forEach((socket) => socket.emit("chat freeze", false));
+          this.dataToSocket.forEach(socket => socket.emit('chat freeze', false));
 
-          _self.sendScores();
-          setTimeout(() => _self.safeProgress(2 * i + 2), 5 * 1000);
+          this.sendScores();
+          setTimeout(() => this.safeProgress((2 * i) + 2), 5 * 1000);
         });
       }
     }
-    this.functionArr.push(function () {
-      _self.users.forEach((user) => user.canAnswer = false);
-      _self.dataToSocket.forEach((socket) => socket.emit("problem", {
-        text: "It's over! Finally!",
-        answer: "0x536865727279"
+
+    this.functionArr.push(() => {
+      this.users.forEach((user) => {
+        user.canAnswer = false;
+      });
+
+      this.dataToSocket.forEach(socket => socket.emit('problem', {
+        text: 'It\'s over! Finally!',
+        answer: '0x536865727279',
       }));
 
-      _self.dataToSocket.forEach((socket) => socket.emit("timer", {
-        type: "Round Over",
-        time: 1
+      this.dataToSocket.forEach(socket => socket.emit('timer', {
+        type: 'Round Over',
+        time: 1,
       }));
 
-      _self.dataToSocket.forEach((socket) => socket.emit("chat freeze", false));
+      this.dataToSocket.forEach(socket => socket.emit('chat freeze', false));
 
-      _self.sendScores();
-      _self.updateElo();
+      this.sendScores();
+      this.updateElo();
 
       callback();
     });
@@ -195,7 +227,7 @@ module.exports = class Game {
             allUsers[i].rating,
             allUsers[z].rating,
             allUsers[i].score,
-            allUsers[z].score
+            allUsers[z].score,
           );
         }
       }
@@ -210,22 +242,21 @@ module.exports = class Game {
       newRatings.push(allUsers[i].rating + ratingChange);
     }
 
-    const _self = this;
     allUsers.forEach((data, i) => {
-      // Don't update ratings for guests
-      if (!data.username.startsWith('Guest ')) {
-        data.rating = newRatings[i];
-        const mongooseObj = _self.dataToMongoose.get(data);
-        mongooseObj.rating = newRatings[i];
-        mongooseObj.games++;
-        if (maxChangeData === data) mongooseObj.wins++;
+      data.rating = newRatings[i];
+      const mongooseObj = this.dataToMongoose.get(data);
+      mongooseObj.rating = newRatings[i];
+      mongooseObj.games += 1;
 
-        mongooseObj.save(function (err) {
-          if (err) {
-            console.error(err);
-          }
-        });
+      if (maxChangeData === data) {
+        mongooseObj.wins += 1;
       }
+
+      mongooseObj.save((err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
     });
   }
 

@@ -58,22 +58,16 @@ app.set('view engine', 'ejs');
 app.get(
   '/',
 
-  (req, res, next) => {
+  (req, res) => {
     if (userManager.users.has(req.cookies[SESS_ID_COOKIE])) {
-      next();
+      res.render('pages/index', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) });
     } else {
       res.redirect('/login');
     }
   },
-
-  (req, res) => res.render('pages/index', {
-    user: userManager.users.get(req.cookies[SESS_ID_COOKIE])
-  }),
 );
 
-app.get('/report', (req, res) => res.render('pages/report', {
-  user: userManager.users.get(req.cookies[SESS_ID_COOKIE])
-}));
+app.get('/report', (req, res) => res.render('pages/report', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) }));
 
 app.get(
   '/login',
@@ -127,7 +121,8 @@ app.post(
           } else {
             ip = req.connection.remoteAddress;
           }
-          console.log(req.body.username + " joined");
+
+          console.log(`${req.body.username} joined`);
 
           const sessId = crypto.randomBytes(64).toString('hex');
           res.cookie(SESS_ID_COOKIE, sessId, {
@@ -210,10 +205,10 @@ app.post(
 
   (req, res) => {
     if (
-      req.body.username !== undefined &&
-      req.body.comment !== undefined &&
-      typeof req.body.username === 'string' &&
-      typeof req.body.comment === 'string'
+      req.body.username !== undefined
+      && req.body.comment !== undefined
+      && typeof req.body.username === 'string'
+      && typeof req.body.comment === 'string'
     ) {
       let ip = req.headers['x-forwarded-for'];
 
@@ -263,9 +258,7 @@ app.get(
   '/log/:date',
 
   (req, res) => {
-    const {
-      date
-    } = req.params;
+    const { date } = req.params;
 
     if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
       res.type('text/plain');
@@ -296,9 +289,7 @@ app.post(
 
   (req, res) => {
     res.type('text/plain');
-    const {
-      date
-    } = req.params;
+    const { date } = req.params;
 
     if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
       res.status('404').send(`Cannot POST ${req.url}`);
@@ -312,25 +303,24 @@ app.post(
 
           // Need to be admin AND have password
           if (admins.indexOf(userdata ? userdata.username : '') !== -1 && req.body.password === process.env.ADMIN_PASSWORD) {
-            chatLog.find({
-              date
-            }).exec((error, msgs) => {
+            chatLog.find({ date }).exec((error, msgs) => {
               res.send(msgs.map(msg => `[${msg.time}] ${msg.username}: ${msg.message}`).join('\n'));
             });
           } else {
             res.status('403').send('Forbidden');
+
             if (
-              userdata &&
-              admins.indexOf(userdata ? userdata.username : '') === -1 &&
-              req.body.password &&
-              req.body.password !== process.env.ADMIN_PASSWORD
+              userdata
+              && admins.indexOf(userdata ? userdata.username : '') === -1
+              && req.body.password
+              && req.body.password !== process.env.ADMIN_PASSWORD
             ) {
               // Somebody tried to get in with a false password. How naughty!
               console.error(`${userdata.username} tried getting chat logs with key ${req.body.password}`);
             } else if (
-              userdata &&
-              admins.indexOf(userdata ? userdata.username : '') === -1 &&
-              req.body.password === process.env.ADMIN_PASSWORD
+              userdata
+              && admins.indexOf(userdata ? userdata.username : '') === -1
+              && req.body.password === process.env.ADMIN_PASSWORD
             ) {
               // Uh oh
               console.error(`${userdata.username} knows the admin key and it has likely been compromised.`);
@@ -368,17 +358,7 @@ io.on(
   'connection',
 
   (socket) => {
-    let cookies;
-
-    /**
-     * I have no idea why this produces an error sometimes, but it does.
-     * Assume user is a guest if parsing error.
-     */
-    try {
-      cookies = cookie.parse(socket.handshake.headers.cookie);
-    } catch (e) {
-      cookies = {};
-    }
+    const cookies = cookie.parse(socket.handshake.headers.cookie);
 
     userManager.addSocket(cookies[SESS_ID_COOKIE], socket);
   },

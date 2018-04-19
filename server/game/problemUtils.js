@@ -37,7 +37,7 @@ utils.getProblem = () => {
     const b = Math.floor(100 * Math.random());
 
     return {
-      text: `What is the value of ${a} + ${b}?`,
+      text: `What is the value of $${a} + ${b}$?`,
       answer: String(a + b),
     };
   }
@@ -47,7 +47,7 @@ utils.getProblem = () => {
     const b = Math.floor(150 * Math.random());
 
     return {
-      text: `What is the value of ${a} - ${b}?`,
+      text: `What is the value of $${a} - ${b}$?`,
       answer: String(a - b),
     };
   }
@@ -57,7 +57,7 @@ utils.getProblem = () => {
     const b = Math.floor(20 * Math.random());
 
     return {
-      text: `What is the value of ${a} * ${b}?`,
+      text: `What is the value of $${a} \\cdot ${b}$?`,
       answer: String(a * b),
     };
   }
@@ -67,7 +67,7 @@ utils.getProblem = () => {
     const b = Math.floor(11 * Math.random()) + 2;
 
     return {
-      text: `What is the value of ${a} mod ${b}?`,
+      text: `What is the value of $${a} \\pmod{${b}}$?`,
       answer: String(a % b),
     };
   }
@@ -77,7 +77,7 @@ utils.getProblem = () => {
     const b = Math.floor(5 * Math.random()) + 2;
 
     return {
-      text: `What is the largest integer x such that ${b} to the x is less than ${a}?`,
+      text: `What is the largest integer $x$ such that $${b}^x < ${a}$?`,
       answer: String(Math.floor(Math.log(a) / Math.log(b))),
     };
   }
@@ -86,7 +86,7 @@ utils.getProblem = () => {
     const a = Math.floor(45 * Math.random()) + 5;
 
     return {
-      text: `What is the sum of the first ${a} integers?`,
+      text: `What is the sum of the first $${a}$ integers?`,
       answer: String((a * (a + 1)) / 2),
     };
   }
@@ -97,7 +97,7 @@ utils.getProblem = () => {
     const c = Math.floor(100 * Math.random()) + 1;
 
     return {
-      text: `Solve the equation: ${b}X + ${c} = ${(a * b) + c}`,
+      text: `Solve the equation: $${b}x + ${c} = ${(a * b) + c}$`,
       answer: String(a),
     };
   }
@@ -108,7 +108,7 @@ utils.getProblem = () => {
     const c = Math.floor(15 * Math.random()) + 5;
 
     return {
-      text: `If Bobert the builder can build ${a} houses in ${b} days, how many completed houses can Bobert build in ${c} days?`,
+      text: `If Bobert the builder can build $${a}$ houses in $${b}$ days, how many completed houses can Bobert build in $${c}$ days?`,
       answer: String(Math.floor((a * c) / b)),
     };
   }
@@ -119,7 +119,7 @@ utils.getProblem = () => {
     const c = Math.floor(2 * Math.random());
 
     return {
-      text: `Alex and Bobert take turns taking between 1 and ${a} sticks from a pile starting from ${b}. If the last person to take a stick wins, and ${(c > 0 ? 'Alex' : 'Bobert')} goes first, who wins?`,
+      text: `Alex and Bobert take turns taking between $1$ and $${a}$ sticks from a pile starting from $${b}$. If the last person to take a stick wins, and ${(c > 0 ? 'Alex' : 'Bobert')} goes first, who wins?`,
       answer: (b % (a + 1) === 0) ? ['Alex', 'Bobert'][c] : ['Alex', 'Bobert'][1 - c],
     };
   }
@@ -135,7 +135,7 @@ utils.getProblem = () => {
     }
 
     return {
-      text: `What is the sum of the prime factors of ${num}?`,
+      text: `What is the sum of the prime factors of $${num}$?`,
       answer: String(sum),
     };
   }
@@ -149,7 +149,7 @@ utils.getProblem = () => {
     }
 
     return {
-      text: `How many terminating zeros does ${num}! have?`,
+      text: `How many terminating zeros does $${num}!$ have?`,
       answer: String(zeros),
     };
   }
@@ -162,7 +162,7 @@ utils.getProblem = () => {
     const chickenTendies = (a * b) - a - b;
 
     return {
-      text: `Pencils are sold in either bundles of ${a} or ${b}. What is the largest quantity of pencils that cannot be bought?`,
+      text: `Pencils are sold in either bundles of $${a}$ or $${b}$. What is the largest quantity of pencils that cannot be bought?`,
       answer: String(chickenTendies),
     };
   }
@@ -171,7 +171,7 @@ utils.getProblem = () => {
   const a = Math.floor(100 * Math.random());
 
   return {
-    text: `wot is ${a}`,
+    text: `wot is $${a}$`,
     answer: String(a),
   };
 };
