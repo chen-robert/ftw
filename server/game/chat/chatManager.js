@@ -1,173 +1,159 @@
-const chatUtils = require('./chatUtils.js');
-const chatLog = require('./chatLog.js');
+const chatUtils = require("./chatUtils.js");
+const chatLog = require("./chatLog.js");
+const moment = require("moment");
 
-const emoji = require('emoji-parser');
-
+const emoji = require("emoji-parser");
 emoji.init().update();
 
-const swearList = require('swearjar');
-
-const moment = require('moment');
+const swearList = require("swearjar");
 
 class ChatManager {
-  constructor() {
-    this.users = new Map();
-    this.muted = new Set();
-  }
+    constructor() {
+        this.users = new Map();
+        //Stores lowerCaseString -> string for PM functions. This code seems really ugly.
+        this.nameMap = new Map();
 
-  addUser(data, socket) {
-    const name = data.username;
-    const { users } = this;
-
-    if (users.has(name)) {
-      this.disconnect(name);
+        this.muted = new Set();
+        this.banned = new Set();
     }
+    addUser(data, socket, ip) {
+        const name = data.username;
+        const nameLower = name.toLowerCase();
+        const users = this.users;
 
-    users.set(name, { socket, data });
+        this.nameMap.set(nameLower, name);
 
-    socket.on(
-      'public message',
-
-      (message) => {
-        if (this.muted.has(name)) {
-          return;
+        if (users.has(name)) {
+            this.disconnect(name);
+        }
+        if (this.banned.has(name) || this.banned.has(ip)) {
+            socket.emit("redirect", "/logout");
+            socket.disconnect();
+            return;
         }
 
-        const msg = this.process(message);
+        users.set(name, {
+            socket: socket,
+            data: data
+        });
+        const _self = this;
+        const rateLimit = [];
+        socket.on("public message", function (message) {
+            if (_self.muted.has(name)) return;
 
-        if (typeof msg === 'string') {
-          users.forEach(usrdata => usrdata.socket.emit(
-            'message',
-
-            {
-              type: 'public',
-              from: name,
-              message: msg,
-            },
-          ));
-
-          // Add to chat log
-          chatLog.create({
-            date: moment().format('YYYY-MM-DD'),
-            time: moment().format('HH:mm:ss'),
-            username: name,
-            message: msg,
-          });
-        }
-      },
-    );
-
-    socket.on(
-      'whisper',
-
-      (whisper) => {
-        if (this.muted.has(name)) {
-          return;
-        }
-
-        const { to } = whisper;
-        let { message } = whisper;
-        message = this.process(message);
-
-        if (typeof message === 'string' && typeof to === 'string') {
-          if (this.users.has(to)) {
-            const msg = {
-              message,
-              type: 'private',
-              from: name,
-            };
-
-            this.users.get(to).socket.emit('message', msg);
-            socket.emit('message', msg);
-          } else {
-            socket.emit(
-              'message',
-
-              {
-                type: 'public',
-                from: 'Ftw Bot',
-                message: 'Username not found',
-              },
-            );
-          }
-        }
-      },
-    );
-
-    socket.on(
-      'admin command',
-
-      (cmd) => {
-        if (cmd.key === process.env.ADMIN_PASSWORD && typeof cmd.command === 'string') {
-          console.log(`${name} executed ${cmd.command}`);
-          const parts = cmd.command.split(' ');
-          if (parts.length === 2) {
-            if (parts[0] === 'kick') {
-              this.disconnect(parts[1]);
-            } else if (parts[0] === 'mute') {
-              this.muted.add(parts[1]);
-
-              socket.emit(
-                'message',
-
-                {
-                  type: 'public',
-                  from: 'Ftw Bot',
-                  message: `${parts[1]} is now muted!`,
-                },
-              );
-            } else if (parts[0] === 'unmute') {
-              this.muted.delete(parts[1]);
-
-              socket.emit(
-                'message',
-
-                {
-                  type: 'public',
-                  from: 'Ftw Bot',
-                  message: `${parts[1]} is no longer muted!`,
-                },
-              );
+            const currTime = +new Date();
+            while (rateLimit.length > 0 && rateLimit[0] < currTime - 5 * 1000) {
+                rateLimit.shift();
             }
-          }
-        } else {
-          console.error(`${name} tried executing ${data.command} with key ${data.key}`);
+            rateLimit.push(currTime);
+
+            if (rateLimit.length > 5) {
+                socket.emit("message", _self.toMessage("Please slow down!"));
+                return;
+            } else {
+                message = _self.process(message);
+                if (typeof message === "string") {
+                    users.forEach((data) => data.socket.emit("message", {
+                        type: "public",
+                        from: name,
+                        message: message
+                    }));
+
+                    // Add to chat log
+                    chatLog.create({
+                        date: moment().format('YYYY-MM-DD'),
+                        time: moment().format('HH:mm:ss'),
+                        username: name,
+                        message: message,
+                    });
+                }
+            }
+
+        });
+
+        socket.on("whisper", function (data) {
+            if (_self.muted.has(name)) return;
+
+            let message = data.message;
+            let to = data.to;
+            message = _self.process(message);
+            if (typeof message === "string" && typeof to === "string") {
+                to = _self.nameMap.get(to.toLowerCase());
+                if (_self.users.has(to)) {
+                    const msg = {
+                        type: "private",
+                        from: name,
+                        message: message
+                    }
+                    _self.users.get(to).socket.emit("message", msg);
+                    socket.emit("message", msg);
+                } else {
+                    socket.emit("message", _self.toMessage("Username not found"));
+                }
+            }
+
+        });
+        socket.on("admin command", function (data) {
+            if (data.key === process.env.ADMIN_PASSWORD && typeof data.command === "string") {
+                console.log(name + " exectued " + data.command);
+                const parts = data.command.split(" ");
+                if (parts.length == 2) {
+                    if (parts[0] === "kick") {
+                        _self.disconnect(parts[1]);
+                    } else if (parts[0] === "mute") {
+                        _self.muted.add(parts[1]);
+                        socket.emit("message", _self.toMessage(parts[1] + " is now muted!"));
+                    } else if (parts[0] === "unmute") {
+                        _self.muted.delete(parts[1]);
+                        socket.emit("message", _self.toMessage(parts[1] + " is no longer muted!"));
+                    } else if (parts[0] === "ban") {
+                        _self.banned.add(parts[1]);
+                        _self.disconnect(parts[1]);
+
+                        socket.emit("message", _self.toMessage(parts[1] + " is now banned!"));
+                    } else if (parts[0] === "unban") {
+                        _self.banned.delete(parts[1]);
+
+                        socket.emit("message", _self.toMessage(parts[1] + " is no longer banned!"));
+                    } else if (parts[0] === "restart") {
+                        users.forEach((data) => data.socket.emit("notif error", "Server Restarting"));
+                    }
+                }
+            } else {
+                console.error(name + " tried executing " + data.command + " with key " + data.key);
+            }
+        });
+    }
+    get onlineUsers() {
+        const pool = [];
+        this.users.forEach(data => pool.push(data.data));
+        return pool;
+    }
+    disconnect(name) {
+        if (this.users.has(name)) {
+            this.users.get(name).socket.emit("redirect", "/logout");
+            this.users.get(name).socket.disconnect();
         }
-      },
-    );
-  }
-
-  get onlineUsers() {
-    const pool = [];
-    this.users.forEach(data => pool.push(data.data));
-    return pool;
-  }
-
-  disconnect(name) {
-    if (this.users.has(name)) {
-      this.users.get(name).socket.emit('redirect', '/logout');
-      this.users.get(name).socket.disconnect();
     }
-  }
+    process(message) {
+        if (typeof message !== "string") return null;
+        message = message.trim();
+        if (message.length == 0 || message.length > 120) return null;
 
-  /* eslint-disable class-methods-use-this */
-  process(message) {
-    if (typeof message !== 'string') {
-      return null;
+
+        message = swearList.censor(message);
+        message = chatUtils.clean(message);
+        message = chatUtils.parseLinks(message);
+        message = emoji.parse(message, "/emoji");
+        return message;
     }
-
-    let msg = message.trim();
-
-    if (msg.length === 0 || message.length > 120) {
-      return null;
+    toMessage(str) {
+        return {
+            type: "public",
+            from: "Console",
+            message: str
+        };
     }
-
-    msg = swearList.censor(message);
-    msg = chatUtils.clean(message);
-    msg = chatUtils.parseLinks(message);
-    msg = emoji.parse(message, '/emoji');
-    return message;
-  }
 }
 
 module.exports = new ChatManager();
