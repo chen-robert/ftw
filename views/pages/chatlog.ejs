@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <title>FTW Login</title>
+   <% include ../partials/bootstrap %>
+   <!-- Custom CSS -->
+   <link rel="stylesheet" href="/resources/css/chat.css">
+   <link rel="stylesheet" href="/resources/css/login.css">
+</head>
+
+<body class="text-center">
+   <% include ../partials/nav %>
+   <div class="login-div" style="width: 300px; margin-top: 15px;">
+      <div class="login-content border-top-0">
+         <form id="login-form" class="form-group" method="post">
+            <div class="form-item">
+               <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+               <div class="error-text" for="password">You can't leave this empty!</div>
+            </div>
+            <button class="btn btn-primary signin-button" type="submit" id="login-button">Sign In</button>
+         </form>
+      </div>
+   </div>
+</body>
+
+</html>

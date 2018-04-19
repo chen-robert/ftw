@@ -35,9 +35,9 @@ class GameManager {
             }
             updateData();
         }
-        const joinGame = function (funcData) {
-            const id = funcData.id;
-            const pw = funcData.pw;
+        const joinGame = function (data) {
+            const id = data.id;
+            const pw = data.pw;
             if (games.has(id) && !games.get(id).started) {
                 if (currGame !== null && currGame.id !== id) {
                     removeUser();
@@ -61,7 +61,7 @@ class GameManager {
         }
         const answerProblem = function (answer) {
             if (currGame === null || !currGame.started) {
-                console.error(userData.username + " is trying to answer a problem when not in a game.");
+                console.error(userData.username + " is trying to pull something funny.");
             } else {
                 currGame.answer(userData, answer);
             }
@@ -74,7 +74,6 @@ class GameManager {
             let time = +data.time;
             let problems = +data.problems;
             let pw = "" + data.password;
-            console.log(pw);
 
             time = Number((time).toFixed(3));
             problems = Math.floor(problems);
