@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Report Issue</title>
+  <% include ../partials/bootstrap %>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/resources/css/chat.css">
+  <link rel="stylesheet" href="/resources/css/login.css">
+</head>
+
+<body class="text-center">
+  <%- include('../partials/nav', { user }) %>
+  <div class="loading-bar">
+    <div class="loading-display"></div>
+  </div>
+  <div id="alert" class="alert alert-danger" style="display: none;">
+    <strong id="alert-text"></strong>
+  </div>
+  <div class="login-div" style="border: 1px solid #dee2e6;">
+    <div style="padding: 20px;">
+      <h2 style="margin-bottom: 15px;">Report An Issue</h2>
+      <div class="form-item">
+        <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+        <div class="error-text" for="username">You can't leave this empty!</div>
+      </div>
+      <div class="form-item">
+        <textarea class="form-control" id="comment" name="comment" placeholder="Details" style="height: 150px;"></textarea>
+        <div class="error-text" for="comment">You can't leave this empty!</div>
+      </div>
+      <button class="btn btn-primary signin-button float-right" id="report-button" style="width: 150px; margin-bottom: 20px;">
+        Report
+      </button>
+    </div>
+  </div>
+  <!-- Custom JS -->
+  <script src="/resources/js/report.js"></script>
+</body>
+
+</html>
