@@ -31,5 +31,7 @@ This JS file should be loaded first.
         window.FTW.socket.on("timer", (data) => window.FTW.game.setTimer(data));
         window.FTW.socket.on("problem", (data) => window.FTW.game.setProblem(data));
         window.FTW.socket.on("scores", (data) => window.FTW.game.setScores(data));
+
+        window.FTW.socket.on("chat freeze", (freeze) => window.FTW.chat.freezeChat(freeze));
     }
 })();

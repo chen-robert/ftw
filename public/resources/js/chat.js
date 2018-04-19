@@ -16,6 +16,10 @@ $(document).ready(function () {
 
     if (!window.FTW.chat) {
         const chat = {};
+        //Should freeze chat or not
+        chat.freeze = false;
+        chat.messageQueue = [];
+
         chat.ignoreList = new Set();
 
         chat.previousSender = "";
@@ -47,6 +51,11 @@ $(document).ready(function () {
         }
 
         chat.appendMessage = function (msg) {
+            if (chat.freeze) {
+                chat.messageQueue.push(msg);
+                return;
+            }
+
             const user = msg.from;
             const str = msg.message;
             const type = msg.type;
@@ -94,6 +103,16 @@ $(document).ready(function () {
             $("#chat-display").append(message);
 
             chat.previousSender = user;
+        }
+        chat.freezeChat = function (freeze) {
+            if (freeze) {
+                chat.freeze = true;
+            } else {
+                chat.freeze = false;
+                while (chat.messageQueue.length > 0) {
+                    chat.appendMessage(chat.messageQueue.shift());
+                }
+            }
         }
         chat.safeAppend = function (msg) {
             const scrollDiff = $('#chat-display').prop("scrollHeight") - $('#chat-display').prop("scrollTop") - $('#chat-display').height();

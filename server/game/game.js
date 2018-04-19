@@ -57,6 +57,7 @@ module.exports = class Game {
     remove(data) {
         if (this.users.indexOf(data) == -1) {
             console.error("Tried to delete somebody that didn't exist in game.");
+            console.error(data);
             return true;
         }
         this.dataToSocket.delete(data);
@@ -118,6 +119,8 @@ module.exports = class Game {
                     answer: "0x536865727279"
                 }));
 
+                _self.dataToSocket.forEach((socket) => socket.emit("chat freeze", true));
+
                 setTimeout(() => _self.safeProgress(2 * i + 1), _self.timePerProblem * 1000);
             });
 
@@ -134,6 +137,10 @@ module.exports = class Game {
                         type: "Intermission",
                         time: 5
                     }));
+
+
+                    _self.dataToSocket.forEach((socket) => socket.emit("chat freeze", false));
+
                     _self.sendScores();
                     setTimeout(() => _self.safeProgress(2 * i + 2), 5 * 1000);
                 });
@@ -150,6 +157,9 @@ module.exports = class Game {
                 type: "Round Over",
                 time: 1
             }));
+
+            _self.dataToSocket.forEach((socket) => socket.emit("chat freeze", false));
+
             _self.sendScores();
             _self.updateElo();
 

@@ -69,7 +69,9 @@ class UserManager {
             } else {
                 userData.create({
                     username: username,
-                    rating: 1200
+                    rating: 1200,
+                    wins: 0,
+                    games: 0
                 });
             }
             callback();

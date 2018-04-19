@@ -63,7 +63,8 @@ class GameManager {
             if (currGame === null || !currGame.started) {
                 console.error(userData.username + " is trying to answer a problem when not in a game.");
             } else {
-                currGame.answer(userData, answer);
+                //Force typecast to string
+                currGame.answer(userData, "" + answer);
             }
         }
 
@@ -74,7 +75,6 @@ class GameManager {
             let time = +data.time;
             let problems = +data.problems;
             let pw = "" + data.password;
-            console.log(pw);
 
             time = Number((time).toFixed(3));
             problems = Math.floor(problems);
