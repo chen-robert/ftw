@@ -55,7 +55,7 @@ app.set('view engine', 'ejs');
 
 
 //Redirect old requests to index.html
-app.get("index*", (req, res) => res.redirect("/"));
+app.get("/index*", (req, res) => res.redirect("/"));
 
 // Standard EJS stuff. Sending the user object so that the navbar can get the username.
 app.get(

@@ -27,6 +27,9 @@ module.exports = class Game {
 
     this.pw = pw;
     this.private = pw !== '';
+
+    //For review purposes
+    this.problemArr = [];
   }
 
   // We need access to mongooseObj to update user ratings later.
@@ -153,6 +156,7 @@ module.exports = class Game {
           text: problem.text,
           answer: '0x536865727279',
         }));
+        this.problemArr.push(problem);
 
         this.dataToSocket.forEach(socket => socket.emit('chat freeze', true));
 
@@ -205,13 +209,16 @@ module.exports = class Game {
 
       this.dataToSocket.forEach(socket => socket.emit('chat freeze', false));
 
+      this.sendReviewProblems();
       this.sendScores();
       this.updateElo();
 
       callback();
     });
   }
-
+  sendReviewProblems() {
+    this.dataToSocket.forEach(socket => socket.emit("review game", this.problemArr));
+  }
   updateElo() {
     const allUsers = this.users.concat(this.usersThatLeft);
     const newRatings = [];

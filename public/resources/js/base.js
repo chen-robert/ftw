@@ -27,6 +27,7 @@ This JS file should be loaded first.
     window.FTW.socket.on("curr game", (uuid) => window.FTW.game.currGame = uuid);
     window.FTW.socket.on("join game", (data) => window.FTW.game.joinGame(data));
     window.FTW.socket.on("leave game", (data) => window.FTW.game.leaveGame(data));
+    window.FTW.socket.on("review game", (data) => window.FTW.game.setReviewData(data));
     window.FTW.socket.on("set host", (data) => window.FTW.game.setHost());
     window.FTW.socket.on("timer", (data) => window.FTW.game.setTimer(data));
     window.FTW.socket.on("problem", (data) => window.FTW.game.setProblem(data));
