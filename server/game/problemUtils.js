@@ -181,7 +181,7 @@ utils.getProblem = () => {
 
     do {
       b = Math.floor(24 * Math.random());
-    } while (gcd(a, b) !== -1);
+    } while (gcd(a, b) !== 1);
 
     // Max number of chicken tendies we can't buy >:(
     const chickenTendies = (a * b) - a - b;
