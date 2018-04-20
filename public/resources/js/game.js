@@ -196,12 +196,26 @@
       $("#review-game-modal").modal("toggle");
 
 
-      console.log(data);
     });
 
-    game.setReviewProblem = function (data) {
+    game.setReviewData = function (data) {
+      $("#review-game-button").show();
 
+      game.reviewProblemData = data;
+      game.reviewProblemIndex = 0;
     }
+    game.changeReviewProblem = function (delta) {
+      if (game.reviewProblemData) {
+        const arrLen = game.reviewProblemData.length;
+        game.reviewProblemIndex += delta;
+        game.reviewProblemIndex = ((game.reviewProblemIndex % arrLen) + arrLen) % arrLen;
+        //Display problem
+        const currProblem = game.reviewProblemData[game.reviewProblemIndex];
+      }
+    }
+    $("#review-game-button").click(() => $("#review-game-modal").show());
+    $("#review-game-left-button").click(() => game.changeReviewProblem(-1));
+    $("#review-game-right-button").click(() => game.changeReviewProblem(1));
 
 
     window.FTW.game = game;
