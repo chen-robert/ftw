@@ -171,11 +171,11 @@ class ChatManager {
       return null;
     }
 
-    msg = swearList.censor(message);
-    msg = chatUtils.clean(message);
-    msg = chatUtils.parseLinks(message);
+    msg = swearList.censor(msg);
+    msg = chatUtils.clean(msg);
+    msg = chatUtils.parseLinks(msg);
     msg = emoji.parse(message, '/emoji');
-    return message;
+    return msg;
   }
 
   static toMessage(str) {

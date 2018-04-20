@@ -23,6 +23,7 @@ const cookieParser = require('cookie-parser');
 const auth = require('./server/auth/login.js');
 const io = require('socket.io')(http);
 
+const userData = require('./server/game/userData.js');
 const UserManager = require('./server/game/userManager.js');
 
 const userManager = new UserManager(io);
@@ -67,10 +68,12 @@ app.get(
   },
 );
 
+app.get('/index*', (req, res) => res.redirect('/'));
+
 app.get('/report', (req, res) => res.render('pages/report', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) }));
 
 app.get(
-  '/login',
+  '/login*',
 
   (req, res) => {
     if (userManager.users.has(req.cookies[SESS_ID_COOKIE])) {
@@ -276,7 +279,7 @@ app.get(
             res.type('text/plain');
             res.status('403').send('Forbidden');
           } else {
-            res.render('pages/chatlog');
+            res.render('pages/chatlog', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) });
           }
         },
       );
@@ -351,6 +354,24 @@ app.get(
         return res.send(data);
       },
     );
+  },
+);
+
+// Leaderboard
+app.get(
+  '/leaderboard',
+
+  (req, res) => {
+    userData.find({}).sort('-rating').exec((err, data) => {
+      res.render(
+        'pages/leaderboard',
+
+        {
+          user: userManager.users.get(req.cookies[SESS_ID_COOKIE]),
+          leaderboard: data.slice(0, 10),
+        },
+      );
+    });
   },
 );
 
