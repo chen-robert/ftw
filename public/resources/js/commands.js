@@ -70,7 +70,6 @@ $(document).ready(function () {
                 if (response.error) {
                   _self.send(response.error);
                 } else {
-                  console.log(this)
                   _self.send(`${response.username} has rating ${response.rating}`);
                   _self.send(`They also have ${response.wins} wins out of ${response.games} games played.`);
                 }
