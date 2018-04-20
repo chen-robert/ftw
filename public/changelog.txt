@@ -1,3 +1,7 @@
+April 19th:
+Added a way to review games.
+Added a leaderboards.
+
 April 18th:
 Prevented chat peeking.
 Added /stats.
