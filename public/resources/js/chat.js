@@ -110,7 +110,7 @@ $(document).ready(function () {
       } else {
         chat.freeze = false;
         while (chat.messageQueue.length > 0) {
-          chat.appendMessage(chat.messageQueue.shift());
+          chat.safeAppend(chat.messageQueue.shift());
         }
       }
     }
