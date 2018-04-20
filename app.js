@@ -55,8 +55,8 @@ app.use('/resources', express.static('public/resources'));
 app.set('view engine', 'ejs');
 
 
-//Redirect old requests to index.html
-app.get("/index*", (req, res) => res.redirect("/"));
+// Redirect old requests to index.html
+app.get('/index*', (req, res) => res.redirect('/'));
 
 // Standard EJS stuff. Sending the user object so that the navbar can get the username.
 app.get(
@@ -70,8 +70,6 @@ app.get(
     }
   },
 );
-
-app.get('/index*', (req, res) => res.redirect('/'));
 
 app.get('/report*', (req, res) => res.render('pages/report', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) }));
 
@@ -186,7 +184,7 @@ app.post(
             return;
           }
 
-          userManager.createData(
+          UserManager.createData(
             user.username,
 
             () => {
@@ -211,10 +209,10 @@ app.post(
 
   (req, res) => {
     if (
-      req.body.username !== undefined &&
-      req.body.comment !== undefined &&
-      typeof req.body.username === 'string' &&
-      typeof req.body.comment === 'string'
+      req.body.username !== undefined
+      && req.body.comment !== undefined
+      && typeof req.body.username === 'string'
+      && typeof req.body.comment === 'string'
     ) {
       let ip = req.headers['x-forwarded-for'];
 
@@ -316,17 +314,17 @@ app.post(
             res.status('403').send('Forbidden');
 
             if (
-              userdata &&
-              admins.indexOf(userdata ? userdata.username : '') === -1 &&
-              req.body.password &&
-              req.body.password !== process.env.ADMIN_PASSWORD
+              userdata
+              && admins.indexOf(userdata ? userdata.username : '') === -1
+              && req.body.password
+              && req.body.password !== process.env.ADMIN_PASSWORD
             ) {
               // Somebody tried to get in with a false password. How naughty!
               console.error(`${userdata.username} tried getting chat logs with key ${req.body.password}`);
             } else if (
-              userdata &&
-              admins.indexOf(userdata ? userdata.username : '') === -1 &&
-              req.body.password === process.env.ADMIN_PASSWORD
+              userdata
+              && admins.indexOf(userdata ? userdata.username : '') === -1
+              && req.body.password === process.env.ADMIN_PASSWORD
             ) {
               // Uh oh
               console.error(`${userdata.username} knows the admin key and it has likely been compromised.`);
@@ -344,7 +342,7 @@ app.get(
   (req, res) => {
     res.type('json');
 
-    userManager.getData(
+    UserManager.getData(
       req.params.username,
 
       (err, data) => {

@@ -22,25 +22,21 @@ class ChatManager {
   addUser(data, socket, ip) {
     const name = data.username;
     const nameLower = name.toLowerCase();
-    const {
-      users
-    } = this;
+    const { users } = this;
 
     this.nameMap.set(nameLower, name);
 
     if (users.has(name)) {
       this.disconnect(name);
     }
+
     if (this.banned.has(name) || this.banned.has(ip)) {
       socket.emit('redirect', '/logout');
       socket.disconnect();
       return;
     }
 
-    users.set(name, {
-      socket,
-      data
-    });
+    users.set(name, { socket, data });
 
     const rateLimit = [];
     socket.on(
@@ -65,7 +61,9 @@ class ChatManager {
           const msg = ChatManager.process(message);
           if (typeof msg === 'string') {
             users.forEach(usrdata => usrdata.socket.emit(
-              'message', {
+              'message',
+
+              {
                 type: 'public',
                 from: name,
                 message: msg,
@@ -92,10 +90,7 @@ class ChatManager {
           return;
         }
 
-        let {
-          message,
-          to
-        } = whisper;
+        let { message, to } = whisper;
         message = ChatManager.process(message);
 
         if (typeof message === 'string' && typeof to === 'string') {

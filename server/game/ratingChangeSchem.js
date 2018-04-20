@@ -1,17 +1,16 @@
-"use strict";
+const mongoose = require('mongoose');
 
-const mongoose = require("mongoose");
-
-var userSchem = new mongoose.Schema({
+const userSchem = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
+
   change: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 });
 
-module.exports = mongoose.model("RatingChange", userSchem);
+module.exports = mongoose.model('RatingChange', userSchem);
