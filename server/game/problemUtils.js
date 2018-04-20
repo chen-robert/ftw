@@ -1,7 +1,7 @@
 const utils = {};
 
-// Sieve of Eratosthenes!
-const isPrime = (n) => {
+// Sieve of Eratosthenes
+const isPrime = function isPrimeNumber(n) {
   if (Number.isNaN(n) || !Number.isFinite(n) || n < 2) {
     return false;
   }
@@ -21,6 +21,22 @@ const isPrime = (n) => {
   }
 
   return true;
+};
+
+const gcd = function greatestCommonDenominator(a, b) {
+  if (a % b === 0) {
+    return b;
+  }
+
+  if (b % a === 0) {
+    return a;
+  }
+
+  if (a > b) {
+    return gcd(b, a % b);
+  }
+
+  return gcd(a, b % a);
 };
 
 /**
@@ -161,9 +177,13 @@ utils.getProblem = () => {
 
   if (g >= 27 && g < 30) {
     const a = Math.floor(24 * Math.random());
-    const b = Math.floor(24 * Math.random());
+    let b;
 
-    // Number of chicken tendies we can't buy >:(
+    do {
+      b = Math.floor(24 * Math.random());
+    } while (gcd(a, b) !== -1);
+
+    // Max number of chicken tendies we can't buy >:(
     const chickenTendies = (a * b) - a - b;
 
     return {

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Changelog</title>
+  <% include ../partials/bootstrap %>
+</head>
+
+<body>
+  <%- include('../partials/nav', { user }) %>
+  <h2 style="margin-left: 10px; margin-top: 5px;">Leaderboard</h2>
+  <table style="width: calc(100% - 30px); margin: 15px;">
+  	<tbody>
+  		<% for (let i = 0; i < leaderboard.length; i += 1) { %>
+  			<tr>
+  				<td><%= `${String(i + 1)}. ${leaderboard[i].username}` %></td>
+  				<td align="right"><%= leaderboard[i].rating %></td>
+  			</tr>
+  		<% } %>
+  	</tbody>
+  </table>
+</body>
+
+</html>
