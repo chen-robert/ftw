@@ -54,23 +54,30 @@ app.use('/resources', express.static('public/resources'));
 app.set('view engine', 'ejs');
 
 
+//Redirect old requests to index.html
+app.get("index*", (req, res) => res.redirect("/"));
+
 // Standard EJS stuff. Sending the user object so that the navbar can get the username.
 app.get(
   '/',
 
   (req, res) => {
     if (userManager.users.has(req.cookies[SESS_ID_COOKIE])) {
-      res.render('pages/index', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) });
+      res.render('pages/index', {
+        user: userManager.users.get(req.cookies[SESS_ID_COOKIE])
+      });
     } else {
       res.redirect('/login');
     }
   },
 );
 
-app.get('/report', (req, res) => res.render('pages/report', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) }));
+app.get('/report*', (req, res) => res.render('pages/report', {
+  user: userManager.users.get(req.cookies[SESS_ID_COOKIE])
+}));
 
 app.get(
-  '/login',
+  '/login*',
 
   (req, res) => {
     if (userManager.users.has(req.cookies[SESS_ID_COOKIE])) {
@@ -205,10 +212,10 @@ app.post(
 
   (req, res) => {
     if (
-      req.body.username !== undefined
-      && req.body.comment !== undefined
-      && typeof req.body.username === 'string'
-      && typeof req.body.comment === 'string'
+      req.body.username !== undefined &&
+      req.body.comment !== undefined &&
+      typeof req.body.username === 'string' &&
+      typeof req.body.comment === 'string'
     ) {
       let ip = req.headers['x-forwarded-for'];
 
@@ -258,7 +265,9 @@ app.get(
   '/log/:date',
 
   (req, res) => {
-    const { date } = req.params;
+    const {
+      date
+    } = req.params;
 
     if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
       res.type('text/plain');
@@ -289,7 +298,9 @@ app.post(
 
   (req, res) => {
     res.type('text/plain');
-    const { date } = req.params;
+    const {
+      date
+    } = req.params;
 
     if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
       res.status('404').send(`Cannot POST ${req.url}`);
@@ -303,24 +314,26 @@ app.post(
 
           // Need to be admin AND have password
           if (admins.indexOf(userdata ? userdata.username : '') !== -1 && req.body.password === process.env.ADMIN_PASSWORD) {
-            chatLog.find({ date }).exec((error, msgs) => {
+            chatLog.find({
+              date
+            }).exec((error, msgs) => {
               res.send(msgs.map(msg => `[${msg.time}] ${msg.username}: ${msg.message}`).join('\n'));
             });
           } else {
             res.status('403').send('Forbidden');
 
             if (
-              userdata
-              && admins.indexOf(userdata ? userdata.username : '') === -1
-              && req.body.password
-              && req.body.password !== process.env.ADMIN_PASSWORD
+              userdata &&
+              admins.indexOf(userdata ? userdata.username : '') === -1 &&
+              req.body.password &&
+              req.body.password !== process.env.ADMIN_PASSWORD
             ) {
               // Somebody tried to get in with a false password. How naughty!
               console.error(`${userdata.username} tried getting chat logs with key ${req.body.password}`);
             } else if (
-              userdata
-              && admins.indexOf(userdata ? userdata.username : '') === -1
-              && req.body.password === process.env.ADMIN_PASSWORD
+              userdata &&
+              admins.indexOf(userdata ? userdata.username : '') === -1 &&
+              req.body.password === process.env.ADMIN_PASSWORD
             ) {
               // Uh oh
               console.error(`${userdata.username} knows the admin key and it has likely been compromised.`);

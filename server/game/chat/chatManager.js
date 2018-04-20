@@ -22,7 +22,9 @@ class ChatManager {
   addUser(data, socket, ip) {
     const name = data.username;
     const nameLower = name.toLowerCase();
-    const { users } = this;
+    const {
+      users
+    } = this;
 
     this.nameMap.set(nameLower, name);
 
@@ -35,7 +37,10 @@ class ChatManager {
       return;
     }
 
-    users.set(name, { socket, data });
+    users.set(name, {
+      socket,
+      data
+    });
 
     const rateLimit = [];
     socket.on(
@@ -60,8 +65,7 @@ class ChatManager {
           const msg = ChatManager.process(message);
           if (typeof msg === 'string') {
             users.forEach(usrdata => usrdata.socket.emit(
-              'message',
-              {
+              'message', {
                 type: 'public',
                 from: name,
                 message: msg,
@@ -88,7 +92,10 @@ class ChatManager {
           return;
         }
 
-        let { message, to } = whisper;
+        let {
+          message,
+          to
+        } = whisper;
         message = ChatManager.process(message);
 
         if (typeof message === 'string' && typeof to === 'string') {
@@ -171,11 +178,11 @@ class ChatManager {
       return null;
     }
 
-    msg = swearList.censor(message);
-    msg = chatUtils.clean(message);
-    msg = chatUtils.parseLinks(message);
-    msg = emoji.parse(message, '/emoji');
-    return message;
+    msg = swearList.censor(msg);
+    msg = chatUtils.clean(msg);
+    msg = chatUtils.parseLinks(msg);
+    msg = emoji.parse(msg, '/emoji');
+    return msg;
   }
 
   static toMessage(str) {
