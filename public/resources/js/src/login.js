@@ -1,9 +1,7 @@
-'use strict';
-
 /* eslint-env browser, jquery */
-(function () {
-  $(document).ready(function () {
-    $('#sign-in').click(function () {
+(() => {
+  $(document).ready(() => {
+    $('#sign-in').click(() => {
       $('#sign-in').addClass('active');
       $('#create').removeClass('active');
 
@@ -11,7 +9,8 @@
       $('#login-button').text('Sign In');
     });
 
-    $('#create').click(function () {
+
+    $('#create').click(() => {
       $('#create').addClass('active');
       $('#sign-in').removeClass('active');
 
@@ -19,7 +18,7 @@
       $('#login-button').text('Create Account');
     });
 
-    $('.form-control').keydown(function (e) {
+    $('.form-control').keydown((e) => {
       if (e.which === 13) {
         $('#login-form').submit();
       }
@@ -38,9 +37,9 @@
 
           data: {
             username: $('#username').val(),
-            password: $('#password').val()
-          }
-        }).done(function (data) {
+            password: $('#password').val(),
+          },
+        }).done((data) => {
           if (data.redirect) {
             window.location.href = data.redirect;
           } else {
@@ -57,22 +56,22 @@
         });
       } else {
         $('.form-control').each(function showInvalidMessage() {
-          var form = $(this);
+          const form = $(this);
           if (form.val() === '') {
             form.addClass('is-invalid');
             form.removeClass('is-valid');
 
-            $('div[for=' + form.prop('name') + ']').show();
-            console.log('div[for=' + form.prop('name') + ']');
+            $(`div[for=${form.prop('name')}]`).show();
+            console.log(`div[for=${form.prop('name')}]`);
           } else {
             form.addClass('is-valid');
             form.removeClass('is-invalid');
 
-            $('div[for=' + form.prop('name') + ']').hide();
+
+            $(`div[for=${form.prop('name')}]`).hide();
           }
         });
       }
     });
   });
 })();
-//# sourceMappingURL=login.js.map

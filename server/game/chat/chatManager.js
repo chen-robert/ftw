@@ -11,6 +11,7 @@ const swearList = require('swearjar');
 class ChatManager {
   constructor() {
     this.users = new Map();
+    this.ips = new Map();
 
     // Stores lowerCaseString -> string for PM functions. This code seems really ugly.
     this.nameMap = new Map();
@@ -22,25 +23,24 @@ class ChatManager {
   addUser(data, socket, ip) {
     const name = data.username;
     const nameLower = name.toLowerCase();
-    const {
-      users
-    } = this;
+    const { users } = this;
+
+    // Set IP data
+    this.ips.set(name, ip);
 
     this.nameMap.set(nameLower, name);
 
     if (users.has(name)) {
       this.disconnect(name);
     }
+
     if (this.banned.has(name) || this.banned.has(ip)) {
       socket.emit('redirect', '/logout');
       socket.disconnect();
       return;
     }
 
-    users.set(name, {
-      socket,
-      data
-    });
+    users.set(name, { socket, data });
 
     const rateLimit = [];
     socket.on(
@@ -65,7 +65,9 @@ class ChatManager {
           const msg = ChatManager.process(message);
           if (typeof msg === 'string') {
             users.forEach(usrdata => usrdata.socket.emit(
-              'message', {
+              'message',
+
+              {
                 type: 'public',
                 from: name,
                 message: msg,
@@ -92,10 +94,7 @@ class ChatManager {
           return;
         }
 
-        let {
-          message,
-          to
-        } = whisper;
+        let { message, to } = whisper;
         message = ChatManager.process(message);
 
         if (typeof message === 'string' && typeof to === 'string') {
@@ -128,6 +127,12 @@ class ChatManager {
           if (parts.length === 2) {
             if (parts[0] === 'kick') {
               this.disconnect(parts[1]);
+            } else if (parts[0] === 'ip') {
+              if (this.ips.has(parts[1])) {
+                socket.emit('message', ChatManager.toMessage(`${parts[1]} has IP ${this.ips.get(parts[1])}`));
+              } else {
+                socket.emit('message', ChatManager.toMessage(`Unable to get IP of ${parts[1]}`));
+              }
             } else if (parts[0] === 'mute') {
               this.muted.add(parts[1]);
               socket.emit('message', ChatManager.toMessage(`${parts[1]} is now muted!`));

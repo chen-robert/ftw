@@ -55,8 +55,8 @@ app.use('/resources', express.static('public/resources'));
 app.set('view engine', 'ejs');
 
 
-//Redirect old requests to index.html
-app.get("/index*", (req, res) => res.redirect("/"));
+// Redirect old requests to index.html
+app.get('/index*', (req, res) => res.redirect('/'));
 
 // Standard EJS stuff. Sending the user object so that the navbar can get the username.
 app.get(
@@ -70,8 +70,6 @@ app.get(
     }
   },
 );
-
-app.get('/index*', (req, res) => res.redirect('/'));
 
 app.get('/report*', (req, res) => res.render('pages/report', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) }));
 
@@ -97,16 +95,87 @@ app.get(
     fs.readFile(
       `${__dirname}/public/changelog.txt`,
 
-      (err, changelog) => res.render('pages/changelog', {
-        user: userManager.users.get(req.cookies[SESS_ID_COOKIE]),
-        changelog,
-      }),
+      (err, data) => res.render(
+        'pages/data',
+
+        {
+          data,
+          title: 'Changelog',
+          user: userManager.users.get(req.cookies[SESS_ID_COOKIE]),
+        },
+      ),
+    );
+  },
+);
+
+app.get(
+  '/logout',
+
+  (req, res) => {
+    if (req.cookies[SESS_ID_COOKIE]) {
+      res.clearCookie(SESS_ID_COOKIE);
+      userManager.removeSession(req.cookies[SESS_ID_COOKIE]);
+    }
+
+    res.redirect('/login');
+  },
+);
+
+app.get(
+  '/log/:date',
+
+  (req, res) => {
+    const { date } = req.params;
+
+    if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
+      res.type('text/plain');
+      res.status('404').send(`Cannot GET ${req.url}`);
+    } else {
+      fs.readFile(
+        `${__dirname}/admins.txt`,
+
+        (err, list) => {
+          const admins = String(list).split('\n');
+          const userdata = userManager.users.get(req.cookies[SESS_ID_COOKIE]);
+
+          // Must be logged in as admin to access logs
+          if (admins.indexOf(userdata ? userdata.username : '') === -1) {
+            res.type('text/plain');
+            res.status('403').send('Forbidden');
+          } else {
+            res.render('pages/adminauth', { user: userdata });
+          }
+        },
+      );
+    }
+  },
+);
+
+app.get(
+  '/issues',
+
+  (req, res) => {
+    fs.readFile(
+      `${__dirname}/admins.txt`,
+
+      (err, list) => {
+        const admins = String(list).split('\n');
+        const userdata = userManager.users.get(req.cookies[SESS_ID_COOKIE]);
+
+        // Must be logged in as admin to access logs
+        if (admins.indexOf(userdata ? userdata.username : '') === -1) {
+          res.type('text/plain');
+          res.status('403').send('Forbidden');
+        } else {
+          res.render('pages/adminauth', { user: userdata });
+        }
+      },
     );
   },
 );
 
 app.post(
-  '/login',
+  '/login*',
 
   (req, res) => {
     if (req.body.username !== undefined && req.body.password !== undefined) {
@@ -186,7 +255,7 @@ app.post(
             return;
           }
 
-          userManager.createData(
+          UserManager.createData(
             user.username,
 
             () => {
@@ -207,14 +276,14 @@ app.post(
 );
 
 app.post(
-  '/report',
+  '/report*',
 
   (req, res) => {
     if (
-      req.body.username !== undefined &&
-      req.body.comment !== undefined &&
-      typeof req.body.username === 'string' &&
-      typeof req.body.comment === 'string'
+      req.body.username !== undefined
+      && req.body.comment !== undefined
+      && typeof req.body.username === 'string'
+      && typeof req.body.comment === 'string'
     ) {
       let ip = req.headers['x-forwarded-for'];
 
@@ -247,54 +316,10 @@ app.post(
   },
 );
 
-app.get(
-  '/logout',
-
-  (req, res) => {
-    if (req.cookies[SESS_ID_COOKIE]) {
-      res.clearCookie(SESS_ID_COOKIE);
-      userManager.removeSession(req.cookies[SESS_ID_COOKIE]);
-    }
-
-    res.redirect('/login');
-  },
-);
-
-app.get(
-  '/log/:date',
-
-  (req, res) => {
-    const { date } = req.params;
-
-    if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
-      res.type('text/plain');
-      res.status('404').send(`Cannot GET ${req.url}`);
-    } else {
-      fs.readFile(
-        `${__dirname}/admins.txt`,
-
-        (err, list) => {
-          const admins = String(list).split('\n');
-          const userdata = userManager.users.get(req.cookies[SESS_ID_COOKIE]);
-
-          // Must be logged in as admin to access logs
-          if (admins.indexOf(userdata ? userdata.username : '') === -1) {
-            res.type('text/plain');
-            res.status('403').send('Forbidden');
-          } else {
-            res.render('pages/chatlog', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) });
-          }
-        },
-      );
-    }
-  },
-);
-
 app.post(
   '/log/:date',
 
   (req, res) => {
-    res.type('text/plain');
     const { date } = req.params;
 
     if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
@@ -310,23 +335,31 @@ app.post(
           // Need to be admin AND have password
           if (admins.indexOf(userdata ? userdata.username : '') !== -1 && req.body.password === process.env.ADMIN_PASSWORD) {
             chatLog.find({ date }).exec((error, msgs) => {
-              res.send(msgs.map(msg => `[${msg.time}] ${msg.username}: ${msg.message}`).join('\n'));
+              res.render(
+                'pages/data',
+
+                {
+                  title: 'Chatlog',
+                  data: msgs.map(msg => `[${msg.time}] ${msg.username}: ${msg.message}`).join('\n'),
+                  user: userdata,
+                },
+              );
             });
           } else {
             res.status('403').send('Forbidden');
 
             if (
-              userdata &&
-              admins.indexOf(userdata ? userdata.username : '') === -1 &&
-              req.body.password &&
-              req.body.password !== process.env.ADMIN_PASSWORD
+              userdata
+              && admins.indexOf(userdata ? userdata.username : '') === -1
+              && req.body.password
+              && req.body.password !== process.env.ADMIN_PASSWORD
             ) {
               // Somebody tried to get in with a false password. How naughty!
               console.error(`${userdata.username} tried getting chat logs with key ${req.body.password}`);
             } else if (
-              userdata &&
-              admins.indexOf(userdata ? userdata.username : '') === -1 &&
-              req.body.password === process.env.ADMIN_PASSWORD
+              userdata
+              && admins.indexOf(userdata ? userdata.username : '') === -1
+              && req.body.password === process.env.ADMIN_PASSWORD
             ) {
               // Uh oh
               console.error(`${userdata.username} knows the admin key and it has likely been compromised.`);
@@ -338,13 +371,58 @@ app.post(
   },
 );
 
+app.post(
+  '/issues',
+
+  (req, res) => {
+    fs.readFile(
+      `${__dirname}/admins.txt`,
+
+      (err, list) => {
+        const admins = String(list).split('\n');
+        const userdata = userManager.users.get(req.cookies[SESS_ID_COOKIE]);
+
+        // Need to be admin AND have password
+        if (admins.indexOf(userdata ? userdata.username : '') !== -1 && req.body.password === process.env.ADMIN_PASSWORD) {
+          reportManager.Report.find({}).exec((error, issues) => {
+            if (err) {
+              res.status('500').send('Something went wrong');
+            } else {
+              res.render('pages/issues', { issues, user: userdata });
+            }
+          });
+        } else {
+          res.status('403').send('Forbidden');
+
+          if (
+            userdata
+            && admins.indexOf(userdata ? userdata.username : '') === -1
+            && req.body.password
+            && req.body.password !== process.env.ADMIN_PASSWORD
+          ) {
+            // Somebody tried to get in with a false password. How naughty!
+            console.error(`${userdata.username} tried getting chat logs with key ${req.body.password}`);
+          } else if (
+            userdata
+            && admins.indexOf(userdata ? userdata.username : '') === -1
+            && req.body.password === process.env.ADMIN_PASSWORD
+          ) {
+            // Uh oh
+            console.error(`${userdata.username} knows the admin key and it has likely been compromised.`);
+          }
+        }
+      },
+    );
+  },
+);
+
 app.get(
   '/stats/:username',
 
   (req, res) => {
     res.type('json');
 
-    userManager.getData(
+    UserManager.getData(
       req.params.username,
 
       (err, data) => {

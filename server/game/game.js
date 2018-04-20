@@ -1,3 +1,4 @@
+/* eslint no-param-reassign: 0 */
 const uuidv1 = require('uuid/v1');
 const problemUtils = require('./problemUtils.js');
 const elo = require('./elo.js');
@@ -28,7 +29,7 @@ module.exports = class Game {
     this.pw = pw;
     this.private = pw !== '';
 
-    //For review purposes
+    // For review purposes
     this.problemArr = [];
   }
 
@@ -44,10 +45,8 @@ module.exports = class Game {
       }
     }
 
-    /* eslint no-param-reassign: 0 */
     data.score = 0;
     data.answer = undefined;
-    /* eslint no-param-reassign: 2 */
 
     this.sendScores();
 
@@ -216,9 +215,11 @@ module.exports = class Game {
       callback();
     });
   }
+
   sendReviewProblems() {
-    this.dataToSocket.forEach(socket => socket.emit("review game", this.problemArr));
+    this.dataToSocket.forEach(socket => socket.emit('review game', this.problemArr));
   }
+
   updateElo() {
     const allUsers = this.users.concat(this.usersThatLeft);
     const newRatings = [];

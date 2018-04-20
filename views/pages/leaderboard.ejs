@@ -13,7 +13,7 @@
   	<tbody>
   		<% for (let i = 0; i < leaderboard.length; i += 1) { %>
   			<tr>
-  				<td><%= `${String(i + 1)}. ${leaderboard[i].username}` %></td>
+  				<td><%= `${i + 1}. ${leaderboard[i].username}` %></td>
   				<td align="right"><%= leaderboard[i].rating %></td>
   			</tr>
   		<% } %>

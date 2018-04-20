@@ -1,28 +1,28 @@
-'use strict';
-
 /* eslint-env browser, jquery */
-$(document).ready(function () {
+$(document).ready(() => {
   if (window.FTW && !window.FTW.cmd) {
-    var cmd = {};
+    const cmd = {};
 
     cmd.exec = function executeFunction(str) {
-      var _this = this;
-
       if (str.length === 0) {
         return;
       }
 
-      var parts = str.split(' ');
-      var command = parts.splice(0, 1)[0];
+      const parts = str.split(' ');
+      const command = parts.splice(0, 1)[0];
 
       // Quick admin command testing
-      var match = str.match(/^([a-z]*?)\[(.*?)\] ([a-z]*)$/);
+      const match = str.match(/^([a-z]*?)\[(.*?)\] ([a-z]*)$/);
 
       if (match) {
-        window.FTW.socket.emit('admin command', {
-          key: match[2],
-          command: match[1] + ' ' + match[3]
-        });
+        window.FTW.socket.emit(
+          'admin command',
+
+          {
+            key: match[2],
+            command: `${match[1]} ${match[3]}`,
+          },
+        );
 
         return;
       }
@@ -41,14 +41,14 @@ $(document).ready(function () {
           break;
         case 'ignore':
           if (parts.length > 0) {
-            var name = parts[0];
+            const name = parts[0];
 
             if (window.FTW.chat.ignoreList.has(name)) {
               window.FTW.chat.ignoreList.delete(name);
-              this.send(name + ' is no longer ignored!');
+              this.send(`${name} is no longer ignored!`);
             } else {
               window.FTW.chat.ignoreList.add(name);
-              this.send(name + ' is now ignored!');
+              this.send(`${name} is now ignored!`);
             }
           } else {
             this.send('Please specify somebody to ignore! /ignore [name] ');
@@ -58,11 +58,15 @@ $(document).ready(function () {
         case 'w':
         case 'msg':
           if (parts.length >= 2) {
-            var to = parts.splice(0, 1)[0];
-            window.FTW.socket.emit('whisper', {
-              to: to,
-              message: parts.join(' ')
-            });
+            const to = parts.splice(0, 1)[0];
+            window.FTW.socket.emit(
+              'whisper',
+
+              {
+                to,
+                message: parts.join(' '),
+              },
+            );
           } else {
             this.send('Please use /msg [name] [msg]');
           }
@@ -70,22 +74,22 @@ $(document).ready(function () {
           break;
         case 'stats':
           if (parts.length >= 1) {
-            var xhttp = new XMLHttpRequest();
+            const xhttp = new XMLHttpRequest();
 
-            xhttp.onreadystatechange = function () {
+            xhttp.onreadystatechange = () => {
               if (xhttp.readyState === 4 && xhttp.status === 200) {
-                var response = JSON.parse(_this.responseText);
+                const response = JSON.parse(this.responseText);
 
                 if (response.error) {
-                  _this.send(response.error);
+                  this.send(response.error);
                 } else {
-                  _this.send(response.username + ' has rating ' + response.rating);
-                  _this.send('They also have ' + response.wins + ' wins out of ' + response.games + ' games played.');
+                  this.send(`${response.username} has rating ${response.rating}`);
+                  this.send(`They also have ${response.wins} wins out of ${response.games} games played.`);
                 }
               }
             };
 
-            xhttp.open('GET', '/stats/' + parts[0], true);
+            xhttp.open('GET', `/stats/${parts[0]}`, true);
             xhttp.send();
           } else {
             this.send('Please specify a username');
@@ -97,15 +101,14 @@ $(document).ready(function () {
       }
     };
 
-    cmd.send = function (msg) {
+    cmd.send = (msg) => {
       window.FTW.chat.safeAppend({
         from: 'Ftw Bot',
         message: msg,
-        type: 'system'
+        type: 'system',
       });
     };
 
     window.FTW.cmd = cmd;
   }
 });
-//# sourceMappingURL=commands.js.map

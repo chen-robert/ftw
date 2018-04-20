@@ -1,36 +1,35 @@
-'use strict';
-
 /* eslint-env browser, jquery */
 /* globals jdenticon */
-$(document).ready(function () {
-  var formatDate = function getPrettyDate(date) {
-    var day = date.getHours();
-    var min = date.getMinutes();
+$(document).ready(() => {
+  const formatDate = function getPrettyDate(date) {
+    const day = date.getHours();
+    let min = date.getMinutes();
 
     if (min < 10) {
-      min = '0' + min;
+      min = `0${min}`;
     }
 
-    return day + ':' + min;
+    return `${day}:${min}`;
   };
 
-  var createMessage = function createMessage(str) {
-    var message = document.createElement('div');
+  const createMessage = (str) => {
+    const message = document.createElement('div');
     $(message).addClass('chat-message');
 
     message.innerHTML = str;
 
+
     return message;
   };
 
-  var createHeader = function createHeader(name, date) {
-    var header = document.createElement('div');
+  const createHeader = (name, date) => {
+    const header = document.createElement('div');
     $(header).addClass('chat-header');
 
-    var sender = document.createElement('span');
+    const sender = document.createElement('span');
     $(sender).addClass('chat-message-sender');
     $(sender).text(name);
-    var time = document.createElement('span');
+    const time = document.createElement('span');
     $(time).addClass('chat-message-timestamp');
     $(time).text(formatDate(date));
 
@@ -44,7 +43,7 @@ $(document).ready(function () {
   }
 
   if (!window.FTW.chat) {
-    var chat = {};
+    const chat = {};
     // Should freeze chat or not
     chat.freeze = false;
     chat.messageQueue = [];
@@ -59,37 +58,38 @@ $(document).ready(function () {
         return;
       }
 
-      var user = msg.from;
-      var str = msg.message;
-      var type = msg.type;
-
+      const user = msg.from;
+      const str = msg.message;
+      const { type } = msg;
 
       if (this.ignoreList.has(user)) {
         return;
       }
 
-      var isNewSender = user !== chat.previousSender;
+      const isNewSender = user !== chat.previousSender;
 
-      var message = document.createElement('div');
+      const message = document.createElement('div');
       $(message).addClass('chat-item');
 
       if (type === 'private') {
         $(message).addClass('chat-pm');
       }
 
-      var gutter = document.createElement('span');
+
+      const gutter = document.createElement('span');
       $(gutter).addClass('chat-message-gutter');
 
       if (isNewSender) {
-        var pfp = document.createElement('canvas');
+        const pfp = document.createElement('canvas');
         $(pfp).addClass('pfp');
         $(pfp).attr('data-jdenticon-value', user);
         $(pfp).attr('width', '50');
         $(pfp).attr('height', '50');
         jdenticon.update(pfp);
 
-        var container = document.createElement('div');
+        const container = document.createElement('div');
         $(container).addClass('image-container');
+
 
         container.appendChild(pfp);
         gutter.appendChild(container);
@@ -97,7 +97,7 @@ $(document).ready(function () {
 
       message.appendChild(gutter);
 
-      var body = document.createElement('span');
+      const body = document.createElement('span');
       $(body).addClass('chat-message-body');
 
       if (isNewSender) {
@@ -113,7 +113,7 @@ $(document).ready(function () {
       chat.previousSender = user;
     };
 
-    chat.freezeChat = function (freeze) {
+    chat.freezeChat = (freeze) => {
       if (freeze) {
         chat.freeze = true;
       } else {
@@ -125,8 +125,8 @@ $(document).ready(function () {
       }
     };
 
-    chat.safeAppend = function (msg) {
-      var scrollDiff = $('#chat-display').prop('scrollHeight') - $('#chat-display').prop('scrollTop') - $('#chat-display').height();
+    chat.safeAppend = (msg) => {
+      const scrollDiff = $('#chat-display').prop('scrollHeight') - $('#chat-display').prop('scrollTop') - $('#chat-display').height();
 
       window.FTW.chat.appendMessage(msg);
 
@@ -137,9 +137,9 @@ $(document).ready(function () {
       }
     };
 
-    $('#chat-box').keypress(function (e) {
+    $('#chat-box').keypress((e) => {
       if (e.which === 13) {
-        var message = $('#chat-box').val();
+        let message = $('#chat-box').val();
         message = message.trim();
 
         if (message !== '') {
@@ -157,4 +157,3 @@ $(document).ready(function () {
     window.FTW.chat = chat;
   }
 });
-//# sourceMappingURL=chat.js.map

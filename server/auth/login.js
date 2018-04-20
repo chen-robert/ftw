@@ -1,59 +1,71 @@
-"use strict";
+const mongoose = require('mongoose');
 
-const mongoose = require("mongoose");
-
-const bcrypt = require("bcrypt");
-const user = require("./user.js");
+const bcrypt = require('bcrypt');
+const user = require('./user.js');
 
 const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error: "));
+db.on('error', console.error.bind(console, 'connection error: '));
 
-module.exports.login = function (username, password, callback) {
-    user.findOne({
-        username: username
-    }).exec(function (err, user) {
-        if (err) {
-            return callback(err);
-        }
-        if (!user) {
-            var err = new Error("User not found");
-            err.status = 401;
-            return callback(err);
-        }
-        bcrypt.compare(password, user.password, function (err, res) {
-            if (res === true) {
-                return callback(null, user);
-            }
-            var err = new Error("Invalid password");
-            err.status = 401;
-            callback(err);
-        });
+module.exports.login = (username, password, callback) => {
+  user.findOne({ username }).exec((err, usr) => {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    if (!usr) {
+      const error = new Error('User not found');
+      error.status = 401;
+      callback(error);
+      return;
+    }
+
+    bcrypt.compare(password, usr.password, (error, res) => {
+      if (res === true) {
+        callback(null, usr);
+        return;
+      }
+
+      const badpw = new Error('Invalid password');
+      badpw.status = 401;
+      callback(badpw);
     });
-}
-module.exports.register = function (username, password, callback) {
-    user.findOne({
-        username: {
-            $regex: new RegExp("^" + username + "$", "i")
-        }
-    }).exec(function (err, obj) {
+  });
+};
+
+module.exports.register = (username, password, callback) => {
+  user.findOne({
+    username: {
+      $regex: new RegExp(`^${username}$`, 'i'),
+    },
+  }).exec((err, obj) => {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    if (!obj) {
+      const error = new Error('Username already exists');
+      error.status = 401;
+      callback(error);
+      return;
+    }
+
+    user.create(
+      {
+        username,
+        password,
+      },
+
+      (error, userObj) => {
         if (err) {
-            return callback(err);
+          console.log('Failed to create user data');
+          console.log(error);
+          return callback(error);
         }
-        if (obj) {
-            var err = new Error("Username already exists");
-            err.status = 401;
-            return callback(err);
-        }
-        user.create({
-            username: username,
-            password: password
-        }, function (err, obj) {
-            if (err) {
-                console.log("Failed to create user data");
-                console.log(err);
-                return callback(err);
-            }
-            return callback(null, obj);
-        });
-    });
-}
+
+        return callback(null, userObj);
+      },
+    );
+  });
+};

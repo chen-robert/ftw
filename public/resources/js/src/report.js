@@ -1,9 +1,7 @@
-'use strict';
-
 /* eslint-env browser, jquery */
-(function () {
-  $(document).ready(function () {
-    $('#report-button').click(function () {
+(() => {
+  $(document).ready(() => {
+    $('#report-button').click(() => {
       if ($('#username').val() !== '' && $('#comment').val() !== '') {
         $('report-button').addClass('disabled');
         $('.loading-bar').css('background-color', '777');
@@ -15,9 +13,9 @@
 
           data: {
             username: $('#username').val(),
-            comment: $('#comment').val()
-          }
-        }).done(function (data) {
+            comment: $('#comment').val(),
+          },
+        }).done((data) => {
           $('#alert').removeClass('alert-danger');
           $('#alert').removeClass('alert-success');
 
@@ -40,22 +38,21 @@
         });
       } else {
         $('.form-control').each(function showInvalidMessage() {
-          var form = $(this);
+          const form = $(this);
           if (form.val() === '') {
             form.addClass('is-invalid');
             form.removeClass('is-valid');
 
-            $('div[for=' + form.prop('name') + ']').show();
-            console.log('div[for=' + form.prop('name') + ']');
+            $(`div[for=${form.prop('name')}]`).show();
+            console.log(`div[for=${form.prop('name')}]`);
           } else {
             form.addClass('is-valid');
             form.removeClass('is-invalid');
 
-            $('div[for=' + form.prop('name') + ']').hide();
+            $(`div[for=${form.prop('name')}]`).hide();
           }
         });
       }
     });
   });
 })();
-//# sourceMappingURL=report.js.map
