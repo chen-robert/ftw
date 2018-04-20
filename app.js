@@ -60,14 +60,14 @@ app.get(
 
   (req, res) => {
     if (userManager.users.has(req.cookies[SESS_ID_COOKIE])) {
-      res.render('pages/index', {
-        user: userManager.users.get(req.cookies[SESS_ID_COOKIE])
-      });
+      res.render('pages/index', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) });
     } else {
       res.redirect('/login');
     }
   },
 );
+
+app.get('/index*', (req, res) => res.redirect('/'));
 
 app.get('/report*', (req, res) => res.render('pages/report', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) }));
 
@@ -260,9 +260,7 @@ app.get(
   '/log/:date',
 
   (req, res) => {
-    const {
-      date
-    } = req.params;
+    const { date } = req.params;
 
     if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
       res.type('text/plain');
@@ -293,9 +291,7 @@ app.post(
 
   (req, res) => {
     res.type('text/plain');
-    const {
-      date
-    } = req.params;
+    const { date } = req.params;
 
     if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
       res.status('404').send(`Cannot POST ${req.url}`);
@@ -309,9 +305,7 @@ app.post(
 
           // Need to be admin AND have password
           if (admins.indexOf(userdata ? userdata.username : '') !== -1 && req.body.password === process.env.ADMIN_PASSWORD) {
-            chatLog.find({
-              date
-            }).exec((error, msgs) => {
+            chatLog.find({ date }).exec((error, msgs) => {
               res.send(msgs.map(msg => `[${msg.time}] ${msg.username}: ${msg.message}`).join('\n'));
             });
           } else {
