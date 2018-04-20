@@ -114,7 +114,10 @@ utils.getProblem = () => {
 
   if (g >= 13 && g < 16) {
     const a = Math.floor(41 * Math.random()) - 20;
-    const b = Math.floor(41 * Math.random()) - 20;
+    let b = 0;
+	while(b == 0){
+		b = Math.floor(41 * Math.random()) - 20;
+	}
     const c = Math.floor(100 * Math.random()) + 1;
 
     return {
