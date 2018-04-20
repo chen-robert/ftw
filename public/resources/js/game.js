@@ -194,8 +194,7 @@
     }
     $("#review-game-button").click(function () {
       $("#review-game-modal").modal("toggle");
-
-
+      game.changeReviewProblem(0);
     });
 
     game.setReviewData = function (data) {
@@ -211,6 +210,8 @@
         game.reviewProblemIndex = ((game.reviewProblemIndex % arrLen) + arrLen) % arrLen;
         //Display problem
         const currProblem = game.reviewProblemData[game.reviewProblemIndex];
+        $("#review-game-text").html(currProblem.text);
+        $("#review-game-answer").html("<strong>Answer: " + currProblem.answer + "</strong>");
       }
     }
     $("#review-game-button").click(() => $("#review-game-modal").show());
