@@ -253,10 +253,29 @@ module.exports = class Game {
       data.rating = newRatings[i];
       const mongooseObj = this.dataToMongoose.get(data);
       mongooseObj.rating = newRatings[i];
+
+      // Failsafe
+      if (!mongooseObj.games) {
+        mongooseObj.games = 0;
+      }
+
+      if (!mongooseObj.wins) {
+        mongooseObj.wins = 0;
+      }
+
       mongooseObj.games += 1;
 
       if (maxChangeData === data) {
         mongooseObj.wins += 1;
+      }
+
+      // Failsafe
+      if (Number.isNaN(mongooseObj.games)) {
+        mongooseObj.games = 1;
+      }
+
+      if (Number.isNaN(mongooseObj.wins)) {
+        mongooseObj.wins = +(maxChangeData === data);
       }
 
       mongooseObj.save((err) => {

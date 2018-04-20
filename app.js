@@ -23,6 +23,7 @@ const cookieParser = require('cookie-parser');
 const auth = require('./server/auth/login.js');
 const io = require('socket.io')(http);
 
+const userData = require('./server/game/userData.js');
 const UserManager = require('./server/game/userManager.js');
 
 const userManager = new UserManager(io);
@@ -63,18 +64,16 @@ app.get(
 
   (req, res) => {
     if (userManager.users.has(req.cookies[SESS_ID_COOKIE])) {
-      res.render('pages/index', {
-        user: userManager.users.get(req.cookies[SESS_ID_COOKIE])
-      });
+      res.render('pages/index', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) });
     } else {
       res.redirect('/login');
     }
   },
 );
 
-app.get('/report*', (req, res) => res.render('pages/report', {
-  user: userManager.users.get(req.cookies[SESS_ID_COOKIE])
-}));
+app.get('/index*', (req, res) => res.redirect('/'));
+
+app.get('/report*', (req, res) => res.render('pages/report', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) }));
 
 app.get(
   '/login*',
@@ -265,9 +264,7 @@ app.get(
   '/log/:date',
 
   (req, res) => {
-    const {
-      date
-    } = req.params;
+    const { date } = req.params;
 
     if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
       res.type('text/plain');
@@ -285,7 +282,7 @@ app.get(
             res.type('text/plain');
             res.status('403').send('Forbidden');
           } else {
-            res.render('pages/chatlog');
+            res.render('pages/chatlog', { user: userManager.users.get(req.cookies[SESS_ID_COOKIE]) });
           }
         },
       );
@@ -298,9 +295,7 @@ app.post(
 
   (req, res) => {
     res.type('text/plain');
-    const {
-      date
-    } = req.params;
+    const { date } = req.params;
 
     if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
       res.status('404').send(`Cannot POST ${req.url}`);
@@ -314,9 +309,7 @@ app.post(
 
           // Need to be admin AND have password
           if (admins.indexOf(userdata ? userdata.username : '') !== -1 && req.body.password === process.env.ADMIN_PASSWORD) {
-            chatLog.find({
-              date
-            }).exec((error, msgs) => {
+            chatLog.find({ date }).exec((error, msgs) => {
               res.send(msgs.map(msg => `[${msg.time}] ${msg.username}: ${msg.message}`).join('\n'));
             });
           } else {
@@ -364,6 +357,24 @@ app.get(
         return res.send(data);
       },
     );
+  },
+);
+
+// Leaderboard
+app.get(
+  '/leaderboard',
+
+  (req, res) => {
+    userData.find({}).sort('-rating').exec((err, data) => {
+      res.render(
+        'pages/leaderboard',
+
+        {
+          user: userManager.users.get(req.cookies[SESS_ID_COOKIE]),
+          leaderboard: data.slice(0, 10),
+        },
+      );
+    });
   },
 );
 
