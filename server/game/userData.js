@@ -11,6 +11,7 @@ const userDataSchem = new mongoose.Schema({
   rating: Number,
   wins: Number,
   games: Number,
+  ip: String,
 });
 
 module.exports = mongoose.model('UserData', userDataSchem);
