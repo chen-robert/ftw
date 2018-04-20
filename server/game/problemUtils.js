@@ -1,6 +1,6 @@
 const utils = {};
 
-// Sieve of Eratosthenes!
+// Sieve of Eratosthenes
 const isPrime = function isPrimeNumber(n) {
   if (Number.isNaN(n) || !Number.isFinite(n) || n < 2) {
     return false;
