@@ -54,6 +54,10 @@ http.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 app.use('/resources', express.static('public/resources'));
 app.set('view engine', 'ejs');
 
+
+//Redirect old requests to index.html
+app.get("/index*", (req, res) => res.redirect("/"));
+
 // Standard EJS stuff. Sending the user object so that the navbar can get the username.
 app.get(
   '/',
