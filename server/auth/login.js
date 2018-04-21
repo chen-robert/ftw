@@ -44,7 +44,7 @@ module.exports.register = (username, password, callback) => {
       return;
     }
 
-    if (!obj) {
+    if (obj) {
       const error = new Error('Username already exists');
       error.status = 401;
       callback(error);
