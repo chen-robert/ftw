@@ -7,11 +7,9 @@ const userDataSchem = new mongoose.Schema({
     required: true,
     trim: true,
   },
-
   rating: Number,
   wins: Number,
-  games: Number,
-  ip: String,
+  games: Number
 });
 
 module.exports = mongoose.model('UserData', userDataSchem);
