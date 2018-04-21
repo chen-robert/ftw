@@ -6,6 +6,8 @@ const SESS_ID_COOKIE = 'sessId';
 const crypto = require('crypto');
 const cookie = require('cookie');
 
+const request = require('request');
+
 const mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGO_URI);
@@ -245,6 +247,7 @@ app.post(
         return;
       }
 
+
       auth.register(
         req.body.username,
         req.body.password,
@@ -255,13 +258,39 @@ app.post(
             return;
           }
 
-          UserManager.createData(
-            user.username,
+          let ip = req.headers['x-forwarded-for'];
 
-            () => {
-              res.send({
-                redirect: '/login',
-              });
+          if (ip) {
+            ip = ip.split(',').pop();
+          } else {
+            ip = req.connection.remoteAddress;
+          }
+
+          request(
+            {
+              url: `http://v2.api.iphub.info/ip/${ip}`,
+
+              headers: {
+                'X-Key': process.env.IPHUB_KEY,
+              },
+            },
+
+            (error, resp, body) => {
+              if (body.block === 1) {
+                // Bad IP detected
+                res.send('To mitigate spam, you may not register with a VPN. Please disable your VPN before registering.');
+                return;
+              }
+
+              UserManager.createData(
+                user.username,
+
+                () => {
+                  res.send({
+                    redirect: '/login',
+                  });
+                },
+              );
             },
           );
         },
