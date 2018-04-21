@@ -110,12 +110,17 @@ class UserManager {
       if (data) {
         // Data already exists. No need to create new.
       } else {
-        userData.create({
-          username,
-          rating: 1200,
-          games: 0,
-          wins: 0,
-        });
+		if(typeof username !== "string"){
+		  userData.create({
+            username: username,
+            rating: 1200,
+            games: 0,
+            wins: 0
+          });
+		}else{
+		  console.error("Invalid username tried to be created: " + username);
+		}
+        
       }
 
       callback();

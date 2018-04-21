@@ -171,7 +171,7 @@
           var body = document.createElement('div');
           $(body).addClass('game-disp-body');
           $(body).append('<p>Players: ' + data.users.length + '</p>');
-          $(body).append('<p>' + data.timePerProblem + 'sec</p>');
+          $(body).append('<p>' + data.timePerProblem + ' sec</p>');
 
           if (data.type !== 'CD') {
             $(body).append('<p>Problems: ' + data.problems + '</p>');
