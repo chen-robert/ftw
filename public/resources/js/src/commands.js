@@ -74,23 +74,18 @@ $(document).ready(() => {
           break;
         case 'stats':
           if (parts.length >= 1) {
-            const xhttp = new XMLHttpRequest();
+            $.get(
+              `/stats/${parts[0]}`,
 
-            xhttp.onreadystatechange = () => {
-              if (xhttp.readyState === 4 && xhttp.status === 200) {
-                const response = JSON.parse(this.responseText);
-
+              (response) => {
                 if (response.error) {
                   this.send(response.error);
                 } else {
                   this.send(`${response.username} has rating ${response.rating}`);
                   this.send(`They also have ${response.wins} wins out of ${response.games} games played.`);
                 }
-              }
-            };
-
-            xhttp.open('GET', `/stats/${parts[0]}`, true);
-            xhttp.send();
+              },
+            );
           } else {
             this.send('Please specify a username');
           }

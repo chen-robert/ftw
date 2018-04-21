@@ -70,23 +70,14 @@ $(document).ready(function () {
           break;
         case 'stats':
           if (parts.length >= 1) {
-            var xhttp = new XMLHttpRequest();
-
-            xhttp.onreadystatechange = function () {
-              if (xhttp.readyState === 4 && xhttp.status === 200) {
-                var response = JSON.parse(_this.responseText);
-
-                if (response.error) {
-                  _this.send(response.error);
-                } else {
-                  _this.send(response.username + ' has rating ' + response.rating);
-                  _this.send('They also have ' + response.wins + ' wins out of ' + response.games + ' games played.');
-                }
+            $.get('/stats/' + parts[0], function (response) {
+              if (response.error) {
+                _this.send(response.error);
+              } else {
+                _this.send(response.username + ' has rating ' + response.rating);
+                _this.send('They also have ' + response.wins + ' wins out of ' + response.games + ' games played.');
               }
-            };
-
-            xhttp.open('GET', '/stats/' + parts[0], true);
-            xhttp.send();
+            });
           } else {
             this.send('Please specify a username');
           }
