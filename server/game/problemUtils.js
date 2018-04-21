@@ -181,11 +181,11 @@ utils.getProblem = () => {
   }
 
   if (g >= 27 && g < 30) {
-    const a = Math.floor(24 * Math.random());
+    const a = Math.floor(23 * Math.random()) + 1;
     let b;
 
     do {
-      b = Math.floor(24 * Math.random());
+      b = Math.floor(23 * Math.random()) + 1;
     } while (gcd(a, b) !== 1);
 
     // Max number of chicken tendies we can't buy >:(
