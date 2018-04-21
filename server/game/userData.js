@@ -7,7 +7,6 @@ const userDataSchem = new mongoose.Schema({
     required: true,
     trim: true,
   },
-
   rating: Number,
   wins: Number,
   games: Number

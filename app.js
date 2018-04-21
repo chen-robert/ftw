@@ -494,3 +494,5 @@ io.on(
     userManager.addSocket(cookies[SESS_ID_COOKIE], socket);
   },
 );
+
+setInterval(() => io.emit("ping"), 5000);
