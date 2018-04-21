@@ -176,12 +176,9 @@ utils.getProblem = () => {
   }
 
   if (g >= 27 && g < 30) {
-    const a = Math.floor(24 * Math.random());
-    let b;
-
-    do {
-      b = Math.floor(24 * Math.random());
-    } while (gcd(a, b) !== 1);
+      var primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+      let a = primes[Math.floor(24 * Math.random())];
+      let b = primes[Math.floor(24 * Math.random())];
 
     // Max number of chicken tendies we can't buy >:(
     const chickenTendies = (a * b) - a - b;
