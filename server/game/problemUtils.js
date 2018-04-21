@@ -43,8 +43,8 @@ const gcd = function greatestCommonDenominator(a, b) {
  * READ ME BEFORE YOU EDIT PROBLEMS
  * Problems may (and in most cases, should) contain LaTeX.
  * Answer must be in the form of a String. However, please do NOT use '' + to type coerce integers.
- * Doing is is generally bad practice and can lead to unindented results.
- * Use String(...) or (...).toString() instead.
+ * Doing is is generally bad practice and can lead to unintended results.
+ * Use the String method.
  */
 utils.getProblem = () => {
   const g = Math.floor(30 * Math.random());
@@ -134,7 +134,7 @@ utils.getProblem = () => {
     const c = Math.floor(15 * Math.random()) + 5;
 
     return {
-      text: `If Bobert the builder can build $${a}$ houses in $${b}$ days, how many completed houses can Bobert build in $${c}$ days?`,
+      text: `If Bobert the builder can build $${a}$ houses in $${b}$ day${b === 1 ? '' : 's'}, how many completed houses can Bobert build in $${c}$ days?`,
       answer: String(Math.floor((a * c) / b)),
     };
   }
@@ -152,12 +152,20 @@ utils.getProblem = () => {
 
   if (g >= 20 && g < 24) {
     const num = Math.floor(100 * Math.random()) + 100;
+    let n = num;
     let sum = 0;
+    let i = 2;
 
-    for (let i = 2; i <= num; i += 1) {
-      if (num % i === 0 && isPrime(i)) {
+    while (n !== 1) {
+      if (n % i === 0 && isPrime(i)) {
         sum += i;
+
+        while (n % i === 0) {
+          n /= i;
+        }
       }
+
+      i += 1;
     }
 
     return {
@@ -181,11 +189,11 @@ utils.getProblem = () => {
   }
 
   if (g >= 27 && g < 30) {
-    const a = Math.floor(23 * Math.random()) + 1;
+    const a = Math.floor(22 * Math.random()) + 2;
     let b;
 
     do {
-      b = Math.floor(23 * Math.random()) + 1;
+      b = Math.floor(22 * Math.random()) + 2;
     } while (gcd(a, b) !== 1);
 
     // Max number of chicken tendies we can't buy >:(
