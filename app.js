@@ -495,4 +495,4 @@ io.on(
   },
 );
 
-setInterval(() => io.emit("ping"), 5000);
+setInterval(() => io.emit('ping'), 5000);
