@@ -175,7 +175,7 @@ utils.getProblem = () => {
   }
 
   if (g >= 24 && g < 27) {
-    const num = Math.floor(900 * Math.random()) + 100;
+    const num = Math.floor(400 * Math.random()) + 100;
     let zeros = 0;
 
     for (let pow = 1; 5 ** pow <= num; pow += 1) {
