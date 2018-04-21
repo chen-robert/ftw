@@ -42,15 +42,22 @@ class UserManager {
       }
 
       const data = this.users.get(id);
-      socket.on('disconnect', () => {
-        chatManager.users.delete(data.username);
-        this.updateAllUsers();
-      });
+
+      socket.on(
+        'disconnect',
+
+        () => {
+          chatManager.users.delete(data.username);
+          this.updateAllUsers();
+        },
+      );
+
       chatManager.addUser(data, socket, this.ips.get(id));
       this.gameManager.addSocket(data, socket, () => this.updateAllUsers());
       this.updateAllUsers();
       return true;
     }
+
     return false;
   }
 

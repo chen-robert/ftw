@@ -2,14 +2,14 @@
 <html lang="en">
 
 <head>
-  <title>Changelog</title>
+  <title><%= title %></title>
   <% include ../partials/bootstrap %>
 </head>
 
 <body>
   <%- include('../partials/nav', { user }) %>
   <div style="margin-left: 10px; margin-top: 10px;">
-    <pre><code><%= changelog %></code></pre>
+    <pre><code><%= data %></code></pre>
   </div>
 </body>
 
