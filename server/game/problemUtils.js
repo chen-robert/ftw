@@ -176,19 +176,22 @@ utils.getProblem = () => {
   }
 
   if (g >= 27 && g < 30) {
-    const a = Math.floor(24 * Math.random());
-    let b;
+    // primes up to 97 recommended (past that point it becomes calcy)
+    var primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+    let a = primes[Math.floor(primes.length * Math.random())];
+    let b = primes[Math.floor(primes.length * Math.random())];
+     
+    // to avoid same primes
+    do{
+      b = primes[Math.floor(primes.length * Math.random())];
+    } while (a === b);
 
-    do {
-      b = Math.floor(24 * Math.random());
-    } while (gcd(a, b) !== 1);
-
-    // Max number of chicken tendies we can't buy >:(
-    const chickenTendies = (a * b) - a - b;
+    // Max number of pencils we can't buy
+    const maxPencils = (a * b) - a - b;
 
     return {
       text: `Pencils are sold in either bundles of $${a}$ or $${b}$. What is the largest quantity of pencils that cannot be bought?`,
-      answer: String(chickenTendies),
+      answer: String(maxPencils),
     };
   }
 
