@@ -1,5 +1,8 @@
 const utils = {};
 
+// Arrow functions are fun to use
+const fact = n => Array(n).fill().map((_, pos) => pos + 1).reduce((acc, num) => acc * num, 1);
+
 // Sieve of Eratosthenes
 const isPrime = function isPrimeNumber(n) {
   if (Number.isNaN(n) || !Number.isFinite(n) || n < 2) {
@@ -38,36 +41,35 @@ const gcd = function greatestCommonDenominator(a, b) {
 
   return gcd(a, b % a);
 };
-//Generates a random integer from [a, b).
-const rand = function (a, b) {
-  return Math.floor((b - a + 1) * Math.random()) + a;
-}
+
+// Generates a random integer from [a, b).
+const rand = function randomInteger(a, b) {
+  return Math.floor((b - a) * Math.random()) + a;
+};
+
 /**
  * READ ME BEFORE YOU EDIT PROBLEMS
  * Problems may (and in most cases, should) contain LaTeX.
  * Answer must be in the form of a String. However, please do NOT use '' + to type coerce integers.
  * Doing is is generally bad practice and can lead to unintended results.
  * Use the String method.
+ *
+ * TEMPLATE
+ * problems.push(() => {
+ *   return {
+ *     text: '',
+ *     answer: '',
+ *   };
+ * });
  */
 
-/*
-          
-          TEMPLATE
-          
-problems.push(() => {
-    return {
-      text: ``,
-      answer: String(),
-    };
-  });
-*/
 utils.getProblem = () => {
-  //This is an array of FUNCTIONS
+  // This is an array of FUNCTIONS
   const problems = [];
 
   problems.push(() => {
-    const a = Math.floor(200 * Math.random());
-    const b = Math.floor(100 * Math.random());
+    const a = rand(0, 200);
+    const b = rand(0, 100);
 
     return {
       text: `What is the value of $${a} + ${b}$?`,
@@ -76,8 +78,8 @@ utils.getProblem = () => {
   });
 
   problems.push(() => {
-    const a = Math.floor(200 * Math.random());
-    const b = Math.floor(150 * Math.random());
+    const a = rand(0, 200);
+    const b = rand(0, 150);
 
     return {
       text: `What is the value of $${a} - ${b}$?`,
@@ -86,8 +88,8 @@ utils.getProblem = () => {
   });
 
   problems.push(() => {
-    const a = Math.floor(30 * Math.random());
-    const b = Math.floor(20 * Math.random());
+    const a = rand(0, 30);
+    const b = rand(0, 20);
 
     return {
       text: `What is the value of $${a} \\cdot ${b}$?`,
@@ -95,9 +97,9 @@ utils.getProblem = () => {
     };
   });
 
-  iproblems.push(() => {
-    const a = Math.floor(500 * Math.random());
-    const b = Math.floor(11 * Math.random()) + 2;
+  problems.push(() => {
+    const a = rand(0, 500);
+    const b = rand(2, 13);
 
     return {
       text: `What is the value of $${a} \\pmod{${b}}$?`,
@@ -106,8 +108,8 @@ utils.getProblem = () => {
   });
 
   problems.push(() => {
-    const a = Math.floor(480 * Math.random()) + 20;
-    const b = Math.floor(5 * Math.random()) + 2;
+    const a = rand(20, 500);
+    const b = rand(2, 7);
 
     // Check for floating point errors
     const log = Math.log(a) / Math.log(b);
@@ -120,7 +122,7 @@ utils.getProblem = () => {
   });
 
   problems.push(() => {
-    const a = Math.floor(45 * Math.random()) + 5;
+    const a = rand(5, 50);
 
     return {
       text: `What is the sum of the first $${a}$ integers?`,
@@ -129,14 +131,9 @@ utils.getProblem = () => {
   });
 
   problems.push(() => {
-    const a = Math.floor(41 * Math.random()) - 20;
-    let b = 0;
-
-    while (b === 0) {
-      b = Math.floor(41 * Math.random()) - 20;
-    }
-
-    const c = Math.floor(100 * Math.random()) + 1;
+    const a = rand(20, 61);
+    const b = (rand(0, 1) === 0 ? -1 : 1) * rand(1, 21);
+    const c = rand(1, 101);
 
     return {
       text: `Solve the equation: $${b}x + ${c} = ${(a * b) + c}$`,
@@ -144,21 +141,24 @@ utils.getProblem = () => {
     };
   });
 
-  //  problems.push(() => {
-  //    const a = Math.floor(35 * Math.random()) + 5;
-  //    const b = Math.floor(10 * Math.random()) + 1;
-  //    const c = Math.floor(15 * Math.random()) + 5;
-  //
-  //    return {
-  //      text: `If Bobert the builder can build $${a}$ houses in $${b}$ day${b === 1 ? '' : 's'}, how many completed houses can Bobert build in $${c}$ days?`,
-  //      answer: String(Math.floor((a * c) / b)),
-  //    };
-  //  });
+  /**
+  problems.push(() => {
+    const a = Math.floor(35 * Math.random()) + 5;
+    const b = Math.floor(10 * Math.random()) + 1;
+    const c = Math.floor(15 * Math.random()) + 5;
+
+    return {
+      text: `If Bobert the builder can build $${a}$ houses in $${b}$ day${b === 1 ? '' : 's'}, `
+        + `how many completed houses can Bobert build in $${c}$ days?`,
+      answer: String(Math.floor((a * c) / b)),
+    };
+  });
+   */
 
   problems.push(() => {
-    const a = Math.floor(10 * Math.random()) + 1;
-    const b = Math.floor(50 * Math.random()) + a;
-    const c = Math.floor(2 * Math.random());
+    const a = rand(1, 11);
+    const b = rand(a, a + 50);
+    const c = rand(0, 2);
 
     return {
       text: `Alex and Bobert take turns taking between $1$ and $${a}$ sticks from a pile starting from $${b}$. If the last person to take a stick wins, and ${(c > 0 ? 'Alex' : 'Bobert')} goes first, who wins?`,
@@ -167,7 +167,7 @@ utils.getProblem = () => {
   });
 
   problems.push(() => {
-    const num = Math.floor(100 * Math.random()) + 100;
+    const num = rand(100, 200);
     let n = num;
     let sum = 0;
     let i = 2;
@@ -191,7 +191,7 @@ utils.getProblem = () => {
   });
 
   problems.push(() => {
-    const num = Math.floor(400 * Math.random()) + 100;
+    const num = rand(100, 500);
     let zeros = 0;
 
     for (let pow = 1; 5 ** pow <= num; pow += 1) {
@@ -205,11 +205,11 @@ utils.getProblem = () => {
   });
 
   problems.push(() => {
-    const a = Math.floor(22 * Math.random()) + 2;
+    const a = rand(2, 24);
     let b;
 
     do {
-      b = Math.floor(22 * Math.random()) + 2;
+      b = rand(2, 24);
     } while (gcd(a, b) !== 1);
 
     // Max number of chicken tendies we can't buy >:(
@@ -225,21 +225,41 @@ utils.getProblem = () => {
     const a = rand(1, 20);
     const area = 6 * a * a;
     const volume = a * a * a;
+
     return {
       text: `What is the volume of a cube with surface area $${area}$?`,
       answer: String(volume),
     };
   });
+
   problems.push(() => {
     const a = rand(3, 13);
     const ans = 2 ** a;
+
     return {
       text: `How many different outcomes can we get if we flip $${a}$ coins?`,
       answer: String(ans),
     };
   });
 
-  let index = rand(0, problems.length);
+  problems.push(() => {
+    const die = rand(2, 5);
+    const sum = rand(die, (6 * die) + 1);
+    let ways = 0;
+
+    for (let i = 0; 6 * i <= sum - die; i += 1) {
+      ways += ((-1) ** i)
+        * (fact(die) / fact(i) / fact(die - i))
+        * (fact(sum - (6 * i) - 1) / fact(die - 1) / fact(sum - die - (6 * i)));
+    }
+
+    return {
+      text: `How many ways are there for $${die}$ fair six-sided die to sum to $${sum}$ when rolled?`,
+      answer: String(ways),
+    };
+  });
+
+  const index = rand(0, problems.length);
   return problems[index]();
 };
 
