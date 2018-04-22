@@ -1,9 +1,11 @@
 const Game = require('./game.js');
 
 class GameManager {
-  constructor(io) {
+  constructor(io, updateAllUsers) {
     this.games = new Map();
     this.io = io;
+
+    this.updateAllUsers = updateAllUsers;
   }
 
   // Passing updateAllUsers around seems like spaghetti code
@@ -66,7 +68,7 @@ class GameManager {
 
     const startGame = () => {
       if (currGame) {
-        currGame.start(() => updateAllUsers());
+        currGame.start(this.updateAllUsers);
         updateData();
       }
     };
@@ -140,4 +142,4 @@ class GameManager {
   }
 }
 
-module.exports = io => new GameManager(io);
+module.exports = (io, updateAllUsers) => new GameManager(io, updateAllUsers);

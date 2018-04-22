@@ -88,7 +88,7 @@ module.exports = class Game {
     return false;
   }
 
-  start() {
+  start(callback) {
     if (this.started) return;
     let problemWorth = this.users.length;
     if (this.type === 'CD') problemWorth = 1;
@@ -223,6 +223,8 @@ module.exports = class Game {
       this.sendReviewProblems();
       this.sendScores();
       this.updateElo();
+
+      callback();
     });
   }
 

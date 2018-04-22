@@ -9,7 +9,7 @@ class UserManager {
     this.users = new Map();
     this.ips = new Map();
 
-    this.gameManager = gameManager(io);
+    this.gameManager = gameManager(io, () => this.updateAllUsers());
     this.gameManager.sendQueue = UserManager.sendQueue;
   }
 
