@@ -17,7 +17,7 @@ class UserManager {
       if (err) {
         throw err;
       }
-	  
+
       if (!obj) {
         console.error(`${username} doesn't have data attached for some reason. Creating new data.`);
 

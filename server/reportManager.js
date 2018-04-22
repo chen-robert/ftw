@@ -28,7 +28,8 @@ module.exports.addReport = (name, comment, ip, callback) => {
       // Don't let the user know we've silently eaten their report
       callback(err);
     } else {
-      module.exports.Report.create({
+      module.exports.Report.create(
+        {
           comment,
           ip,
           username: name,
