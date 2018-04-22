@@ -16,7 +16,7 @@ $(document).ready(function () {
       var command = parts.splice(0, 1)[0];
 
       // Quick admin command testing
-      var match = str.match(/^([a-z]*?)\[(.*?)\] ([a-z]*)$/);
+      var match = str.match(/^([a-z]*?)\[(.*?)\] (.*)$/);
 
       if (match) {
         window.FTW.socket.emit('admin command', {

@@ -12,7 +12,7 @@ $(document).ready(() => {
       const command = parts.splice(0, 1)[0];
 
       // Quick admin command testing
-      const match = str.match(/^([a-z]*?)\[(.*?)\] ([a-z]*)$/);
+      const match = str.match(/^([a-z]*?)\[(.*?)\] (.*)$/);
 
       if (match) {
         window.FTW.socket.emit(
