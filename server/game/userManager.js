@@ -14,9 +14,7 @@ class UserManager {
   }
 
   addSession(id, username, ip, callback) {
-    userData.findOne({
-      username
-    }).exec((err, obj) => {
+    userData.findOne({ username }).exec((err, obj) => {
       if (err) {
         throw err;
       }
@@ -97,7 +95,7 @@ class UserManager {
       }
 
       callback({
-        err: 'No data found'
+        err: 'No data found',
       });
     });
   }

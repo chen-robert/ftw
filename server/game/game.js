@@ -373,7 +373,7 @@ module.exports = class Game {
       timePerProblem: this.timePerProblem,
       users: this.users,
       problems: this.problems,
-      private: this.private
+      private: this.private,
     };
   }
 };

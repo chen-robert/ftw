@@ -131,7 +131,7 @@ $(document).ready(function () {
           // eslint-disable-next-line arrow-body-style
           .map(function (emoji) {
             return {
-              label: '<img class="emoji" src="/emoji/' + emoji + '.png" title="' + emoji + '" alt=":' + emoji + ':" /> :' + emoji + ':',
+              label: ':' + emoji + ':',
               value: emoji
             };
           }));
@@ -148,8 +148,10 @@ $(document).ready(function () {
       open: function open() {
         var $labels = $('#chat-box').autocomplete('widget').children().children();
 
-        $labels.html(function (i) {
-          return $labels[i].innerText;
+        $labels.html(function (i, html) {
+          var emoji = $labels[i].innerText.match(/^:(.*):$/)[1];
+
+          return $('<img />').addClass('emoji').attr('src', '/emoji/' + emoji + '.png').attr('title', emoji).attr('alt', ':' + emoji + ':')[0].outerHTML + ' ' + html;
         });
       },
       select: function select(event, ui) {
