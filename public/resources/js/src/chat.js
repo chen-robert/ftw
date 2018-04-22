@@ -1,5 +1,5 @@
 /* eslint-env browser, jquery */
-/* globals jdenticon */
+/* globals jdenticon, emojies */
 $(document).ready(() => {
   const formatDate = function getPrettyDate(date) {
     const day = date.getHours();
@@ -17,7 +17,6 @@ $(document).ready(() => {
     $(message).addClass('chat-message');
 
     message.innerHTML = str;
-
 
     return message;
   };
@@ -106,7 +105,9 @@ $(document).ready(() => {
     };
 
     chat.safeAppend = (msg) => {
-      const scrollDiff = $('#chat-display').prop('scrollHeight') - $('#chat-display').prop('scrollTop') - $('#chat-display').height();
+      const scrollDiff = $('#chat-display').prop('scrollHeight')
+        - $('#chat-display').prop('scrollTop')
+        - $('#chat-display').height();
 
       window.FTW.chat.appendMessage(msg);
 
@@ -116,6 +117,87 @@ $(document).ready(() => {
         $('#chat-display').prop('scrollTop', $('#chat-display').prop('scrollHeight'));
       }
     };
+
+    // Emoji auto-complete
+    let tempInput = '';
+
+    $('#chat-box').autocomplete({
+      source(request, response) {
+        const match = request.term.match(/:([a-z0-9+\-_]*?)$/);
+
+        if (match && !/:([a-z0-9+\-_]*?):$/.test(request.term)) {
+          response(emojies
+            .filter(emoji => emoji.startsWith(match[1]))
+            .slice(0, 5)
+            // eslint-disable-next-line arrow-body-style
+            .map((emoji) => {
+              return {
+                label: `<img class="emoji" src="/emoji/${emoji}.png" title="${emoji}" alt=":${emoji}:" /> :${emoji}:`,
+                value: emoji,
+              };
+            }));
+
+          tempInput = request.term;
+        } else {
+          response([]);
+        }
+      },
+
+      position: { my: 'left bottom', at: 'left top', collision: 'flip' },
+
+      open() {
+        const $labels = $('#chat-box').autocomplete('widget').children().children();
+
+        $labels.html(i => $labels[i].innerText);
+      },
+
+      select(event, ui) {
+        $('#chat-box').val(tempInput.replace(/:([a-z0-9+\-_]*?)$/, `:${ui.item.value}:`));
+
+        event.stopPropagation();
+        event.preventDefault();
+      },
+
+      focus(event, ui) {
+        $('#chat-box').val(tempInput.replace(/:([a-z0-9+\-_]*?)$/, `:${ui.item.value}:`));
+
+        event.stopPropagation();
+        event.preventDefault();
+      },
+    });
+
+    /* textcomplete.register(
+      [
+        {
+          id: 'emoji',
+          match: /\B:([-+\w]*)$/,
+
+          search(term, callback) {
+            callback(emojies.filter(emoji => emoji.startsWith(term)));
+          },
+
+          template(value) {
+            return `<img class="emoji" src="/emoji/${value}.png" title="${value}" alt=":${value}:" />`;
+          },
+
+          replace(value) {
+            return `:${value}:`;
+          },
+
+          index: 1,
+        },
+      ],
+
+      {
+        onKeydown(e, commands) {
+          if (e.ctrlKey && e.keyCode === 74) { // CTRL-J
+            return commands.KEY_ENTER;
+          }
+
+          return null;
+        },
+      },
+    ); */
 
     $('#chat-box').keypress((e) => {
       if (e.which === 13) {
