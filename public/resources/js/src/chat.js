@@ -132,7 +132,7 @@ $(document).ready(() => {
             // eslint-disable-next-line arrow-body-style
             .map((emoji) => {
               return {
-                label: `<img class="emoji" src="/emoji/${emoji}.png" title="${emoji}" alt=":${emoji}:" /> :${emoji}:`,
+                label: `:${emoji}:`,
                 value: emoji,
               };
             }));
@@ -148,7 +148,15 @@ $(document).ready(() => {
       open() {
         const $labels = $('#chat-box').autocomplete('widget').children().children();
 
-        $labels.html(i => $labels[i].innerText);
+        $labels.html((i, html) => {
+          const emoji = $labels[i].innerText.match(/^:(.*):$/)[1];
+
+          return `${$('<img />')
+            .addClass('emoji')
+            .attr('src', `/emoji/${emoji}.png`)
+            .attr('title', emoji)
+            .attr('alt', `:${emoji}:`)[0].outerHTML} ${html}`;
+        });
       },
 
       select(event, ui) {
