@@ -38,7 +38,10 @@ const gcd = function greatestCommonDenominator(a, b) {
 
   return gcd(a, b % a);
 };
-
+//Generates a random integer from [a, b).
+const rand = function (a, b) {
+  return Math.floor((b - a + 1) * Math.random()) + a;
+}
 /**
  * READ ME BEFORE YOU EDIT PROBLEMS
  * Problems may (and in most cases, should) contain LaTeX.
@@ -46,10 +49,23 @@ const gcd = function greatestCommonDenominator(a, b) {
  * Doing is is generally bad practice and can lead to unintended results.
  * Use the String method.
  */
-utils.getProblem = () => {
-  const g = Math.floor(30 * Math.random());
 
-  if (g >= 0 && g < 3) {
+/*
+          
+          TEMPLATE
+          
+problems.push(() => {
+    return {
+      text: ``,
+      answer: String(),
+    };
+  });
+*/
+utils.getProblem = () => {
+  //This is an array of FUNCTIONS
+  const problems = [];
+
+  problems.push(() => {
     const a = Math.floor(200 * Math.random());
     const b = Math.floor(100 * Math.random());
 
@@ -57,9 +73,9 @@ utils.getProblem = () => {
       text: `What is the value of $${a} + ${b}$?`,
       answer: String(a + b),
     };
-  }
+  });
 
-  if (g >= 3 && g < 6) {
+  problems.push(() => {
     const a = Math.floor(200 * Math.random());
     const b = Math.floor(150 * Math.random());
 
@@ -67,9 +83,9 @@ utils.getProblem = () => {
       text: `What is the value of $${a} - ${b}$?`,
       answer: String(a - b),
     };
-  }
+  });
 
-  if (g >= 6 && g < 8) {
+  problems.push(() => {
     const a = Math.floor(30 * Math.random());
     const b = Math.floor(20 * Math.random());
 
@@ -77,9 +93,9 @@ utils.getProblem = () => {
       text: `What is the value of $${a} \\cdot ${b}$?`,
       answer: String(a * b),
     };
-  }
+  });
 
-  if (g >= 8 && g < 10) {
+  iproblems.push(() => {
     const a = Math.floor(500 * Math.random());
     const b = Math.floor(11 * Math.random()) + 2;
 
@@ -87,9 +103,9 @@ utils.getProblem = () => {
       text: `What is the value of $${a} \\pmod{${b}}$?`,
       answer: String(a % b),
     };
-  }
+  });
 
-  if (g === 10) {
+  problems.push(() => {
     const a = Math.floor(480 * Math.random()) + 20;
     const b = Math.floor(5 * Math.random()) + 2;
 
@@ -101,18 +117,18 @@ utils.getProblem = () => {
       text: `What is the largest integer $x$ such that $${b}^x \\le ${a}$?`,
       answer: String(a ** round === b ? round : Math.floor(log)),
     };
-  }
+  });
 
-  if (g >= 11 && g < 13) {
+  problems.push(() => {
     const a = Math.floor(45 * Math.random()) + 5;
 
     return {
       text: `What is the sum of the first $${a}$ integers?`,
       answer: String((a * (a + 1)) / 2),
     };
-  }
+  });
 
-  if (g >= 13 && g < 16) {
+  problems.push(() => {
     const a = Math.floor(41 * Math.random()) - 20;
     let b = 0;
 
@@ -126,20 +142,20 @@ utils.getProblem = () => {
       text: `Solve the equation: $${b}x + ${c} = ${(a * b) + c}$`,
       answer: String(a),
     };
-  }
+  });
 
-  if (g >= 16 && g < 18) {
-    const a = Math.floor(35 * Math.random()) + 5;
-    const b = Math.floor(10 * Math.random()) + 1;
-    const c = Math.floor(15 * Math.random()) + 5;
+  //  problems.push(() => {
+  //    const a = Math.floor(35 * Math.random()) + 5;
+  //    const b = Math.floor(10 * Math.random()) + 1;
+  //    const c = Math.floor(15 * Math.random()) + 5;
+  //
+  //    return {
+  //      text: `If Bobert the builder can build $${a}$ houses in $${b}$ day${b === 1 ? '' : 's'}, how many completed houses can Bobert build in $${c}$ days?`,
+  //      answer: String(Math.floor((a * c) / b)),
+  //    };
+  //  });
 
-    return {
-      text: `If Bobert the builder can build $${a}$ houses in $${b}$ day${b === 1 ? '' : 's'}, how many completed houses can Bobert build in $${c}$ days?`,
-      answer: String(Math.floor((a * c) / b)),
-    };
-  }
-
-  if (g >= 18 && g < 20) {
+  problems.push(() => {
     const a = Math.floor(10 * Math.random()) + 1;
     const b = Math.floor(50 * Math.random()) + a;
     const c = Math.floor(2 * Math.random());
@@ -148,9 +164,9 @@ utils.getProblem = () => {
       text: `Alex and Bobert take turns taking between $1$ and $${a}$ sticks from a pile starting from $${b}$. If the last person to take a stick wins, and ${(c > 0 ? 'Alex' : 'Bobert')} goes first, who wins?`,
       answer: (b % (a + 1) === 0) ? ['Alex', 'Bobert'][c] : ['Alex', 'Bobert'][1 - c],
     };
-  }
+  });
 
-  if (g >= 20 && g < 24) {
+  problems.push(() => {
     const num = Math.floor(100 * Math.random()) + 100;
     let n = num;
     let sum = 0;
@@ -172,9 +188,9 @@ utils.getProblem = () => {
       text: `What is the sum of the prime factors of $${num}$?`,
       answer: String(sum),
     };
-  }
+  });
 
-  if (g >= 24 && g < 27) {
+  problems.push(() => {
     const num = Math.floor(400 * Math.random()) + 100;
     let zeros = 0;
 
@@ -186,9 +202,9 @@ utils.getProblem = () => {
       text: `How many terminating zeros does $${num}!$ have?`,
       answer: String(zeros),
     };
-  }
+  });
 
-  if (g >= 27 && g < 30) {
+  problems.push(() => {
     const a = Math.floor(22 * Math.random()) + 2;
     let b;
 
@@ -203,15 +219,28 @@ utils.getProblem = () => {
       text: `Pencils are sold in either bundles of $${a}$ or $${b}$. What is the largest quantity of pencils that cannot be bought?`,
       answer: String(chickenTendies),
     };
-  }
+  });
 
-  // This part should never actually run? (It won't be)
-  const a = Math.floor(100 * Math.random());
+  problems.push(() => {
+    const a = rand(1, 20);
+    const area = 6 * a * a;
+    const volume = a * a * a;
+    return {
+      text: `What is the volume of a cube with surface area $${area}$?`,
+      answer: String(volume),
+    };
+  });
+  problems.push(() => {
+    const a = rand(3, 13);
+    const ans = 2 ** a;
+    return {
+      text: `How many different outcomes can we get if we flip $${a}$ coins?`,
+      answer: String(ans),
+    };
+  });
 
-  return {
-    text: `wot is $${a}$`,
-    answer: String(a),
-  };
+  let index = rand(0, problems.length);
+  return problems[index]();
 };
 
 module.exports = utils;
