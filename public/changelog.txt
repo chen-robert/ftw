@@ -1,3 +1,7 @@
+April 22nd:
+Added emoji autocomplete.
+
+
 April 19th:
 Added a way to review games.
 Added a leaderboards.
