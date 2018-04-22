@@ -2,11 +2,11 @@ const chatUtils = {};
 
 chatUtils.clean = str =>
   str
-    .replace(/&/g, '&amp;')
-    .replace(/'/g, '&quot;')
-    .replace(/'/g, '&#039;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  .replace(/&/g, '&amp;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#039;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;');
 
 chatUtils.parseLinks = (str) => {
   const norm = n => (n + (str.length + 1)) % (str.length + 1);
