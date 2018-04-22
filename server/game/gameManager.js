@@ -16,7 +16,9 @@ class GameManager {
 
     let currGame = null;
 
-    const { games } = this;
+    const {
+      games
+    } = this;
 
     // Update self first, then everybody
     const updateData = () => {
@@ -39,7 +41,10 @@ class GameManager {
     };
 
     const joinGame = (funcData) => {
-      const { id, pw } = funcData;
+      const {
+        id,
+        pw
+      } = funcData;
 
       if (games.has(id) && !games.get(id).started) {
         if (currGame !== null && currGame.id !== id) {
@@ -128,7 +133,7 @@ class GameManager {
     const ret = {};
 
     this.games.forEach((val, key) => {
-      ret[key] = val;
+      ret[key] = val.serializedForm;
     });
 
     this.io.emit('game data', ret);

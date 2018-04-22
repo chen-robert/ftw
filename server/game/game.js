@@ -88,7 +88,7 @@ module.exports = class Game {
     return false;
   }
 
-  start(callback) {
+  start() {
     if (this.started) return;
     let problemWorth = this.users.length;
     if (this.type === 'CD') problemWorth = 1;
@@ -223,8 +223,6 @@ module.exports = class Game {
       this.sendReviewProblems();
       this.sendScores();
       this.updateElo();
-
-      callback();
     });
   }
 
@@ -363,5 +361,17 @@ module.exports = class Game {
         this.sendScores();
       }
     }
+  }
+
+  get serializedForm() {
+    return {
+      host: this.host,
+      started: this.started,
+      type: this.type,
+      timePerProblem: this.timePerProblem,
+      users: this.users,
+      problems: this.problems,
+      private: this.private
+    };
   }
 };
