@@ -16,7 +16,9 @@ class GameManager {
 
     let currGame = null;
 
-    const { games } = this;
+    const {
+      games
+    } = this;
 
     // Update self first, then everybody
     const updateData = () => {
@@ -39,7 +41,10 @@ class GameManager {
     };
 
     const joinGame = (funcData) => {
-      const { id, pw } = funcData;
+      const {
+        id,
+        pw
+      } = funcData;
 
       if (games.has(id) && !games.get(id).started) {
         if (currGame !== null && currGame.id !== id) {
@@ -89,7 +94,7 @@ class GameManager {
 
         time = Number((time).toFixed(3));
         problems = Math.floor(problems);
-        if (time > 0 && problems > 0 && time < 1000 && problems < 1000) {
+        if (time > 0 && problems > 0 && time < 100 && problems < 1000) {
           if (gameData.type === 'FTW' || gameData.type === 'CD') {
             // CD defaults
             if (gameData.type === 'CD') {
@@ -104,6 +109,13 @@ class GameManager {
               pw,
               id: game.id,
             });
+          }
+        } else {
+          if (time <= 0 || time >= 100) {
+            socket.emit("notif error", "Please make sure 0 < time < 100");
+          } else {
+            socket.emit("notif error", "Please make sure 0 < problems < 1000");
+
           }
         }
       },
