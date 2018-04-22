@@ -10,6 +10,7 @@ class UserManager {
     this.ips = new Map();
 
     this.gameManager = gameManager(io);
+    this.gameManager.sendQueue = UserManager.sendQueue;
   }
 
   addSession(id, username, ip, callback) {
@@ -54,7 +55,7 @@ class UserManager {
       );
 
       chatManager.addUser(data, socket, this.ips.get(id));
-      this.gameManager.addSocket(data, socket, () => this.updateAllUsers());
+      this.gameManager.addSocket(data, socket, this.updateAllUsers);
       this.updateAllUsers();
       return true;
     }
@@ -63,7 +64,7 @@ class UserManager {
   }
 
   updateAllUsers() {
-    this.io.emit('online users', chatManager.onlineUsers);
+    this.io.emit('online users', chatManager.onlineUsers());
   }
 
   static getData(username, callback) {
@@ -123,6 +124,25 @@ class UserManager {
 
       callback();
     });
+  }
+
+  // Send queue to people with chat frozen
+  static sendQueue(data) {
+    const user = chatManager.users.get(data.username);
+
+    if (user) {
+      user.queue.forEach(msg => user.socket.emit('message', msg));
+
+      chatManager.users.set(
+        data.username,
+
+        {
+          socket: user.socket,
+          data: user.data,
+          queue: [],
+        },
+      );
+    }
   }
 }
 

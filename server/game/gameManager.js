@@ -16,9 +16,7 @@ class GameManager {
 
     let currGame = null;
 
-    const {
-      games
-    } = this;
+    const { games } = this;
 
     // Update self first, then everybody
     const updateData = () => {
@@ -41,10 +39,7 @@ class GameManager {
     };
 
     const joinGame = (funcData) => {
-      const {
-        id,
-        pw
-      } = funcData;
+      const { id, pw } = funcData;
 
       if (games.has(id) && !games.get(id).started) {
         if (currGame !== null && currGame.id !== id) {
@@ -89,8 +84,8 @@ class GameManager {
 
       (gameData) => {
         const pw = String(gameData.password);
-        let time = +gameData.time;
-        let problems = +gameData.problems;
+        let time = Number(gameData.time);
+        let problems = Number(gameData.problems);
 
         time = Number((time).toFixed(3));
         problems = Math.floor(problems);
@@ -103,6 +98,7 @@ class GameManager {
             }
 
             const game = new Game(time, problems, gameData.type, pw);
+            game.sendQueue = this.sendQueue;
             games.set(game.id, game);
 
             joinGame({
@@ -110,13 +106,10 @@ class GameManager {
               id: game.id,
             });
           }
+        } else if (time <= 0 || time >= 100) {
+          socket.emit('notif error', 'Please make sure 0 < time < 100');
         } else {
-          if (time <= 0 || time >= 100) {
-            socket.emit("notif error", "Please make sure 0 < time < 100");
-          } else {
-            socket.emit("notif error", "Please make sure 0 < problems < 1000");
-
-          }
+          socket.emit('notif error', 'Please make sure 0 < problems < 1000');
         }
       },
     );

@@ -40,9 +40,10 @@ class ChatManager {
       return;
     }
 
-    users.set(name, { socket, data });
+    users.set(name, { socket, data, queue: [] });
 
     const rateLimit = [];
+
     socket.on(
       'public message',
 
@@ -51,7 +52,7 @@ class ChatManager {
           return;
         }
 
-        const currTime = +new Date();
+        const currTime = new Date().getTime();
 
         while (rateLimit.length > 0 && rateLimit[0] < currTime - (5 * 1000)) {
           rateLimit.shift();
@@ -65,15 +66,37 @@ class ChatManager {
           const msg = ChatManager.process(message);
 
           if (typeof msg === 'string') {
-            users.forEach(usrdata => usrdata.socket.emit(
-              'message',
+            users.forEach((usrdata, username) => {
+              // Only send message if chat not frozen
+              if (!usrdata.socket.adapter.rooms.frozen) {
+                usrdata.socket.emit(
+                  'message',
 
-              {
-                type: 'public',
-                from: name,
-                message: msg,
-              },
-            ));
+                  {
+                    type: 'public',
+                    from: name,
+                    message: msg,
+                  },
+                );
+              } else {
+                users.set(
+                  username,
+
+                  {
+                    socket: usrdata.socket,
+                    data: usrdata.data,
+
+                    queue: usrdata.queue.concat([
+                      {
+                        type: 'public',
+                        from: name,
+                        message: msg,
+                      },
+                    ]),
+                  },
+                );
+              }
+            });
 
             // Add to chat log
             chatLog.create({
@@ -160,7 +183,7 @@ class ChatManager {
     );
   }
 
-  get onlineUsers() {
+  onlineUsers() {
     const pool = [];
     this.users.forEach(data => pool.push(data.data));
     return pool;

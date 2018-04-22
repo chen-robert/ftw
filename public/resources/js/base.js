@@ -66,10 +66,6 @@
         window.FTW.socket.on('scores', function (data) {
             return window.FTW.game.setScores(data);
         });
-
-        window.FTW.socket.on('chat freeze', function (freeze) {
-            return window.FTW.chat.freezeChat(freeze);
-        });
     }
 })();
 //# sourceMappingURL=base.js.map
