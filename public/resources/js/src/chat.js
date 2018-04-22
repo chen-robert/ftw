@@ -44,20 +44,12 @@ $(document).ready(() => {
 
   if (!window.FTW.chat) {
     const chat = {};
-    // Should freeze chat or not
-    chat.freeze = false;
-    chat.messageQueue = [];
 
     chat.ignoreList = new Set();
 
     chat.previousSender = '';
 
     chat.appendMessage = function addMessageToChat(msg) {
-      if (chat.freeze) {
-        chat.messageQueue.push(msg);
-        return;
-      }
-
       const user = msg.from;
       const str = msg.message;
       const { type } = msg;
@@ -111,18 +103,6 @@ $(document).ready(() => {
       $('#chat-display').append(message);
 
       chat.previousSender = user;
-    };
-
-    chat.freezeChat = (freeze) => {
-      if (freeze) {
-        chat.freeze = true;
-      } else {
-        chat.freeze = false;
-
-        while (chat.messageQueue.length > 0) {
-          chat.safeAppend(chat.messageQueue.shift());
-        }
-      }
     };
 
     chat.safeAppend = (msg) => {

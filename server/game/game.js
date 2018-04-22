@@ -11,6 +11,7 @@ module.exports = class Game {
     // Active users in game
     this.users = [];
     this.usersThatLeft = [];
+
     // This won't be transfered because map's can't be serialized.
     this.dataToSocket = new Map();
     this.dataToMongoose = new Map();
@@ -19,8 +20,8 @@ module.exports = class Game {
     this.host = null;
 
     this.started = false;
-    this.timePerProblem = +timePerProblem;
-    this.problems = +problems;
+    this.timePerProblem = Number(timePerProblem);
+    this.problems = Number(problems);
     this.type = type;
 
     this.currProblem = {};
@@ -38,11 +39,7 @@ module.exports = class Game {
     if (this.users.indexOf(data) === -1) {
       this.users.push(data);
       this.dataToSocket.set(data, socket);
-
-      // Only use mongoose if register user
-      if (!data.username.startsWith('Guest ')) {
-        this.dataToMongoose.set(data, mongooseObj);
-      }
+      this.dataToMongoose.set(data, mongooseObj);
     }
 
     data.score = 0;
@@ -67,8 +64,11 @@ module.exports = class Game {
     }
 
     if (this.dataToSocket.get(data)) {
-      this.dataToSocket.get(data).emit('chat freeze', false);
+      // this.dataToSocket.get(data).emit('chat freeze', false);
+      this.dataToSocket.get(data).leave('frozen');
+      this.sendQueue(data);
     }
+
     this.dataToSocket.delete(data);
     this.users.splice(this.users.indexOf(data), 1);
 
@@ -84,6 +84,7 @@ module.exports = class Game {
     if (this.host === data) {
       this.setHost(this.users[0]);
     }
+
     return false;
   }
 
@@ -158,9 +159,10 @@ module.exports = class Game {
           text: problem.text,
           answer: '0x536865727279',
         }));
+
         this.problemArr.push(problem);
 
-        this.dataToSocket.forEach(socket => socket.emit('chat freeze', true));
+        this.dataToSocket.forEach(socket => socket.join('frozen'));
 
         setTimeout(() => this.safeProgress((2 * i) + 1), this.timePerProblem * 1000);
       });
@@ -186,9 +188,13 @@ module.exports = class Game {
           }));
 
 
-          this.dataToSocket.forEach(socket => socket.emit('chat freeze', false));
+          this.dataToSocket.forEach((socket, data) => {
+            socket.leave('frozen');
+            this.sendQueue(data);
+          });
 
           this.sendScores();
+
           setTimeout(() => this.safeProgress((2 * i) + 2), 5 * 1000);
         });
       }
@@ -209,7 +215,10 @@ module.exports = class Game {
         time: 1,
       }));
 
-      this.dataToSocket.forEach(socket => socket.emit('chat freeze', false));
+      this.dataToSocket.forEach((socket, data) => {
+        socket.leave('frozen');
+        this.sendQueue(data);
+      });
 
       this.sendReviewProblems();
       this.sendScores();
