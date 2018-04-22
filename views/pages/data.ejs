@@ -4,12 +4,14 @@
 <head>
   <title><%= title %></title>
   <% include ../partials/bootstrap %>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/resources/css/chat.css" />
 </head>
 
 <body>
   <%- include('../partials/nav', { user }) %>
   <div style="margin-left: 10px; margin-top: 10px;">
-    <pre><code><%= data %></code></pre>
+    <pre><code><%- data %></code></pre>
   </div>
 </body>
 
