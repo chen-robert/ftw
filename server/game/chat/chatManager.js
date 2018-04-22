@@ -11,7 +11,6 @@ const swearList = require('swearjar');
 class ChatManager {
   constructor() {
     this.users = new Map();
-    this.freezed = new Map();
     this.ips = new Map();
 
     // Stores lowerCaseString -> string for PM functions. This code seems really ugly.
@@ -28,8 +27,6 @@ class ChatManager {
 
     // Set IP data
     this.ips.set(name, ip);
-
-    this.freezed.set(name, false);
 
     this.nameMap.set(nameLower, name);
 
