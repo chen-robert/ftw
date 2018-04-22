@@ -66,6 +66,9 @@ module.exports = class Game {
       return true;
     }
 
+    if (this.dataToSocket.get(data)) {
+      this.dataToSocket.get(data).emit('chat freeze', false);
+    }
     this.dataToSocket.delete(data);
     this.users.splice(this.users.indexOf(data), 1);
 
