@@ -1,7 +1,7 @@
 'use strict';
 
 /* eslint-env browser, jquery */
-/* globals jdenticon */
+/* globals jdenticon, emojies */
 $(document).ready(function () {
   var formatDate = function getPrettyDate(date) {
     var day = date.getHours();
@@ -116,6 +116,82 @@ $(document).ready(function () {
         $('#chat-display').prop('scrollTop', $('#chat-display').prop('scrollHeight'));
       }
     };
+
+    // Emoji auto-complete
+    var tempInput = '';
+
+    $('#chat-box').autocomplete({
+      source: function source(request, response) {
+        var match = request.term.match(/:([a-z0-9+\-_]*?)$/);
+
+        if (match && !/:([a-z0-9+\-_]*?):$/.test(request.term)) {
+          response(emojies.filter(function (emoji) {
+            return emoji.startsWith(match[1]);
+          }).slice(0, 5)
+          // eslint-disable-next-line arrow-body-style
+          .map(function (emoji) {
+            return {
+              label: '<img class="emoji" src="/emoji/' + emoji + '.png" title="' + emoji + '" alt=":' + emoji + ':" /> :' + emoji + ':',
+              value: emoji
+            };
+          }));
+
+          tempInput = request.term;
+        } else {
+          response([]);
+        }
+      },
+
+
+      position: { my: 'left bottom', at: 'left top', collision: 'flip' },
+
+      open: function open() {
+        var $labels = $('#chat-box').autocomplete('widget').children().children();
+
+        $labels.html(function (i) {
+          return $labels[i].innerText;
+        });
+      },
+      select: function select(event, ui) {
+        $('#chat-box').val(tempInput.replace(/:([a-z0-9+\-_]*?)$/, ':' + ui.item.value + ':'));
+
+        event.stopPropagation();
+        event.preventDefault();
+      },
+      focus: function focus(event, ui) {
+        $('#chat-box').val(tempInput.replace(/:([a-z0-9+\-_]*?)$/, ':' + ui.item.value + ':'));
+
+        event.stopPropagation();
+        event.preventDefault();
+      }
+    });
+
+    /* textcomplete.register(
+      [
+        {
+          id: 'emoji',
+          match: /\B:([-+\w]*)$/,
+            search(term, callback) {
+            callback(emojies.filter(emoji => emoji.startsWith(term)));
+          },
+            template(value) {
+            return `<img class="emoji" src="/emoji/${value}.png" title="${value}" alt=":${value}:" />`;
+          },
+            replace(value) {
+            return `:${value}:`;
+          },
+            index: 1,
+        },
+      ],
+        {
+        onKeydown(e, commands) {
+          if (e.ctrlKey && e.keyCode === 74) { // CTRL-J
+            return commands.KEY_ENTER;
+          }
+            return null;
+        },
+      },
+    ); */
 
     $('#chat-box').keypress(function (e) {
       if (e.which === 13) {
