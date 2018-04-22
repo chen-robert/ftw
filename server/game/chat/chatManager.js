@@ -63,6 +63,7 @@ class ChatManager {
           socket.emit('message', ChatManager.toMessage('Please slow down!'));
         } else {
           const msg = ChatManager.process(message);
+
           if (typeof msg === 'string') {
             users.forEach(usrdata => usrdata.socket.emit(
               'message',
