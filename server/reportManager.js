@@ -13,11 +13,11 @@ module.exports.addReport = (name, comment, ip, callback) => {
     ip,
 
     username: {
-      $regex: new RegExp(name, 'i'),
+      $regex: new RegExp(`^${name}$`, 'i'),
     },
 
     comment: {
-      $regex: new RegExp(comment, 'i'),
+      $regex: new RegExp(`^${comment}$`, 'i'),
     },
   }).exec((err, data) => {
     if (err) {
@@ -28,8 +28,7 @@ module.exports.addReport = (name, comment, ip, callback) => {
       // Don't let the user know we've silently eaten their report
       callback(err);
     } else {
-      module.exports.Report.create(
-        {
+      module.exports.Report.create({
           comment,
           ip,
           username: name,

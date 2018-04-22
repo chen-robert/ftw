@@ -17,7 +17,7 @@ class UserManager {
       if (err) {
         throw err;
       }
-
+	  
       if (!obj) {
         console.error(`${username} doesn't have data attached for some reason. Creating new data.`);
 
@@ -110,7 +110,7 @@ class UserManager {
 
       if (data) {
         // Data already exists. No need to create new.
-      } else if (typeof username !== 'string') {
+      } else if (typeof username === 'string') {
         userData.create({
           username,
           rating: 1200,
