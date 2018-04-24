@@ -43,7 +43,7 @@ class GameManager {
     const joinGame = (funcData) => {
       const { id, pw } = funcData;
 
-      if (games.has(id) && !games.get(id).started) {
+      if (games.has(id)) {
         if (currGame !== null && currGame.id !== id) {
           removeUser();
         }
@@ -51,22 +51,13 @@ class GameManager {
         currGame = games.get(id);
 
         if (games.get(id).pw === pw) {
-          socket.emit('join game');
-          games.get(id).add(userData, socket, data);
-        } else {
-          socket.emit('notif error', 'Invalid password');
-        }
-      } else if (games.has(id)) {
-        // Spectator mode
-        if (currGame !== null && currGame.id !== id) {
-          removeUser();
-        }
-
-        currGame = games.get(id);
-
-        if (games.get(id).pw === pw) {
-          socket.emit('spectate game');
-          games.get(id).addSpectator(userData, socket, data);
+          if (!games.get(id).started) {
+            socket.emit('join game');
+            games.get(id).add(userData, socket, data);
+          } else {
+            socket.emit('spectate game');
+            games.get(id).addSpectator(userData, socket, data);
+          }
         } else {
           socket.emit('notif error', 'Invalid password');
         }
