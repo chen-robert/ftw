@@ -77,6 +77,8 @@
       }
     });
 
+    game.spectating = false;
+
     game.leaveGame = () => {
       $('#problem-box').hide();
       $('#start-game-button').hide();
@@ -105,6 +107,11 @@
       $('#table-ratings').hide();
 
       $('#answer-box').hide();
+
+      // Different message for spectators
+      if (game.spectating) {
+        $('#problem-header').text('Waiting for next problem...');
+      }
     };
 
     game.setHost = () => {
@@ -128,7 +135,10 @@
 
       $('#start-game-button').hide();
 
-      $('#answer-box').show();
+      if (!game.spectating) {
+        $('#answer-box').show();
+      }
+
       $('#answer-box').val('');
       $('#answer-box').focus();
     };
@@ -192,23 +202,23 @@
 
           if (data.started) {
             $(body).addClass('game-started');
-          } else {
-            $(box).click(() => {
-              if (data.private) {
-                $('#game-join-modal').modal('toggle');
-                game.currChoice = uuid;
-              } else {
-                window.FTW.socket.emit(
-                  'join game',
-
-                  {
-                    id: uuid,
-                    pw: '',
-                  },
-                );
-              }
-            });
           }
+          
+          $(box).click(() => {
+            if (data.private) {
+              $('#game-join-modal').modal('toggle');
+              game.currChoice = uuid;
+            } else {
+              window.FTW.socket.emit(
+                'join game',
+
+                {
+                  id: uuid,
+                  pw: '',
+                },
+              );
+            }
+          });
 
           $('#game-display').append(box);
         }

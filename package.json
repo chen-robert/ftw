@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "test": "node test/app.js",
-    "build": "./node_modules/.bin/babel ./public/resources/js/src -d ./public/resources/js -s"
+    "build": "./node_modules/.bin/babel ./public/resources/js/src -d ./public/resources/js -s",
+    "watch": "./node_modules/.bin/babel ./public/resources/js/src -d ./public/resources/js -s -w"
   },
   "babel": {
     "presets": ["env"]
