@@ -203,7 +203,7 @@
           if (data.started) {
             $(body).addClass('game-started');
           }
-          
+
           $(box).click(() => {
             if (data.private) {
               $('#game-join-modal').modal('toggle');
