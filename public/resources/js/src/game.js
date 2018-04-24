@@ -94,6 +94,8 @@
 
       $('#problem-header').text('Waiting to start...');
       $('#problem-text').text('');
+
+      game.spectating = false;
     };
 
     game.joinGame = () => {
