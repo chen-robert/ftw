@@ -18,6 +18,9 @@ $(document).ready(() => {
 
     message.innerHTML = str;
 
+    // Fix +1 emoji
+    $(message).find('img.emoji').attr('src', (i, src) => decodeURIComponent(src));
+
     return message;
   };
 
@@ -173,39 +176,6 @@ $(document).ready(() => {
         event.preventDefault();
       },
     });
-
-    /* textcomplete.register(
-      [
-        {
-          id: 'emoji',
-          match: /\B:([-+\w]*)$/,
-
-          search(term, callback) {
-            callback(emojies.filter(emoji => emoji.startsWith(term)));
-          },
-
-          template(value) {
-            return `<img class="emoji" src="/emoji/${value}.png" title="${value}" alt=":${value}:" />`;
-          },
-
-          replace(value) {
-            return `:${value}:`;
-          },
-
-          index: 1,
-        },
-      ],
-
-      {
-        onKeydown(e, commands) {
-          if (e.ctrlKey && e.keyCode === 74) { // CTRL-J
-            return commands.KEY_ENTER;
-          }
-
-          return null;
-        },
-      },
-    ); */
 
     $('#chat-box').keypress((e) => {
       if (e.which === 13) {
