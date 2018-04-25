@@ -45,6 +45,15 @@
       },
     );
 
+    window.FTW.socket.on(
+      'spectate game',
+
+      (data) => {
+        window.FTW.game.spectating = true;
+        window.FTW.game.joinGame(data);
+      },
+    );
+
     window.FTW.socket.on('leave game', data => window.FTW.game.leaveGame(data));
 
     window.FTW.socket.on('review game', data => window.FTW.game.setReviewData(data));

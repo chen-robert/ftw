@@ -10,6 +10,7 @@ module.exports = class Game {
   constructor(timePerProblem, problems, type, pw) {
     // Active users in game
     this.users = [];
+    this.spectators = [];
     this.usersThatLeft = [];
 
     // This won't be transfered because map's can't be serialized.
@@ -52,13 +53,23 @@ module.exports = class Game {
     }
   }
 
+  addSpectator(data, socket, mongooseObj) {
+    if (this.spectators.indexOf(data) === -1) {
+      this.spectators.push(data);
+      this.dataToSocket.set(data, socket);
+      this.dataToMongoose.set(data, mongooseObj);
+    }
+
+    this.sendScores();
+  }
+
   setHost(data) {
     this.host = data;
     this.dataToSocket.get(data).emit('set host');
   }
 
   remove(data) {
-    if (this.users.indexOf(data) === -1) {
+    if (this.users.indexOf(data) === -1 && this.spectators.indexOf(data) === -1) {
       console.error('Tried to delete somebody that didn\'t exist in game.');
       return true;
     }
@@ -70,9 +81,13 @@ module.exports = class Game {
     }
 
     this.dataToSocket.delete(data);
-    this.users.splice(this.users.indexOf(data), 1);
 
-    this.usersThatLeft.push(data);
+    if (this.users.indexOf(data) !== -1) {
+      this.users.splice(this.users.indexOf(data), 1);
+      this.usersThatLeft.push(data);
+    } else {
+      this.spectators.splice(this.spectators.indexOf(data), 1);
+    }
 
     this.sendScores();
 
@@ -89,10 +104,15 @@ module.exports = class Game {
   }
 
   start(callback) {
-    if (this.started) return;
-    let problemWorth = this.users.length;
-    if (this.type === 'CD') problemWorth = 1;
+    if (this.started) {
+      return;
+    }
 
+    let problemWorth = this.users.length;
+
+    if (this.type === 'CD') {
+      problemWorth = 1;
+    }
 
     this.started = true;
 
@@ -365,7 +385,7 @@ module.exports = class Game {
     }
   }
 
-  get serializedForm() {
+  serializedForm() {
     return {
       host: this.host,
       started: this.started,

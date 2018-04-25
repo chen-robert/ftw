@@ -43,6 +43,11 @@
             window.FTW.game.joinGame(data);
         });
 
+        window.FTW.socket.on('spectate game', function (data) {
+            window.FTW.game.spectating = true;
+            window.FTW.game.joinGame(data);
+        });
+
         window.FTW.socket.on('leave game', function (data) {
             return window.FTW.game.leaveGame(data);
         });
