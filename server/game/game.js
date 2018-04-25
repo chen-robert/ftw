@@ -85,14 +85,17 @@ module.exports = class Game {
     if (this.users.indexOf(data) !== -1) {
       this.users.splice(this.users.indexOf(data), 1);
       this.usersThatLeft.push(data);
+      this.sendScores();
     } else {
       this.spectators.splice(this.spectators.indexOf(data), 1);
     }
 
-    this.sendScores();
-
     // If the room would be empty, we'll delete it
     if (this.users.length === 0) {
+      // Notify spectators and remove chatfreeze
+      this.arrIndex = NaN;
+      this.functionArr[this.functionArr.length - 1]();
+
       return true;
     }
 
@@ -253,6 +256,11 @@ module.exports = class Game {
   }
 
   updateElo() {
+    if (this.users.length === 0) {
+      // Shouldn't be counting game if everybody left
+      return;
+    }
+
     const allUsers = this.users.concat(this.usersThatLeft);
     const newRatings = [];
 
