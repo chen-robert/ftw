@@ -92,37 +92,9 @@ module.exports = class Game {
 
     // If the room would be empty, we'll delete it
     if (this.users.length === 0) {
-      // Notify spectators
-      this.dataToSocket.forEach((socket, usrdata) => {
-        if (this.spectators.indexOf(usrdata) !== -1) {
-          // Notify spectators
-          socket.emit(
-            'problem',
-
-            {
-              text: 'It\'s over! Finally!',
-              answer: '0x536865727279',
-            },
-          );
-
-          socket.emit(
-            'timer',
-
-            {
-              type: 'Round Over',
-              time: 1,
-            },
-          );
-        }
-
-        // Remove chatfreeze
-        socket.leave('frozen');
-        this.sendQueue(usrdata);
-      });
-
-      // Wipe maps
-      this.dataToSocket = new Map();
-      this.dataToMongoose = new Map();
+      // Notify spectators and remove chatfreeze
+      this.arrIndex = NaN;
+      this.functionArr[this.functionArr.length - 1]();
 
       return true;
     }
