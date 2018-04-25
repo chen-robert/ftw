@@ -85,14 +85,45 @@ module.exports = class Game {
     if (this.users.indexOf(data) !== -1) {
       this.users.splice(this.users.indexOf(data), 1);
       this.usersThatLeft.push(data);
+      this.sendScores();
     } else {
       this.spectators.splice(this.spectators.indexOf(data), 1);
     }
 
-    this.sendScores();
-
     // If the room would be empty, we'll delete it
     if (this.users.length === 0) {
+      // Notify spectators
+      this.dataToSocket.forEach((socket, usrdata) => {
+        if (this.spectators.indexOf(usrdata) !== -1) {
+          // Notify spectators
+          socket.emit(
+            'problem',
+
+            {
+              text: 'It\'s over! Finally!',
+              answer: '0x536865727279',
+            },
+          );
+
+          socket.emit(
+            'timer',
+
+            {
+              type: 'Round Over',
+              time: 1,
+            },
+          );
+        }
+
+        // Remove chatfreeze
+        socket.leave('frozen');
+        this.sendQueue(usrdata);
+      });
+
+      // Wipe maps
+      this.dataToSocket = new Map();
+      this.dataToMongoose = new Map();
+
       return true;
     }
 
@@ -253,6 +284,11 @@ module.exports = class Game {
   }
 
   updateElo() {
+    if (this.users.length === 0) {
+      // Shouldn't be counting game if everybody left
+      return;
+    }
+
     const allUsers = this.users.concat(this.usersThatLeft);
     const newRatings = [];
 
