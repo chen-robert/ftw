@@ -93,8 +93,10 @@ module.exports = class Game {
     // If the room would be empty, we'll delete it
     if (this.users.length === 0) {
       // Notify spectators and remove chatfreeze
-      this.arrIndex = NaN;
-      this.functionArr[this.functionArr.length - 1]();
+      if (this.started) {
+        this.arrIndex = NaN;
+        this.functionArr[this.functionArr.length - 1]();
+      }
 
       return true;
     }
