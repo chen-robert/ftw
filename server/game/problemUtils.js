@@ -1,3 +1,5 @@
+const request = require("request");
+
 const utils = {};
 
 // Arrow functions are fun to use
@@ -43,7 +45,7 @@ const gcd = function greatestCommonDenominator(a, b) {
 };
 
 // Generates a random integer from [a, b).
-const rand = function randomInteger(a, b) {
+const rand = function(a, b) {
   return Math.floor((b - a) * Math.random()) + a;
 };
 
@@ -64,203 +66,46 @@ const rand = function randomInteger(a, b) {
  */
 
 utils.getProblem = () => {
-  // This is an array of FUNCTIONS
-  const problems = [];
-
-  problems.push(() => {
-    const a = rand(0, 200);
-    const b = rand(0, 100);
-
-    return {
-      text: `What is the value of $${a} + ${b}$?`,
-      answer: String(a + b),
-    };
-  });
-
-  problems.push(() => {
-    const a = rand(0, 200);
-    const b = rand(0, 150);
-
-    return {
-      text: `What is the value of $${a} - ${b}$?`,
-      answer: String(a - b),
-    };
-  });
-
-  problems.push(() => {
-    const a = rand(0, 30);
-    const b = rand(0, 20);
-
-    return {
-      text: `What is the value of $${a} \\cdot ${b}$?`,
-      answer: String(a * b),
-    };
-  });
-
-  problems.push(() => {
-    const a = rand(0, 500);
-    const b = rand(2, 13);
-
-    return {
-      text: `What is the value of $${a} \\pmod{${b}}$?`,
-      answer: String(a % b),
-    };
-  });
-
-  problems.push(() => {
-    const a = rand(20, 500);
-    const b = rand(2, 7);
-
-    // Check for floating point errors
-    const log = Math.log(a) / Math.log(b);
-    const round = Math.floor(log + 0.5);
-
-    return {
-      text: `What is the largest integer $x$ such that $${b}^x \\le ${a}$?`,
-      answer: String(a ** round === b ? round : Math.floor(log)),
-    };
-  });
-
-  problems.push(() => {
-    const a = rand(5, 50);
-
-    return {
-      text: `What is the sum of the first $${a}$ integers?`,
-      answer: String((a * (a + 1)) / 2),
-    };
-  });
-
-  problems.push(() => {
-    const a = rand(20, 61);
-    const b = (rand(0, 1) === 0 ? -1 : 1) * rand(1, 21);
-    const c = rand(1, 101);
-
-    return {
-      text: `Solve the equation: $${b}x + ${c} = ${(a * b) + c}$`,
-      answer: String(a),
-    };
-  });
-
-  /**
-  problems.push(() => {
-    const a = Math.floor(35 * Math.random()) + 5;
-    const b = Math.floor(10 * Math.random()) + 1;
-    const c = Math.floor(15 * Math.random()) + 5;
-
-    return {
-      text: `If Bobert the builder can build $${a}$ houses in $${b}$ day${b === 1 ? '' : 's'}, `
-        + `how many completed houses can Bobert build in $${c}$ days?`,
-      answer: String(Math.floor((a * c) / b)),
-    };
-  });
-   */
-
-  problems.push(() => {
-    const a = rand(1, 11);
-    const b = rand(a, a + 50);
-    const c = rand(0, 2);
-
-    return {
-      text: `Alex and Bobert take turns taking between $1$ and $${a}$ sticks from a pile starting from $${b}$. If the last person to take a stick wins, and ${(c > 0 ? 'Alex' : 'Bobert')} goes first, who wins?`,
-      answer: (b % (a + 1) === 0) ? ['Alex', 'Bobert'][c] : ['Alex', 'Bobert'][1 - c],
-    };
-  });
-
-  problems.push(() => {
-    const num = rand(100, 200);
-    let n = num;
-    let sum = 0;
-    let i = 2;
-
-    while (n !== 1) {
-      if (n % i === 0 && isPrime(i)) {
-        sum += i;
-
-        while (n % i === 0) {
-          n /= i;
-        }
-      }
-
-      i += 1;
-    }
-
-    return {
-      text: `What is the sum of the prime factors of $${num}$?`,
-      answer: String(sum),
-    };
-  });
-
-  problems.push(() => {
-    const num = rand(100, 500);
-    let zeros = 0;
-
-    for (let pow = 1; 5 ** pow <= num; pow += 1) {
-      zeros += Math.floor(num / (5 ** pow));
-    }
-
-    return {
-      text: `How many terminating zeros does $${num}!$ have?`,
-      answer: String(zeros),
-    };
-  });
-
-  problems.push(() => {
-    const a = rand(2, 24);
-    let b;
-
-    do {
-      b = rand(2, 24);
-    } while (gcd(a, b) !== 1);
-
-    // Max number of chicken tendies we can't buy >:(
-    const chickenTendies = (a * b) - a - b;
-
-    return {
-      text: `Pencils are sold in either bundles of $${a}$ or $${b}$. What is the largest quantity of pencils that cannot be bought?`,
-      answer: String(chickenTendies),
-    };
-  });
-
-  problems.push(() => {
-    const a = rand(1, 20);
-    const area = 6 * a * a;
-    const volume = a * a * a;
-
-    return {
-      text: `What is the volume of a cube with surface area $${area}$?`,
-      answer: String(volume),
-    };
-  });
-
-  problems.push(() => {
-    const a = rand(3, 13);
-    const ans = 2 ** a;
-
-    return {
-      text: `How many different outcomes can we get if we flip $${a}$ coins?`,
-      answer: String(ans),
-    };
-  });
-
-  problems.push(() => {
-    const die = rand(2, 5);
-    const sum = rand(die, (6 * die) + 1);
-    let ways = 0;
-
-    for (let i = 0; 6 * i <= sum - die; i += 1) {
-      ways += ((-1) ** i)
-        * (fact(die) / fact(i) / fact(die - i))
-        * (fact(sum - (6 * i) - 1) / fact(die - 1) / fact(sum - die - (6 * i)));
-    }
-
-    return {
-      text: `How many ways are there for $${die}$ fair six-sided die to sum to $${sum}$ when rolled?`,
-      answer: String(ways),
-    };
-  });
-
-  const index = rand(0, problems.length);
-  return problems[index]();
+  return problems[Math.floor(problems.length * Math.random())];
 };
+
+const problems = [];
+const PROBLEM_COUNT = 10000;
+
+const problemLoadInterval = setInterval(() => {
+  if(problems.length > PROBLEM_COUNT) {
+    clearInterval(problemLoadInterval);
+    return;
+  }
+  
+  const seed = rand(0, 1000000);
+  
+  request("https://www.mathfactcafe.com/worksheet/wordproblem/display/?ProblemCount=15&Difficulty=Hard&TextSize=Medium&Score=true&Numbering=true&WorksheetDisplayType=Answers&Seed=" + seed + "&CreateType=WordProblemCustom", (err, res, body) => {
+    if (err) { return console.log(err); }
+    const regex = /(?<=<span class="wp-(question|answer)">).*?(?=<\/span>)/g;
+    
+    const problemParts = [];
+    match = regex.exec(body);
+    while(match != null){
+      problemParts.push(match[0]);
+      
+      match = regex.exec(body);
+    }
+    
+    if(problemParts.length % 2 != 0){
+      console.log("Error with problem loading!");
+    }else{
+      for(var i = 0; i < problemParts.length; i+=2){
+        problems.push({
+          text: problemParts[i],
+          answer: problemParts[i+1]
+        });
+      }
+    }
+    
+  });
+  
+  
+}, 10000);
 
 module.exports = utils;
